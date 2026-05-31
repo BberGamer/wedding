@@ -21,6 +21,9 @@ import AboutUs from "./pages/AboutUs";
 import VendorProfilePage from "./pages/VendorProfilePage";
 
 
+import { Analytics } from "@vercel/analytics/react";
+
+
 function App() {
   const action = useNavigationType();
   const location = useLocation();
@@ -87,23 +90,26 @@ function App() {
   }, [pathname]);
 
   return (
-    <Routes>
-      <Route path="/" element={<WEDDING1 />} />
-      <Route path="/home" element={<WEDDING1 />} />
-      <Route path="/about" element={<AboutUs />} />
-      <Route path="/partner" element={<WEDDINGPLANNER1 />} />
-      <Route path="/nha_hang" element={<CategoryPage defaultCategory="nha_hang" />} />
-      <Route path="/category/:categoryType" element={<CategoryPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/service/:id" element={<ServiceDetailPage />} />
-      <Route path="/payment/vnpay" element={<VNPayPaymentPage />} />
-      <Route path="/payment/success" element={<PaymentSuccessPage />} />
-      <Route path="/vendor/dashboard" element={<VendorDashboard />} />
-      <Route path="/vendor/:id" element={<VendorProfilePage />} />
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<WEDDING1 />} />
+        <Route path="/home" element={<WEDDING1 />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/partner" element={<WEDDINGPLANNER1 />} />
+        <Route path="/nha_hang" element={<CategoryPage defaultCategory="nha_hang" />} />
+        <Route path="/category/:categoryType" element={<CategoryPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/service/:id" element={<ServiceDetailPage />} />
+        <Route path="/payment/vnpay" element={<VNPayPaymentPage />} />
+        <Route path="/payment/success" element={<PaymentSuccessPage />} />
+        <Route path="/vendor/dashboard" element={<VendorDashboard />} />
+        <Route path="/vendor/:id" element={<VendorProfilePage />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      </Routes>
+      <Analytics />
+    </>
   );
 }
 
