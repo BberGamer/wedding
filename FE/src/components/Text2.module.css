@@ -1,0 +1,42 @@
+.lightbuttonsecondarytext {
+  cursor: pointer;
+  border: 0;
+  padding: 17px 36.7px 16px 36.8px;
+  background-color: transparent;
+  height: 50px;
+  width: 151px;
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+}
+.buttonBackground {
+  height: 102%;
+  width: 100.66%;
+  position: absolute;
+  margin: 0 !important;
+  top: 0;
+  right: -0.66%;
+  bottom: -2%;
+  left: 0;
+  border-radius: 50px;
+  background-color: var(--C3937C);
+  border: 1px solid var(--C3937C);
+  box-sizing: border-box;
+  z-index: 0;
+  flex-shrink: 0;
+}
+.button {
+  height: 17px;
+  width: 77.5px;
+  position: relative;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: Montserrat;
+  color: #fff;
+  text-align: center;
+  display: inline-block;
+  flex-shrink: 0;
+  z-index: 1;
+}

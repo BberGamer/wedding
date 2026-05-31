@@ -1,0 +1,135 @@
+.frameParent {
+  width: 1720px;
+  height: 653px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+  z-index: 2;
+  flex-shrink: 0;
+}
+.frameChild,
+.vectorIcon,
+.vectorIcon2 {
+  height: 1107.8px;
+  width: 1367.7px;
+  position: absolute;
+  margin: 0 !important;
+  top: -255px;
+  left: 665px;
+  object-fit: cover;
+  z-index: 0;
+  flex-shrink: 0;
+}
+.vectorIcon,
+.vectorIcon2 {
+  height: 323.1px;
+  width: 325.8px;
+  top: 450px;
+  left: 790px;
+  object-fit: contain;
+  z-index: 1;
+}
+.vectorIcon2 {
+  height: 365.8px;
+  width: 365.8px;
+  top: -89px;
+  left: 1497px;
+  z-index: 2;
+}
+.elliteCateringParent,
+.frameGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.frameGroup {
+  width: 572px;
+  margin: 0 !important;
+  position: absolute;
+  top: 109.5px;
+  left: 0;
+  gap: 40px;
+  z-index: 3;
+  flex-shrink: 0;
+  text-align: left;
+  font-size: 16px;
+  color: var(--787878);
+  font-family: Montserrat;
+}
+.elliteCateringParent {
+  align-self: stretch;
+  height: 276px;
+  gap: 10.5px;
+}
+.elliteCatering {
+  align-self: stretch;
+  height: 25px;
+  letter-spacing: 5px;
+  line-height: 25px;
+  text-transform: uppercase;
+}
+.chpNhCi,
+.elliteCatering,
+.loremIpsumDolor {
+  position: relative;
+  display: inline-block;
+}
+.chpNhCi {
+  margin: 0;
+  align-self: stretch;
+  height: 155px;
+  font-size: 60px;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-family: Cormorant;
+  color: var(--C3937C);
+}
+.loremIpsumDolor {
+  width: 415px;
+  line-height: 25px;
+}
+.lightbuttonsecondarytext {
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  width: 151px;
+  height: 50px;
+  position: relative;
+}
+.rectangle {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: -1%;
+  right: -0.33%;
+  bottom: -1%;
+  left: -0.33%;
+  border-radius: 50px;
+  background-color: var(--C3937C);
+  border: 1px solid var(--C3937C);
+  box-sizing: border-box;
+}
+.button {
+  position: absolute;
+  top: calc(50% - 8px);
+  left: 12.45%;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: Montserrat;
+  color: #fff;
+  text-align: center;
+}
+@media screen and (max-width: 925px) {
+  .chpNhCi {
+    font-size: 48px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .chpNhCi {
+    font-size: 36px;
+  }
+}

@@ -1,0 +1,142 @@
+.weddingPlannerInner {
+  align-self: stretch;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  max-width: 100%;
+  text-align: center;
+  font-size: 32px;
+  color: var(--C3937C);
+  font-family: "Antic Didone";
+}
+.frameParent {
+  width: 1720px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 100%;
+}
+.logoParent {
+  height: 113.1px;
+  width: 256px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 23px 78px;
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  gap: 10px;
+}
+.anWedding,
+.logoIcon {
+  position: absolute;
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+.logoIcon {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  z-index: 0;
+}
+.anWedding {
+  height: 76px;
+  width: 138px;
+  top: 27px;
+  left: 59px;
+  display: inline-block;
+  z-index: 1;
+}
+.aboutMenuBlogContWrapper,
+.frameGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.frameGroup {
+  margin: 0;
+  padding: 20px 0;
+  gap: 60px;
+  text-align: left;
+  font-size: 20px;
+  color: var(--C3937C);
+  font-family: Montserrat;
+}
+.aboutMenuBlogContWrapper {
+  padding: 10px;
+}
+.aboutMenuBlog {
+  position: relative;
+  line-height: 25px;
+}
+.aboutMenuBlogContContainer,
+.frameDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 9px;
+}
+.frameDiv {
+  padding: 10px;
+}
+.aboutMenuBlog4 {
+  position: relative;
+  line-height: 25px;
+}
+.lightbuttonsecondarytext {
+  height: 50px;
+  width: 151px;
+  display: flex;
+  align-items: flex-start;
+  padding: 17px 36.7px 16px 36.8px;
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+}
+.rectangle {
+  height: 102%;
+  width: 100.66%;
+  position: absolute;
+  margin: 0 !important;
+  top: 0;
+  right: -0.66%;
+  bottom: -2%;
+  left: 0;
+  border-radius: 50px;
+  background-color: var(--C3937C);
+  border: 1px solid var(--C3937C);
+  box-sizing: border-box;
+  z-index: 0;
+  flex-shrink: 0;
+}
+.button {
+  height: 17px;
+  width: 77.5px;
+  position: relative;
+  text-transform: uppercase;
+  display: inline-block;
+  flex-shrink: 0;
+  z-index: 1;
+}
+@media screen and (max-width: 1350px) {
+  .frameGroup {
+    gap: 30px;
+  }
+  .aboutMenuBlog4,
+  .frameDiv {
+    display: none;
+  }
+}

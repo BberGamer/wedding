@@ -1,0 +1,267 @@
+.section {
+  width: 1920px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  isolation: isolate;
+  gap: 282px;
+  max-width: 100%;
+  flex-shrink: 0;
+  text-align: left;
+  font-size: 16px;
+  color: var(--787878);
+  font-family: Montserrat;
+}
+.icon,
+.icon2,
+.maskGroupIcon,
+.vectorIcon {
+  position: absolute;
+  margin: 0 !important;
+  object-fit: contain;
+}
+.vectorIcon {
+  height: 23.13%;
+  width: 12.63%;
+  top: 20.31%;
+  right: 0.71%;
+  bottom: 56.56%;
+  left: 86.67%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+}
+.icon,
+.icon2,
+.maskGroupIcon {
+  height: 456.9px;
+  width: 459px;
+  top: 3.2px;
+  left: 937.5px;
+  z-index: 1;
+}
+.icon2,
+.maskGroupIcon {
+  height: 521.6px;
+  width: 524.9px;
+  top: 78.2px;
+  left: 897.1px;
+  z-index: 2;
+}
+.maskGroupIcon {
+  height: 488px;
+  width: 756px;
+  top: 254px;
+  left: 582px;
+  object-fit: cover;
+  z-index: 3;
+}
+.frameChild,
+.rectangleParent {
+  border-radius: 0 0 300px 0;
+  background-color: var(--EAD9C9);
+}
+.rectangleParent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 79px 240px 87px 0;
+  box-sizing: border-box;
+  gap: 154px;
+  max-width: 100%;
+}
+.frameChild {
+  width: 1144px;
+  height: 960px;
+  position: relative;
+  display: none;
+  flex-shrink: 0;
+}
+.theWeddingPartyParent {
+  margin-right: -303px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 11px;
+  flex-shrink: 0;
+}
+.theWeddingParty,
+.thuXeCi {
+  position: relative;
+  text-transform: uppercase;
+  display: inline-block;
+}
+.theWeddingParty {
+  width: 445px;
+  height: 22px;
+  letter-spacing: 5px;
+  line-height: 22px;
+  z-index: 1;
+}
+.thuXeCi {
+  margin: 0;
+  width: 625px;
+  height: 72px;
+  font-size: 60px;
+  font-weight: 400;
+  font-family: Cormorant;
+  z-index: 3;
+}
+.serviceDetails,
+.vectorParent {
+  display: flex;
+  align-items: flex-start;
+}
+.serviceDetails {
+  width: 904px;
+  padding: 0 0 11px;
+  box-sizing: border-box;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.vectorParent {
+  position: relative;
+  isolation: isolate;
+}
+.backgroundOverlayIcon,
+.vectorIcon2 {
+  position: absolute;
+  margin: 0 !important;
+  object-fit: contain;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.vectorIcon2 {
+  height: 222px;
+  width: 242.4px;
+  bottom: -145px;
+  left: 30px;
+}
+.backgroundOverlayIcon {
+  height: 429.4px;
+  width: 414px;
+  right: -301px;
+  bottom: -251.4px;
+}
+.maskGroupIcon2 {
+  height: 320px;
+  width: 494px;
+  position: relative;
+  object-fit: cover;
+  z-index: 2;
+  flex-shrink: 0;
+}
+.lightbuttonsecondarytext {
+  cursor: pointer;
+  border: 1px solid var(--C3937C);
+  padding: 15px 18px;
+  background-color: var(--C3937C);
+  width: 152px;
+  height: 51px;
+  border-radius: 50px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  z-index: 2;
+  flex-shrink: 0;
+}
+.lightbuttonsecondarytext:hover {
+  background-color: #8f614a;
+  border: 1px solid #8f614a;
+  box-sizing: border-box;
+}
+.button,
+.rectangle {
+  position: relative;
+  flex-shrink: 0;
+}
+.rectangle {
+  height: 51px;
+  width: 152px;
+  border-radius: 50px;
+  background-color: var(--C3937C);
+  border: 1px solid var(--C3937C);
+  box-sizing: border-box;
+  display: none;
+}
+.button {
+  height: 17px;
+  width: 112px;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: Montserrat;
+  color: #fff;
+  text-align: center;
+  display: inline-block;
+  z-index: 1;
+}
+.maskGroupWrapper {
+  height: 622px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 100%;
+}
+.maskGroupIcon3 {
+  width: 494px;
+  height: 320px;
+  position: relative;
+  object-fit: cover;
+  z-index: 1;
+}
+@media screen and (max-width: 1825px) {
+  .section {
+    height: auto;
+    flex-wrap: wrap;
+  }
+  .rectangleParent {
+    flex: 1;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  .maskGroupWrapper {
+    flex: 1;
+  }
+  .maskGroupIcon3 {
+    align-self: stretch;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 1350px) {
+  .section {
+    gap: 141px;
+  }
+  .rectangleParent {
+    gap: 77px;
+    padding-top: 51px;
+    padding-bottom: 57px;
+    box-sizing: border-box;
+    min-width: 100%;
+  }
+}
+@media screen and (max-width: 925px) {
+  .section {
+    gap: 70px;
+  }
+  .rectangleParent {
+    gap: 38px;
+    padding-top: 33px;
+    padding-bottom: 37px;
+    box-sizing: border-box;
+  }
+  .thuXeCi {
+    font-size: 48px;
+  }
+  .maskGroupWrapper {
+    min-width: 100%;
+  }
+}
+@media screen and (max-width: 450px) {
+  .rectangleParent {
+    gap: 19px;
+  }
+  .thuXeCi {
+    font-size: 36px;
+  }
+}

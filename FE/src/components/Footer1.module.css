@@ -1,0 +1,240 @@
+.footer,
+.footerDetails {
+  display: flex;
+  align-items: flex-start;
+  max-width: 100%;
+}
+
+.footer {
+  width: 100%;
+  background-color: var(--EAD9C9);
+  overflow: hidden;
+  padding: 100px 193px 96px;
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  gap: 61px;
+  flex-shrink: 0;
+  text-align: left;
+  font-size: 60px;
+  color: var(--787878);
+  font-family: Cormorant;
+}
+.footerDetails {
+  flex-direction: column;
+  gap: 39px;
+}
+.title {
+  margin: 0;
+  width: 942px;
+  height: 216px;
+  position: relative;
+  font-size: inherit;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-family: inherit;
+  display: inline-block;
+}
+.copyright2020LaaParent,
+.footerDetailsInner {
+  display: flex;
+  align-items: flex-start;
+  max-width: 100%;
+}
+.footerDetailsInner {
+  padding: 0 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: Montserrat;
+}
+.copyright2020LaaParent {
+  width: 890px;
+  justify-content: space-between;
+  gap: 20px;
+}
+.copyright2020 {
+  height: 25px;
+  width: 235px;
+  position: relative;
+  line-height: 25px;
+  display: inline-block;
+}
+.legalLinks {
+  width: 385px;
+  display: flex;
+  align-items: flex-start;
+  gap: 172px;
+  max-width: 100%;
+  text-align: right;
+}
+.privacyPolicy,
+.termsOfUse {
+  height: 25px;
+  width: 104px;
+  position: relative;
+  line-height: 25px;
+  display: inline-block;
+}
+.privacyPolicy {
+  width: 109px;
+}
+.footerLinks,
+.sitemap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.footerLinks {
+  gap: 134px;
+  max-width: 100%;
+  font-size: 20px;
+}
+.sitemap {
+  gap: 24px;
+}
+.sitemap2 {
+  margin: 0;
+  position: relative;
+  font-size: inherit;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-family: inherit;
+}
+.siteMapLinks {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 16px;
+  font-family: Montserrat;
+}
+.events,
+.home {
+  position: relative;
+  line-height: 25px;
+}
+.events {
+  display: none;
+}
+.subscription {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 16px;
+  font-family: Montserrat;
+}
+.enterYouEmailAddressParent {
+  width: 509px;
+  height: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 216px;
+}
+.enterYouEmail {
+  height: 25px;
+  width: 192px;
+  position: relative;
+  line-height: 25px;
+  display: inline-block;
+}
+.frameChild {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  height: 21px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 7px 0 0;
+  box-sizing: border-box;
+  font-family: Cormorant;
+  font-size: 20px;
+  color: var(--787878);
+}
+.subscriptionChild {
+  width: 531px;
+  height: 1px;
+  position: relative;
+  border-top: 1px solid var(--787878);
+  box-sizing: border-box;
+}
+.pathStrokeIcon {
+  height: 2.66%;
+  width: 0.31%;
+  position: absolute;
+  margin: 0 !important;
+  top: 74.18%;
+  right: 10.1%;
+  bottom: 23.16%;
+  left: 89.58%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  z-index: 1;
+}
+@media screen and (max-width: 1825px) {
+  .footer {
+    height: auto;
+    flex-wrap: wrap;
+  }
+  .footerDetails,
+  .footerLinks {
+    flex: 1;
+  }
+}
+@media screen and (max-width: 1350px) {
+  .footer {
+    gap: 30px;
+    padding-left: 96px;
+    padding-right: 96px;
+    box-sizing: border-box;
+  }
+  .footerDetails,
+  .footerLinks {
+    min-width: 100%;
+  }
+}
+@media screen and (max-width: 925px) {
+  .footer {
+    gap: 15px;
+    padding: 65px 48px 62px;
+    box-sizing: border-box;
+  }
+  .footerDetails {
+    gap: 19px;
+  }
+  .title {
+    font-size: 48px;
+  }
+  .copyright2020LaaParent {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .footerLinks {
+    gap: 67px;
+  }
+  .enterYouEmailAddressParent {
+    gap: 108px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .title {
+    font-size: 36px;
+  }
+  .legalLinks {
+    gap: 86px;
+  }
+  .footerLinks {
+    gap: 33px;
+  }
+  .sitemap2 {
+    font-size: 16px;
+  }
+  .siteMapLinks {
+    flex-wrap: wrap;
+  }
+  .enterYouEmailAddressParent {
+    gap: 54px;
+  }
+}

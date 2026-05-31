@@ -1,0 +1,343 @@
+/* SharedHeader — Responsive hoàn chỉnh */
+
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.headerLight {
+  background-color: transparent;
+}
+.headerDark {
+  background-color: rgba(0,0,0,0.15);
+  backdrop-filter: blur(4px);
+}
+
+.inner {
+  width: 100%;
+  max-width: 1720px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* ===== Logo ===== */
+.logoArea {
+  height: 90px;
+  width: 200px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 18px 60px;
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logoIcon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 0;
+}
+.brandName {
+  position: absolute;
+  top: 22px;
+  left: 46px;
+  font-size: 24px;
+  font-weight: 400;
+  font-family: "Antic Didone", serif;
+  color: var(--C3937C);
+  display: inline-block;
+  z-index: 1;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ===== Desktop nav ===== */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 16px 0;
+  font-size: 16px;
+  font-family: Montserrat, sans-serif;
+  position: relative;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.navText {
+  line-height: 1.4;
+  font-weight: 400;
+  font-family: Montserrat, sans-serif;
+  font-size: 16px;
+  color: var(--C3937C);
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.navText:hover { opacity: 0.72; }
+.navTextDark { color: #fff; }
+.loginText { font-weight: 600; }
+.navItemHide { display: flex; }
+
+/* ===== Account ===== */
+.accountMenu {
+  position: relative;
+  display: flex;
+}
+.avatarDot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--C3937C);
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ===== Dropdown ===== */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 248px;
+  background: #fff;
+  border: 1px solid #ede3d9;
+  border-radius: 14px;
+  box-shadow: 0 14px 44px rgba(195,147,124,0.18);
+  z-index: 9999;
+  overflow: hidden;
+  animation: dropFade 0.2s ease;
+}
+@keyframes dropFade {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.dropdownHeader {
+  padding: 16px 18px 12px;
+  background: #fbf8f1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.dropdownName {
+  margin: 0;
+  font-family: Cormorant, serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4d5637;
+}
+.dropdownEmail {
+  margin: 0;
+  font-family: Raleway, sans-serif;
+  font-size: 12px;
+  color: #787878;
+}
+.roleBadge {
+  margin-top: 6px;
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: #ede3d9;
+  font-family: Montserrat, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #9d7236;
+}
+.dropdownDivider {
+  height: 1px;
+  background: #ede3d9;
+}
+.dropdownItem {
+  display: block;
+  padding: 12px 18px;
+  font-family: Raleway, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4d4340;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.dropdownItem:hover { background: #fbf8f1; color: #c3937c; }
+
+/* ===== Book button ===== */
+.bookBtn {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 14px 30px;
+  height: 48px;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: relative;
+  isolation: isolate;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.bookBtn:hover { transform: translateY(-1px); }
+.bookBtnBg {
+  position: absolute;
+  inset: 0;
+  border-radius: 50px;
+  background-color: var(--C3937C);
+  border: 1px solid var(--C3937C);
+  z-index: 0;
+}
+.bookBtnText {
+  position: relative;
+  font-size: 13px;
+  text-transform: uppercase;
+  font-family: Montserrat, sans-serif;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 0.08em;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+/* ===== Hamburger (mobile) ===== */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  background: none;
+  border: none;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: var(--C3937C);
+  border-radius: 2px;
+  transition: all 0.25s;
+}
+
+/* Mobile drawer */
+.mobileNav {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  background: #fbf8f1;
+  z-index: 9998;
+  flex-direction: column;
+  padding: 80px 32px 40px;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+  gap: 8px;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+.mobileNavOpen { display: flex; }
+.mobileOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9997;
+}
+.mobileOverlayOpen { display: block; }
+.mobileNavClose {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: var(--C3937C);
+  line-height: 1;
+}
+.mobileNavItem {
+  display: block;
+  padding: 14px 0;
+  font-family: Raleway, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #4d4340;
+  text-decoration: none;
+  border-bottom: 1px solid #ede3d9;
+  transition: color 0.15s;
+}
+.mobileNavItem:hover { color: #c3937c; }
+.mobileBookBtn {
+  margin-top: 16px;
+  cursor: pointer;
+  border: none;
+  background: var(--C3937C);
+  color: #fff;
+  padding: 14px 0;
+  border-radius: 50px;
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  width: 100%;
+  transition: opacity 0.2s;
+}
+.mobileBookBtn:hover { opacity: 0.85; }
+
+.vendorNavHighlight {
+  font-weight: 600 !important;
+  color: #4d5637 !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media screen and (max-width: 1200px) {
+  .header { padding: 0 24px; }
+  .nav { gap: 24px; }
+  .navText { font-size: 14px; }
+  .navItemHide { display: none; }
+}
+
+@media screen and (max-width: 900px) {
+  .nav { gap: 16px; }
+  .navText { font-size: 13px; }
+}
+
+/* Tablet & Mobile — ẩn nav, hiện hamburger */
+@media screen and (max-width: 768px) {
+  .header { padding: 0 20px; }
+  .logoArea { height: 70px; width: 160px; padding: 12px 48px; }
+  .brandName { font-size: 18px; top: 16px; left: 36px; }
+  .nav { display: none; }
+  .hamburger { display: flex; }
+}

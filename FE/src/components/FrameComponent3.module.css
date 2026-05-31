@@ -1,0 +1,66 @@
+.restaurantDetailsParent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  text-align: left;
+  font-size: clamp(20px, 2.5vw, 32px);
+  color: #000;
+  font-family: Inter;
+}
+.restaurantDetailsIcon {
+  width: 100%;
+  aspect-ratio: 415 / 533;
+  height: auto;
+  position: relative;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.restaurantLabels {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+.nhHngTic,
+.thnhPhThun {
+  align-self: stretch;
+  position: relative;
+}
+.nhHngTic {
+  font-weight: 600;
+  line-height: 1.2;
+}
+.thnhPhThun {
+  font-size: clamp(14px, 1.8vw, 24px);
+  color: #555;
+  line-height: 1.4;
+}
+.ratingStars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.starsFirstIcon {
+  height: clamp(20px, 2.5vw, 36px);
+  width: clamp(20px, 2.5vw, 36px);
+  position: relative;
+  border-radius: 2px;
+}
+.quoteButtons {
+  align-self: stretch;
+  border-radius: 12px;
+  background-color: var(--C3937C);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  color: #fbf8f1;
+  font-size: clamp(14px, 1.8vw, 20px);
+}
+.nhnBoGi {
+  position: relative;
+  font-weight: 600;
+}

@@ -1,0 +1,52 @@
+.root,
+.section,
+.wedding {
+  display: flex;
+  flex-direction: column;
+}
+.wedding {
+  width: 100%;
+  position: relative;
+  background-color: #fbf8f1;
+  overflow-x: hidden;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  gap: 80px;
+  line-height: normal;
+  letter-spacing: normal;
+}
+.root,
+.section {
+  max-width: 100%;
+  flex-shrink: 0;
+  width: 100%;
+}
+.root {
+  align-items: center;
+  position: relative;
+  isolation: isolate;
+  gap: 120px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+.section {
+  max-width: 1718px;
+  align-items: flex-start;
+  gap: 24px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1350px) {
+  .wedding { gap: 48px; }
+  .root { gap: 60px; }
+  .section { height: auto; }
+}
+@media screen and (max-width: 925px) {
+  .wedding { gap: 32px; }
+  .root { gap: 36px; padding: 0 12px; }
+}
+@media screen and (max-width: 640px) {
+  .wedding { gap: 24px; }
+  .root { gap: 24px; padding: 0 8px; }
+}

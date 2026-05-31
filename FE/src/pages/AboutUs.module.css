@@ -1,0 +1,472 @@
+.aboutPage {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  background-color: #fbf8f1;
+  color: #333333;
+  overflow: hidden;
+  font-family: "Raleway", sans-serif;
+}
+
+/* Background Patterns */
+.bgCircle1 {
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(195, 147, 124, 0.06) 0%, rgba(251, 248, 241, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bgCircle2 {
+  position: absolute;
+  bottom: 10%;
+  left: -200px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(77, 86, 55, 0.05) 0%, rgba(251, 248, 241, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bgLeaf {
+  position: absolute;
+  top: 15%;
+  left: 2%;
+  width: 120px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+  animation: floatLeaf 8s ease-in-out infinite alternate;
+}
+
+@keyframes floatLeaf {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(20px) rotate(10deg); }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero Section */
+.heroSection {
+  text-align: center;
+  padding: 80px 20px;
+  position: relative;
+  border-bottom: 1px solid rgba(77, 86, 55, 0.15);
+  margin-bottom: 80px;
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: #c3937c;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 52px;
+  font-weight: 500;
+  color: #4d5637;
+  margin: 0 0 24px;
+  line-height: 1.15;
+}
+
+.heroSubtitle {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #666666;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Common Section Typography */
+.sectionLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #c3937c;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 38px;
+  font-weight: 500;
+  color: #4d5637;
+  margin: 0 0 28px;
+  line-height: 1.2;
+}
+
+.paragraph {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #555555;
+  margin: 0 0 20px;
+}
+
+/* Narrative Section */
+.narrativeSection {
+  margin-bottom: 100px;
+}
+
+.narrativeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.narrativeText {
+  padding-right: 20px;
+}
+
+.narrativeImageWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.narrativeImage {
+  width: 85%;
+  height: 480px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 2;
+  transition: transform 0.5s ease;
+}
+
+.narrativeImageWrapper:hover .narrativeImage {
+  transform: translateY(-5px);
+}
+
+.imageOutlineFrame {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 85%;
+  height: 480px;
+  border: 1px solid #c3937c;
+  border-radius: 4px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Values Section */
+.valuesSection {
+  margin-bottom: 100px;
+  background-color: rgba(77, 86, 55, 0.03);
+  padding: 80px 40px;
+  border-radius: 8px;
+  border: 1px solid rgba(77, 86, 55, 0.05);
+}
+
+.valuesHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.valueCard {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.valueCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(77, 86, 55, 0.08);
+  border-color: rgba(77, 86, 55, 0.15);
+}
+
+.valueIconWrapper {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4d5637;
+  border: 1.5px solid #4d5637;
+  border-radius: 50%;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.valueCard:hover .valueIconWrapper {
+  background-color: #4d5637;
+  color: #ffffff;
+}
+
+.valueTitle {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 24px;
+  color: #4d5637;
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+
+.valueText {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666666;
+  margin: 0;
+}
+
+/* Security Section */
+.securitySection {
+  margin-bottom: 100px;
+}
+
+.securityGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.securityImageWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.securityImage {
+  width: 85%;
+  height: 480px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 2;
+  transition: transform 0.5s ease;
+}
+
+.securityImageWrapper:hover .securityImage {
+  transform: translateY(-5px);
+}
+
+.imageOutlineFrameLeft {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 85%;
+  height: 480px;
+  border: 1px solid #c3937c;
+  border-radius: 4px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.securityText {
+  padding-left: 20px;
+}
+
+/* Team Section */
+.teamSection {
+  margin-bottom: 100px;
+}
+
+/* Row containing cards, centered with gap */
+.teamRow {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 28px;
+}
+
+.teamCard {
+  background-color: #ffffff;
+  padding: 32px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(195, 147, 124, 0.12);
+  text-align: center;
+  transition: all 0.3s ease;
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.teamCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(195, 147, 124, 0.15);
+  border-color: rgba(195, 147, 124, 0.35);
+}
+
+.teamImageWrapper {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 20px;
+  border: 3px solid #ede3d9;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.teamImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.teamName {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #4d5637;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.teamRole {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #c3937c;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.teamDesc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #666666;
+  margin: 0;
+}
+
+
+/* Contact Banner */
+.contactBanner {
+  background-color: #4d5637;
+  color: #ede3d9;
+  padding: 60px 40px;
+  border-radius: 8px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(77, 86, 55, 0.2);
+}
+
+.contactBannerContent {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.contactBanner h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 34px;
+  margin: 0 0 16px;
+  font-weight: 500;
+}
+
+.contactBanner p {
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0.85;
+  margin: 0 0 28px;
+}
+
+.contactNumber {
+  display: inline-block;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #fbf8f1;
+  border: 1px solid rgba(251, 248, 241, 0.3);
+  padding: 10px 24px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .heroTitle {
+    font-size: 42px;
+  }
+  .narrativeGrid, .securityGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .narrativeImageWrapper, .securityImageWrapper {
+    justify-content: center;
+  }
+  .narrativeImage, .securityImage {
+    width: 90%;
+    height: 380px;
+  }
+  .imageOutlineFrame, .imageOutlineFrameLeft {
+    width: 90%;
+    height: 380px;
+  }
+  .valuesGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .teamRow {
+    flex-direction: column;
+    align-items: center;
+    transform: none;
+  }
+  .teamCard {
+    width: 100%;
+    max-width: 340px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding-top: 80px;
+  }
+  .heroSection {
+    padding: 40px 10px;
+  }
+  .heroTitle {
+    font-size: 32px;
+  }
+  .sectionTitle {
+    font-size: 28px;
+  }
+  .valuesSection {
+    padding: 40px 20px;
+  }
+  .contactBanner {
+    padding: 40px 20px;
+  }
+  .contactBanner h2 {
+    font-size: 26px;
+  }
+}

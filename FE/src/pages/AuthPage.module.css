@@ -1,0 +1,397 @@
+/* =============================================
+   AN WEDDING — Auth Pages (Login & Register)
+   Palette: #fbf8f1 bg · #c3937c primary · 
+            #4d5637 accent · #787878 text · #ede3d9 card
+   Fonts: Cormorant (title) · Raleway (body) · Montserrat (UI)
+   ============================================= */
+
+/* ---------- Page Shell ---------- */
+.authPage {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #fbf8f1;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+  font-family: Raleway, sans-serif;
+}
+
+/* Floating decorative circles */
+.bgCircle1 {
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  border: 1px solid rgba(195, 147, 124, 0.2);
+  pointer-events: none;
+  z-index: 0;
+}
+.bgCircle2 {
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(237, 227, 217, 0.6), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.bgLeaf {
+  position: absolute;
+  bottom: 60px;
+  right: 52%;
+  width: 100px;
+  height: 100px;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- Two-column layout ---------- */
+.authContainer {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Left Panel (image) ---------- */
+.leftPanel {
+  flex: 0 0 45%;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.leftOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(77, 86, 55, 0.72) 0%,
+    rgba(195, 147, 124, 0.55) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 52px 60px;
+}
+
+/* Brand area inside left panel */
+.brandArea {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+.logoImg {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.brandName {
+  margin: 0;
+  font-family: "Antic Didone", serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+}
+
+/* Quote block */
+.leftQuote {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.quoteText {
+  margin: 0;
+  font-family: Cormorant, serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+.quoteDivider {
+  width: 60px;
+  height: 1px;
+  background-color: rgba(255,255,255,0.6);
+}
+.quoteSubtext {
+  margin: 0;
+  font-family: Raleway, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---------- Right Panel (form) ---------- */
+.rightPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 48px;
+  box-sizing: border-box;
+  background-color: #fbf8f1;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* ---------- Form header ---------- */
+.formHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.formEyebrow {
+  margin: 0;
+  font-family: Montserrat, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: #c3937c;
+  text-transform: uppercase;
+}
+.formTitle {
+  margin: 0;
+  font-family: Cormorant, serif;
+  font-size: 56px;
+  font-weight: 400;
+  color: #4d5637;
+  line-height: 1;
+}
+.titleUnderline {
+  width: 72px;
+  height: 2px;
+  background: linear-gradient(90deg, #c3937c, #ede3d9);
+  border-radius: 2px;
+}
+
+/* ---------- Form body ---------- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Side-by-side inputs */
+.inputRow {
+  display: flex;
+  gap: 20px;
+}
+.inputRow .inputGroup {
+  flex: 1;
+}
+
+/* Single field group */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.inputLabel {
+  font-family: Montserrat, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #9d7236;
+  text-transform: uppercase;
+}
+
+/* Input with animated underline */
+.inputWrapper {
+  position: relative;
+}
+.input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid #ded0c3;
+  outline: none;
+  padding: 10px 0;
+  font-family: Raleway, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #4d4340;
+  box-sizing: border-box;
+  transition: border-color 0.25s ease;
+}
+.input::placeholder {
+  color: rgba(120, 120, 120, 0.45);
+  font-weight: 400;
+}
+.input:focus {
+  border-color: #c3937c;
+}
+.inputLine {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #c3937c;
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+.inputWrapper:focus-within .inputLine {
+  width: 100%;
+}
+
+/* Select field */
+.selectInput {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c3937c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  padding-right: 28px;
+}
+.selectInput option {
+  background: #fbf8f1;
+  color: #4d4340;
+}
+
+/* ---------- Error ---------- */
+.errorMsg {
+  font-family: Raleway, sans-serif;
+  font-size: 13px;
+  color: #b85c5c;
+  background-color: rgba(184, 92, 92, 0.08);
+  border-left: 3px solid #b85c5c;
+  padding: 10px 14px;
+  border-radius: 0 4px 4px 0;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Submit button ---------- */
+.submitBtn {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  height: 54px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.submitBtn:hover {
+  transform: translateY(-2px);
+  opacity: 0.92;
+}
+.submitBtn:active {
+  transform: translateY(0);
+}
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.btnBg {
+  position: absolute;
+  inset: 0;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #c3937c 0%, #a97a60 100%);
+  box-shadow: 0 6px 24px rgba(195, 147, 124, 0.35);
+}
+.btnText {
+  position: relative;
+  z-index: 1;
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* ---------- Footer links ---------- */
+.formFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding-top: 4px;
+}
+.switchText {
+  margin: 0;
+  font-family: Raleway, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #787878;
+}
+.switchLink {
+  color: #c3937c;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.switchLink:hover {
+  color: #9d7236;
+  text-decoration: underline;
+}
+.backLink {
+  font-family: Montserrat, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: #aaa;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.backLink:hover {
+  color: #4d5637;
+}
+
+/* ---------- Responsive ---------- */
+@media screen and (max-width: 900px) {
+  .leftPanel {
+    display: none;
+  }
+  .rightPanel {
+    padding: 48px 28px;
+  }
+  .formTitle {
+    font-size: 42px;
+  }
+  .inputRow {
+    flex-direction: column;
+    gap: 28px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .rightPanel {
+    padding: 36px 20px;
+  }
+  .formTitle {
+    font-size: 36px;
+  }
+  .formWrapper {
+    gap: 28px;
+  }
+}

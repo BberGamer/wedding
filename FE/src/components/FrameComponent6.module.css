@@ -1,0 +1,117 @@
+.frameParent {
+  width: 1720px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.frameChild {
+  height: 601px;
+  width: 859px;
+  position: relative;
+  object-fit: cover;
+}
+.frameGroup,
+.weCreateYouCelebrateParent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.frameGroup {
+  width: 572px;
+  padding: 20px 0;
+  box-sizing: border-box;
+  gap: 40px;
+  text-align: left;
+  font-size: 16px;
+  color: var(--787878);
+  font-family: Montserrat;
+}
+.weCreateYouCelebrateParent {
+  align-self: stretch;
+  gap: 10.5px;
+}
+.weCreate {
+  align-self: stretch;
+  height: 25px;
+  letter-spacing: 5px;
+  line-height: 25px;
+  text-transform: uppercase;
+}
+.khmPhH,
+.nhHngTic,
+.weCreate {
+  position: relative;
+  display: inline-block;
+}
+.nhHngTic {
+  margin: 0;
+  align-self: stretch;
+  height: 155px;
+  font-size: 60px;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-family: Cormorant;
+  color: var(--C3937C);
+}
+.khmPhH {
+  width: 415px;
+  line-height: 25px;
+}
+.lightbuttonsecondarytext {
+  cursor: pointer;
+  border: 1px solid var(--C3937C);
+  padding: 15px 18px;
+  background-color: var(--C3937C);
+  width: 152px;
+  height: 51px;
+  border-radius: 50px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+}
+.lightbuttonsecondarytext:hover {
+  background-color: #8f614a;
+  border: 1px solid #8f614a;
+  box-sizing: border-box;
+}
+.button,
+.rectangle {
+  position: relative;
+  flex-shrink: 0;
+}
+.rectangle {
+  height: 51px;
+  width: 152px;
+  border-radius: 50px;
+  background-color: var(--C3937C);
+  border: 1px solid var(--C3937C);
+  box-sizing: border-box;
+  display: none;
+}
+.button {
+  height: 17px;
+  width: 112px;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: Montserrat;
+  color: #fff;
+  text-align: center;
+  display: inline-block;
+  z-index: 1;
+}
+@media screen and (max-width: 925px) {
+  .frameGroup {
+    gap: 20px;
+  }
+  .nhHngTic {
+    font-size: 48px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .nhHngTic {
+    font-size: 36px;
+  }
+}

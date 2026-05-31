@@ -1,0 +1,678 @@
+.paymentPage {
+  min-height: 100vh;
+  background-color: #f1f2f6;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Gateway Header */
+.gatewayHeader {
+  background-color: #0b2240; /* Royal navy blue */
+  border-bottom: 3px solid #f6891f; /* Orange accent */
+  padding: 12px 20px;
+}
+
+.headerLimit {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.vnpayBrand {
+  display: flex;
+  flex-direction: column;
+}
+
+.vn {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.gateway {
+  color: #f6891f;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  margin-top: -4px;
+}
+
+.divider {
+  width: 1px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.merchantInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.merchantLabel {
+  font-size: 9px;
+  color: #8fa0b5;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.merchantName {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+/* Gateway Body */
+.gatewayBody {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.bodyGrid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Sidebar Order Card */
+.orderSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebarTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0b2240;
+  margin: 0;
+}
+
+.orderCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.amountBlock {
+  background-color: rgba(246, 137, 31, 0.04);
+  border: 1px dashed rgba(246, 137, 31, 0.3);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.orderLabel {
+  display: block;
+  font-size: 10px;
+  color: #666;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.orderAmount {
+  font-size: 22px;
+  font-weight: 800;
+  color: #f6891f;
+}
+
+.metaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f2f6;
+  font-size: 13px;
+}
+
+.metaRow:last-of-type {
+  border-bottom: none;
+}
+
+.metaKey {
+  color: #888;
+  font-weight: 500;
+}
+
+.metaValue {
+  color: #111;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.timerBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #555;
+  background-color: #fafafa;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 16px;
+}
+
+.timeVal {
+  color: #e23b3b;
+  font-weight: 700;
+}
+
+/* Payment Methods Column */
+.paymentMethodsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.methodsCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.tabsHeader {
+  display: flex;
+  border-bottom: 2px solid #e1e3ea;
+  background-color: #fbfbfb;
+}
+
+.tabBtn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tabBtn:hover {
+  background-color: #f5f6f8;
+  color: #0b2240;
+}
+
+.activeTab {
+  color: #005baa;
+  border-bottom-color: #005baa;
+  background-color: white;
+}
+
+.tabContent {
+  padding: 24px;
+}
+
+/* QR Code Section */
+.qrGrid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.qrVisualBlock {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.qrFrame {
+  position: relative;
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.simulatedQr {
+  width: 190px;
+  height: 190px;
+  position: relative;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #eee;
+}
+
+/* Mock QR Corner Finders */
+.qrCornerTopLeft,
+.qrCornerTopRight,
+.qrCornerBottomLeft,
+.qrCornerBottomRight {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 8px solid #0b2240;
+  box-sizing: border-box;
+}
+
+.qrCornerTopLeft { top: 10px; left: 10px; }
+.qrCornerTopRight { top: 10px; right: 10px; }
+.qrCornerBottomLeft { bottom: 10px; left: 10px; }
+.qrCornerBottomRight { bottom: 10px; right: 10px; border-color: #f6891f; } /* Colorful flair */
+
+.qrDotCenter {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.qrLogo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.qrMockMatrix {
+  width: 130px;
+  height: 130px;
+  opacity: 0.15;
+  background-image: 
+    radial-gradient(#0b2240 25%, transparent 25%),
+    radial-gradient(#0b2240 25%, transparent 25%);
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
+}
+
+/* QR Scan Line Animation */
+.scanOutline {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  border: 2px solid transparent;
+  pointer-events: none;
+}
+
+.scanLaser {
+  height: 3px;
+  background: linear-gradient(to right, transparent, #f6891f, #e23b3b, #f6891f, transparent);
+  position: absolute;
+  width: 100%;
+  top: 0;
+  animation: scanning 3s linear infinite;
+  box-shadow: 0 0 10px rgba(246, 137, 31, 0.8);
+}
+
+@keyframes scanning {
+  0% { top: 0%; }
+  50% { top: 100%; }
+  100% { top: 0%; }
+}
+
+.qrInstructions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qrInstructions h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0b2240;
+  margin: 0;
+}
+
+.qrInstructions ol {
+  font-size: 13px;
+  color: #555;
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.6;
+}
+
+.mockActions {
+  margin-top: 16px;
+}
+
+.simPayBtn {
+  background: linear-gradient(135deg, #008744, #009b4f); /* Emerald green click to mock callback */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 135, 68, 0.2);
+}
+
+.simPayBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(0, 135, 68, 0.3);
+  background: #007a3d;
+}
+
+/* Card Section */
+.bankGridHeader {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0b2240;
+  margin-bottom: 12px;
+}
+
+.bankGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.bankLogoCard {
+  border: 1px solid #e1e3ea;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.bankLogoCard:hover {
+  border-color: #005baa;
+  background-color: #f2f7fc;
+}
+
+.bankLogoSelected {
+  border-color: #005baa;
+  background-color: #eef5fc;
+  box-shadow: 0 4px 10px rgba(0, 91, 170, 0.08);
+}
+
+.bankMockLogo {
+  font-size: 14px;
+  font-weight: 800;
+  color: #005baa;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  min-width: 60px;
+  display: inline-block;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.bankNameLabel {
+  font-size: 11px;
+  color: #555;
+  font-weight: 500;
+}
+
+.cardForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 500px;
+}
+
+.formRow {
+  width: 100%;
+}
+
+.formRowDouble {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  letter-spacing: 0.05em;
+}
+
+.fieldInput,
+.fieldSelect {
+  padding: 12px;
+  font-size: 14px;
+  border: 1.5px solid #d2d5df;
+  border-radius: 6px;
+  outline: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.fieldInput:focus,
+.fieldSelect:focus {
+  border-color: #005baa;
+  box-shadow: 0 0 0 3px rgba(0, 91, 170, 0.1);
+}
+
+.inputHelp {
+  font-size: 11px;
+  color: #888;
+}
+
+.cardPayBtn {
+  background-color: #005baa;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 91, 170, 0.2);
+}
+
+.cardPayBtn:hover {
+  background-color: #004d90;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(0, 91, 170, 0.35);
+}
+
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(11, 34, 64, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.otpModal {
+  background: white;
+  border-radius: 12px;
+  width: 440px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.modalHeader {
+  background-color: #0b2240;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.closeModalBtn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.closeModalBtn:hover {
+  opacity: 1;
+}
+
+.modalBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.otpPrompt {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #555;
+  margin: 0;
+}
+
+.otpInputRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.otpInput {
+  padding: 14px;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 12px;
+  border: 2px solid #005baa;
+  border-radius: 6px;
+  outline: none;
+  font-weight: 800;
+  color: #0b2240;
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+}
+
+.otpConfirmBtn,
+.otpCancelBtn {
+  flex: 1;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.otpConfirmBtn {
+  background-color: #005baa;
+  color: white;
+}
+
+.otpConfirmBtn:hover {
+  background-color: #004d90;
+}
+
+.otpCancelBtn {
+  background-color: #f1f2f6;
+  color: #555;
+}
+
+.otpCancelBtn:hover {
+  background-color: #e1e3ea;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .bodyGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .qrGrid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  
+  .qrInstructions ol {
+    text-align: left;
+  }
+  
+  .bankGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .otpModal {
+    width: 90%;
+  }
+}

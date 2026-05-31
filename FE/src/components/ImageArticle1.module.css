@@ -1,0 +1,124 @@
+.imageArticle {
+  width: 1553px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 100%;
+  text-align: left;
+  font-size: 16px;
+  color: var(--787878);
+  font-family: Montserrat;
+}
+.maskGroupIcon {
+  width: 489px;
+  position: relative;
+  max-height: 100%;
+  object-fit: cover;
+  max-width: 100%;
+}
+.articleBoxParent,
+.articleLayout {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+.articleLayout {
+  align-items: flex-start;
+  padding: 66px 0 0;
+  box-sizing: border-box;
+}
+.articleBoxParent {
+  align-items: flex-end;
+}
+.articleBox {
+  width: 970px;
+  max-width: 100%;
+}
+.articleBox,
+.box2,
+.september82022Wrapper {
+  display: flex;
+  align-items: flex-start;
+}
+.box2 {
+  flex-direction: column;
+  padding: 0 20px 0 0;
+  gap: 13px;
+}
+.september82022Wrapper {
+  padding: 0 0 5px;
+}
+.betterPlanningTips,
+.september82022 {
+  position: relative;
+  display: inline-block;
+}
+.september82022 {
+  height: 25px;
+  width: 151px;
+  line-height: 25px;
+}
+.betterPlanningTips {
+  margin: 0;
+  width: 528px;
+  height: 74px;
+  font-size: 30px;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-family: Cormorant;
+  color: var(--C3937C);
+}
+.readMoreParent {
+  width: 179.2px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.readMore {
+  height: 25px;
+  width: 87px;
+  position: relative;
+  line-height: 25px;
+  text-transform: capitalize;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.pathStrokeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 0 0;
+}
+.pathStrokeIcon {
+  width: 6.6px;
+  height: 13px;
+  position: relative;
+  flex-shrink: 0;
+}
+@media screen and (max-width: 1825px) {
+  .imageArticle {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .articleLayout,
+  .maskGroupIcon {
+    flex: 1;
+  }
+}
+@media screen and (max-width: 1350px) {
+  .articleLayout {
+    min-width: 100%;
+  }
+}
+@media screen and (max-width: 925px) {
+  .betterPlanningTips {
+    font-size: 24px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .betterPlanningTips {
+    font-size: 18px;
+  }
+}

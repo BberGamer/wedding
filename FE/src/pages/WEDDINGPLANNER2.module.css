@@ -1,0 +1,141 @@
+.weddingPlanner {
+  width: 100%;
+  position: relative;
+  background-color: #fbf8f1;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+  box-sizing: border-box;
+  line-height: normal;
+  letter-spacing: normal;
+}
+.heroContentParent,
+.listHeaderParent {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+.heroContentParent {
+  align-self: stretch;
+  align-items: center;
+  gap: 160px;
+  z-index: 2;
+  margin-top: -0.1px;
+  position: relative;
+}
+.listHeaderParent {
+  align-items: flex-start;
+  padding: 0 20px;
+  box-sizing: border-box;
+  gap: 120px;
+  text-align: left;
+  font-size: 40px;
+  color: var(--C3937C);
+  font-family: Inter;
+}
+.listHeader {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+}
+.danhSchNh {
+  position: relative;
+}
+.filterHeader,
+.filterHeaderParent {
+  display: flex;
+  align-items: flex-start;
+}
+.filterHeaderParent {
+  align-self: stretch;
+  justify-content: center;
+  gap: 33px;
+  max-width: 100%;
+  color: #000;
+}
+.filterHeader {
+  width: 282px;
+  flex-direction: column;
+  gap: 100px;
+}
+.lcTheoWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.filterOptionListParent {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.filterOptionList {
+  border-radius: 8px;
+  border: 1px solid var(--C3937C);
+  display: flex;
+  align-items: center;
+  padding: 10px 11px;
+  color: var(--C3937C);
+}
+.filterOptionList2,
+.filterOptionList3 {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+}
+.filterOptionList3 {
+  align-self: stretch;
+  padding: 12px 10px;
+}
+.instanceParent {
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr));
+  align-content: start;
+  column-gap: 40px;
+  row-gap: 60px;
+  max-width: 100%;
+  width: 100%;
+}
+@media screen and (max-width: 1825px) {
+  .filterHeaderParent { flex-wrap: wrap; }
+}
+@media screen and (max-width: 1350px) {
+  .heroContentParent { gap: 60px; }
+  .listHeaderParent { padding: 0 24px; }
+}
+@media screen and (max-width: 925px) {
+  .heroContentParent { gap: 32px; }
+  .listHeaderParent { gap: 40px; padding: 0 16px; }
+  .danhSchNh { font-size: 28px; }
+  .filterHeaderParent { gap: 12px; }
+  .filterHeader { width: 100%; flex-direction: row; gap: 16px; }
+  .filterOptionListParent { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+  .instanceParent {
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    column-gap: 24px;
+    row-gap: 40px;
+  }
+}
+@media screen and (max-width: 640px) {
+  .listHeaderParent { padding: 0 12px; gap: 24px; }
+  .danhSchNh { font-size: 22px; }
+  .instanceParent {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 32px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .listHeaderParent { gap: 20px; }
+  .danhSchNh { font-size: 18px; }
+  .filterHeader { gap: 30px; }
+  .filterOptionListParent { gap: 12px; }
+}

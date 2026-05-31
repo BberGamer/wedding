@@ -1,0 +1,83 @@
+.box3 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  z-index: 1;
+  margin-top: -155px;
+  position: relative;
+  text-align: left;
+  font-size: 16px;
+  color: var(--787878);
+  font-family: Montserrat;
+}
+.december082022 {
+  width: 156px;
+  height: 25px;
+  position: relative;
+  line-height: 25px;
+  display: inline-block;
+}
+.benefitsOfHiringTheBestEvParent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+  font-size: 30px;
+  color: var(--C3937C);
+  font-family: Cormorant;
+}
+.benefitsOfHiring {
+  margin: 0;
+  width: 488px;
+  height: 74px;
+  position: relative;
+  font-size: inherit;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-family: inherit;
+  display: inline-block;
+}
+.readMoreParent {
+  width: 250.4px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 20px 0 0;
+  box-sizing: border-box;
+  gap: 20px;
+  font-size: 16px;
+  color: var(--787878);
+  font-family: Montserrat;
+}
+.readMore {
+  height: 25px;
+  width: 87px;
+  position: relative;
+  line-height: 25px;
+  text-transform: capitalize;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.pathStroke {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 0 0;
+}
+.pathStrokeIcon {
+  width: 6.6px;
+  height: 13px;
+  position: relative;
+  flex-shrink: 0;
+}
+@media screen and (max-width: 925px) {
+  .benefitsOfHiring {
+    font-size: 24px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .benefitsOfHiring {
+    font-size: 18px;
+  }
+}
