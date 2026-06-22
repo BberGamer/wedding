@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { io } from "socket.io-client";
 import SharedHeader from "../components/SharedHeader";
 import Footer1 from "../components/Footer1";
 import styles from "./AdminDashboard.module.css";
 import { API_URL } from "../config";
+
+let adminSocket = null;
 
 const categoryLabels = {
   nha_hang: "Nhà hàng tiệc cưới",
@@ -72,7 +75,16 @@ const AdminDashboard = () => {
   const [toast, setToast] = useState(null);
 
   // Tab views
-  const [activeTab, setActiveTab] = useState("analytics"); // analytics, users, services, orders
+  const [activeTab, setActiveTab] = useState("analytics"); // analytics, users, services, orders, chat
+
+  // Chat states
+  const [conversations, setConversations] = useState([]);
+  const [selectedConv, setSelectedConv] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatConnected, setChatConnected] = useState(false);
+  const [chatUnread, setChatUnread] = useState(0);
+  const chatEndRef = useRef(null);
 
   // List data states
   const [users, setUsers] = useState([]);
@@ -134,6 +146,8 @@ const AdminDashboard = () => {
       fetchServices(token);
     } else if (activeTab === "orders") {
       fetchOrders(token);
+    } else if (activeTab === "chat") {
+      fetchConversations(token);
     }
   }, [activeTab, token]);
 
@@ -148,6 +162,117 @@ const AdminDashboard = () => {
     }, 10000); // 10 seconds
     return () => clearInterval(interval);
   }, [token, orders]);
+
+  // Load chat conversations from REST
+  const fetchConversations = useCallback(async (tok) => {
+    try {
+      const res = await fetch(`${API_URL}/api/chat/conversations`, {
+        headers: { Authorization: `Bearer ${tok}` },
+      });
+      const data = await res.json();
+      setConversations(Array.isArray(data) ? data : []);
+    } catch (_) {}
+  }, []);
+
+  // Load chat history for a conversation
+  const loadChatHistory = useCallback(async (customerId) => {
+    try {
+      const res = await fetch(`${API_URL}/api/chat/history/${customerId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setChatMessages(Array.isArray(data) ? data : []);
+      // Mark as read
+      await fetch(`${API_URL}/api/chat/read/${customerId}`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setConversations((prev) =>
+        prev.map((c) => (c.customerId === customerId ? { ...c, unreadCount: 0 } : c))
+      );
+    } catch (_) {}
+  }, [token]);
+
+  // Connect socket when admin mounts
+  useEffect(() => {
+    if (!token) return;
+    if (!adminSocket) {
+      adminSocket = io(API_URL, {
+        auth: { token },
+        transports: ["websocket"],
+      });
+    }
+    adminSocket.on("connect", () => setChatConnected(true));
+    adminSocket.on("disconnect", () => setChatConnected(false));
+    adminSocket.on("message:new", (msg) => {
+      // Update the conversation list
+      setConversations((prev) => {
+        const exists = prev.find((c) => c.customerId === msg.customerId);
+        if (exists) {
+          return prev.map((c) =>
+            c.customerId === msg.customerId
+              ? {
+                  ...c,
+                  lastMessage: msg.text,
+                  lastTime: msg.createdAt,
+                  unreadCount:
+                    msg.senderRole === "customer" && selectedConv?.customerId !== msg.customerId
+                      ? (c.unreadCount || 0) + 1
+                      : c.unreadCount,
+                }
+              : c
+          );
+        }
+        // New conversation from a new customer
+        fetchConversations(token);
+        return prev;
+      });
+
+      // If this message belongs to the currently selected conversation, append it
+      setSelectedConv((sel) => {
+        if (sel && sel.customerId === msg.customerId) {
+          setChatMessages((prev) => {
+            if (prev.some((m) => m._id === msg._id)) return prev;
+            return [...prev, msg];
+          });
+        }
+        return sel;
+      });
+
+      // Badge update if not on chat tab
+      if (msg.senderRole === "customer") {
+        setActiveTab((tab) => {
+          if (tab !== "chat") setChatUnread((u) => u + 1);
+          return tab;
+        });
+      }
+    });
+    return () => {
+      adminSocket?.off("message:new");
+    };
+  }, [token, fetchConversations]);
+
+  // Scroll chat to bottom
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
+
+  // Send admin reply
+  const handleAdminSend = (e) => {
+    e.preventDefault();
+    if (!chatInput.trim() || !selectedConv || !adminSocket) return;
+    adminSocket.emit("admin:send", {
+      customerId: selectedConv.customerId,
+      text: chatInput.trim(),
+    });
+    setChatInput("");
+  };
+
+  const handleSelectConversation = (conv) => {
+    setSelectedConv(conv);
+    loadChatHistory(conv.customerId);
+    setChatUnread(0);
+  };
 
   const fetchStats = async (authToken, silent = false) => {
     if (!silent) setStatsLoading(true);
@@ -688,6 +813,22 @@ const AdminDashboard = () => {
             >
               Quản lý Đơn book VNPay
             </button>
+            <button
+              className={`${styles.tabLink} ${activeTab === "chat" ? styles.tabLinkActive : ""}`}
+              onClick={() => { setActiveTab("chat"); setChatUnread(0); }}
+              style={{ position: "relative" }}
+            >
+              💬 Hộp thư hỗ trợ
+              {chatUnread > 0 && (
+                <span style={{
+                  position: "absolute", top: 2, right: 2,
+                  background: "#e53935", color: "#fff",
+                  fontSize: 10, fontWeight: 700,
+                  width: 16, height: 16, borderRadius: "50%",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>{chatUnread}</span>
+              )}
+            </button>
           </div>
         </section>
 
@@ -695,6 +836,145 @@ const AdminDashboard = () => {
         <section className={styles.paneContentArea}>
           {/* TAB 1: ANALYTICS & CHARTS */}
           {activeTab === "analytics" && renderStatsPane()}
+
+          {/* TAB 5: CHAT */}
+          {activeTab === "chat" && (
+            <div style={{ display: "flex", gap: 0, height: 580, background: "#fff", borderRadius: 12, overflow: "hidden", border: "1px solid #ede8e2", boxShadow: "0 4px 24px rgba(0,0,0,0.07)" }}>
+              {/* Conversations sidebar */}
+              <div style={{ width: 280, borderRight: "1px solid #f0ece6", display: "flex", flexDirection: "column", background: "#faf9f7" }}>
+                <div style={{ padding: "18px 16px 12px", borderBottom: "1px solid #f0ece6" }}>
+                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 700, color: "#4d5637" }}>Hộp thư hỗ trợ</div>
+                  <div style={{ fontSize: 12, color: chatConnected ? "#4caf50" : "#9e9e9e", marginTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
+                    <span style={{ width: 7, height: 7, borderRadius: "50%", background: chatConnected ? "#4caf50" : "#9e9e9e", display: "inline-block" }} />
+                    {chatConnected ? "Đang kết nối" : "Mất kết nối"}
+                  </div>
+                </div>
+                <div style={{ flex: 1, overflowY: "auto" }}>
+                  {conversations.length === 0 && (
+                    <div style={{ padding: 24, textAlign: "center", color: "#aaa", fontSize: 14 }}>Chưa có cuộc hội thoại nào</div>
+                  )}
+                  {conversations.map((conv) => (
+                    <div
+                      key={conv.conversationId}
+                      onClick={() => handleSelectConversation(conv)}
+                      style={{
+                        padding: "14px 16px",
+                        cursor: "pointer",
+                        background: selectedConv?.customerId === conv.customerId ? "#fff" : "transparent",
+                        borderBottom: "1px solid #f5f0ea",
+                        borderLeft: selectedConv?.customerId === conv.customerId ? "3px solid #c3937c" : "3px solid transparent",
+                        transition: "all 0.2s",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div style={{ fontWeight: 600, fontSize: 14, color: "#333" }}>{conv.customer?.name || `Khách hàng ${conv.customerId.slice(-4)}`}</div>
+                        {conv.unreadCount > 0 && (
+                          <span style={{ background: "#e53935", color: "#fff", fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 10 }}>{conv.unreadCount}</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#888", marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{conv.lastMessage || ""}</div>
+                      <div style={{ fontSize: 11, color: "#bbb", marginTop: 2 }}>
+                        {conv.lastTime ? new Date(conv.lastTime).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }) : ""}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Chat area */}
+              <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                {!selectedConv ? (
+                  <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#aaa" }}>
+                    <div style={{ fontSize: 48, marginBottom: 12 }}>💬</div>
+                    <div style={{ fontSize: 15, fontWeight: 600 }}>Chọn một cuộc hội thoại để bắt đầu</div>
+                    <div style={{ fontSize: 13, marginTop: 6 }}>Tin nhắn từ khách hàng sẽ xuất hiện ở đây</div>
+                  </div>
+                ) : (
+                  <>
+                    {/* Chat header */}
+                    <div style={{ padding: "14px 20px", borderBottom: "1px solid #f0ece6", display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg, #c3937c, #a0725c)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 15 }}>
+                        {(selectedConv.customer?.name || "K")[0].toUpperCase()}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: 14, color: "#333" }}>{selectedConv.customer?.name || `Khách hàng`}</div>
+                        <div style={{ fontSize: 12, color: "#888" }}>{selectedConv.customer?.email || ""}</div>
+                      </div>
+                    </div>
+
+                    {/* Messages */}
+                    <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 10, background: "#faf9f7" }}>
+                      {chatMessages.map((msg, idx) => (
+                        <div
+                          key={msg._id || idx}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: msg.senderRole === "admin" ? "flex-end" : "flex-start",
+                            maxWidth: "75%",
+                            alignSelf: msg.senderRole === "admin" ? "flex-end" : "flex-start",
+                          }}
+                        >
+                          {msg.senderRole === "customer" && (
+                            <div style={{ fontSize: 11, color: "#888", marginBottom: 3, fontWeight: 600 }}>{selectedConv.customer?.name || "Khách hàng"}</div>
+                          )}
+                          <div style={{
+                            padding: "10px 14px",
+                            borderRadius: msg.senderRole === "admin" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                            background: msg.senderRole === "admin" ? "linear-gradient(135deg, #4d5637, #3a4129)" : "#fff",
+                            color: msg.senderRole === "admin" ? "#fff" : "#333",
+                            fontSize: 14,
+                            border: msg.senderRole === "admin" ? "none" : "1px solid #ede8e2",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                            wordBreak: "break-word",
+                          }}>
+                            {msg.text}
+                          </div>
+                          <div style={{ fontSize: 10, color: "#aaa", marginTop: 3 }}>
+                            {new Date(msg.createdAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
+                          </div>
+                        </div>
+                      ))}
+                      <div ref={chatEndRef} />
+                    </div>
+
+                    {/* Input */}
+                    <form
+                      onSubmit={handleAdminSend}
+                      style={{ display: "flex", gap: 10, padding: "12px 16px", borderTop: "1px solid #f0ece6", background: "#fff" }}
+                    >
+                      <input
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        placeholder={`Trả lời ${selectedConv.customer?.name || "khách hàng"}...`}
+                        maxLength={500}
+                        style={{
+                          flex: 1, border: "1.5px solid #e8e0d8", borderRadius: 24, padding: "9px 16px",
+                          fontSize: 14, outline: "none", fontFamily: "inherit", background: "#faf9f7",
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        disabled={!chatInput.trim()}
+                        style={{
+                          width: 42, height: 42, borderRadius: "50%",
+                          background: "linear-gradient(135deg, #4d5637, #3a4129)",
+                          color: "#fff", border: "none", cursor: chatInput.trim() ? "pointer" : "not-allowed",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          opacity: chatInput.trim() ? 1 : 0.4, flexShrink: 0,
+                          transition: "opacity 0.2s",
+                        }}
+                      >
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                        </svg>
+                      </button>
+                    </form>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* TAB 2: USER MANAGEMENT */}
           {activeTab === "users" && (

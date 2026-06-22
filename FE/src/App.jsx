@@ -19,7 +19,7 @@ import VendorDashboard from "./pages/VendorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AboutUs from "./pages/AboutUs";
 import VendorProfilePage from "./pages/VendorProfilePage";
-
+import ChatWidget from "./components/ChatWidget";
 
 import { Analytics } from "@vercel/analytics/react";
 
@@ -109,6 +109,7 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
       <Analytics />
+      <ChatWidget />
     </>
   );
 }
