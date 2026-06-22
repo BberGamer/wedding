@@ -110,7 +110,7 @@ const ChatWidget = () => {
                 className={`${styles.message} ${msg.senderRole === "customer" ? styles.mine : styles.theirs}`}
               >
                 {msg.senderRole === "admin" && (
-                  <div className={styles.senderLabel}>Admin AN Wedding</div>
+                  <div className={styles.senderLabel}>{msg.senderName || "Admin AN Wedding"}</div>
                 )}
                 <div className={styles.bubble}>{msg.text}</div>
                 <div className={styles.timestamp}>

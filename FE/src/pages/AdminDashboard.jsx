@@ -916,7 +916,9 @@ const AdminDashboard = () => {
                           }}
                         >
                           {msg.senderRole === "customer" && (
-                            <div style={{ fontSize: 11, color: "#888", marginBottom: 3, fontWeight: 600 }}>{selectedConv.customer?.name || "Khách hàng"}</div>
+                            <div style={{ fontSize: 11, color: "#888", marginBottom: 3, fontWeight: 600 }}>
+                              {msg.senderName || selectedConv.customer?.name || "Khách hàng"}
+                            </div>
                           )}
                           <div style={{
                             padding: "10px 14px",

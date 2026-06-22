@@ -17,6 +17,10 @@ const messageSchema = new mongoose.Schema(
       enum: ["customer", "admin"],
       required: true,
     },
+    senderName: {
+      type: String,
+      default: "",
+    },
     text: {
       type: String,
       required: true,

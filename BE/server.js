@@ -56,8 +56,17 @@ io.use((socket, next) => {
 // Keep track of connected admins
 const connectedAdmins = new Set();
 
-io.on("connection", (socket) => {
-  const { id: userId, role, name } = socket.user;
+io.on("connection", async (socket) => {
+  const { id: userId, role } = socket.user;
+
+  // Look up actual user name from DB
+  let name = "Khách hàng";
+  try {
+    const User = require("./models/User");
+    const dbUser = await User.findById(userId).select("name");
+    if (dbUser) name = dbUser.name;
+  } catch (_) {}
+
   const conversationId = `conv_${role === "admin" ? "admin" : userId}`;
 
   if (role === "admin") {
@@ -80,6 +89,7 @@ io.on("connection", (socket) => {
         conversationId: custConvId,
         sender: userId,
         senderRole: "customer",
+        senderName: name,
         text: text.trim(),
       });
 
@@ -112,6 +122,7 @@ io.on("connection", (socket) => {
         conversationId: custConvId,
         sender: userId,
         senderRole: "admin",
+        senderName: name,
         text: text.trim(),
         read: true,
       });
