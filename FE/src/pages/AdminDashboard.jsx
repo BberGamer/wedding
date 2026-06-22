@@ -6,8 +6,6 @@ import Footer1 from "../components/Footer1";
 import styles from "./AdminDashboard.module.css";
 import { API_URL } from "../config";
 
-let adminSocket = null;
-
 const categoryLabels = {
   nha_hang: "Nhà hàng tiệc cưới",
   trang_diem: "Trang điểm cô dâu",
@@ -85,6 +83,7 @@ const AdminDashboard = () => {
   const [chatConnected, setChatConnected] = useState(false);
   const [chatUnread, setChatUnread] = useState(0);
   const chatEndRef = useRef(null);
+  const adminSocketRef = useRef(null);
 
   // List data states
   const [users, setUsers] = useState([]);
@@ -196,15 +195,22 @@ const AdminDashboard = () => {
   // Connect socket when admin mounts
   useEffect(() => {
     if (!token) return;
-    if (!adminSocket) {
-      adminSocket = io(API_URL, {
-        auth: { token },
-        transports: ["websocket"],
-      });
+
+    // Always create a fresh socket for this admin session
+    if (adminSocketRef.current) {
+      adminSocketRef.current.disconnect();
+      adminSocketRef.current = null;
     }
-    adminSocket.on("connect", () => setChatConnected(true));
-    adminSocket.on("disconnect", () => setChatConnected(false));
-    adminSocket.on("message:new", (msg) => {
+
+    const socket = io(API_URL, {
+      auth: { token },
+      transports: ["websocket"],
+    });
+    adminSocketRef.current = socket;
+
+    socket.on("connect", () => setChatConnected(true));
+    socket.on("disconnect", () => setChatConnected(false));
+    socket.on("message:new", (msg) => {
       // Update the conversation list
       setConversations((prev) => {
         const exists = prev.find((c) => c.customerId === msg.customerId);
@@ -223,12 +229,12 @@ const AdminDashboard = () => {
               : c
           );
         }
-        // New conversation from a new customer
+        // New conversation from a new customer — refresh list
         fetchConversations(token);
         return prev;
       });
 
-      // If this message belongs to the currently selected conversation, append it
+      // Append to current open conversation if it matches
       setSelectedConv((sel) => {
         if (sel && sel.customerId === msg.customerId) {
           setChatMessages((prev) => {
@@ -247,10 +253,15 @@ const AdminDashboard = () => {
         });
       }
     });
+
     return () => {
-      adminSocket?.off("message:new");
+      socket.disconnect();
+      adminSocketRef.current = null;
+      setChatConnected(false);
     };
-  }, [token, fetchConversations]);
+  // Reconnect only when token changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   // Scroll chat to bottom
   useEffect(() => {
@@ -260,8 +271,8 @@ const AdminDashboard = () => {
   // Send admin reply
   const handleAdminSend = (e) => {
     e.preventDefault();
-    if (!chatInput.trim() || !selectedConv || !adminSocket) return;
-    adminSocket.emit("admin:send", {
+    if (!chatInput.trim() || !selectedConv || !adminSocketRef.current) return;
+    adminSocketRef.current.emit("admin:send", {
       customerId: selectedConv.customerId,
       text: chatInput.trim(),
     });

@@ -3,8 +3,6 @@ import { io } from "socket.io-client";
 import { API_URL } from "../config";
 import styles from "./ChatWidget.module.css";
 
-let socketInstance = null;
-
 const ChatWidget = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -12,7 +10,13 @@ const ChatWidget = () => {
   const [connected, setConnected] = useState(false);
   const [unread, setUnread] = useState(0);
   const messagesEndRef = useRef(null);
+  const socketRef = useRef(null);
+
   const user = JSON.parse(localStorage.getItem("user") || "null");
+  const token = localStorage.getItem("token");
+
+  // Only render for logged-in customers
+  if (!user || user.role !== "customer" || !token) return null;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -26,34 +30,37 @@ const ChatWidget = () => {
     if (!user?._id) return;
     try {
       const res = await fetch(`${API_URL}/api/chat/history/${user._id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      setMessages(data);
+      setMessages(Array.isArray(data) ? data : []);
     } catch (_) {}
-  }, [user?._id]);
+  }, [user?._id, token]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token || !user) return;
-    // Only connect once
-    if (!socketInstance) {
-      socketInstance = io(API_URL, {
-        auth: { token },
-        transports: ["websocket"],
-      });
+    if (!token || !user?._id) return;
+
+    // Always create a fresh socket for this user session
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current = null;
     }
 
-    socketInstance.on("connect", () => setConnected(true));
-    socketInstance.on("disconnect", () => setConnected(false));
+    const socket = io(API_URL, {
+      auth: { token },
+      transports: ["websocket"],
+    });
+    socketRef.current = socket;
 
-    socketInstance.on("message:new", (msg) => {
+    socket.on("connect", () => setConnected(true));
+    socket.on("disconnect", () => setConnected(false));
+
+    socket.on("message:new", (msg) => {
       setMessages((prev) => {
-        // Avoid duplicate
         if (prev.some((m) => m._id === msg._id)) return prev;
         return [...prev, msg];
       });
-      if (!open && msg.senderRole === "admin") {
+      if (msg.senderRole === "admin") {
         setUnread((u) => u + 1);
       }
     });
@@ -61,9 +68,13 @@ const ChatWidget = () => {
     loadHistory();
 
     return () => {
-      socketInstance?.off("message:new");
+      socket.disconnect();
+      socketRef.current = null;
+      setConnected(false);
     };
-  }, [open, loadHistory]);
+  // Reconnect if user or token changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user._id, token]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -72,13 +83,10 @@ const ChatWidget = () => {
 
   const handleSend = (e) => {
     e.preventDefault();
-    if (!input.trim() || !socketInstance) return;
-    socketInstance.emit("customer:send", { text: input.trim() });
+    if (!input.trim() || !socketRef.current) return;
+    socketRef.current.emit("customer:send", { text: input.trim() });
     setInput("");
   };
-
-  // Only show for logged-in customers (not admin/vendor)
-  if (!user || user.role !== "customer") return null;
 
   return (
     <div className={styles.chatWrapper}>
