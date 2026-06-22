@@ -904,39 +904,50 @@ const AdminDashboard = () => {
 
                     {/* Messages */}
                     <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 10, background: "#faf9f7" }}>
-                      {chatMessages.map((msg, idx) => (
-                        <div
-                          key={msg._id || idx}
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: msg.senderRole === "admin" ? "flex-end" : "flex-start",
-                            maxWidth: "75%",
-                            alignSelf: msg.senderRole === "admin" ? "flex-end" : "flex-start",
-                          }}
-                        >
-                          {msg.senderRole === "customer" && (
-                            <div style={{ fontSize: 11, color: "#888", marginBottom: 3, fontWeight: 600 }}>
-                              {msg.senderName || selectedConv.customer?.name || "Khách hàng"}
+                      {chatMessages.map((msg, idx) => {
+                        const isAdmin = msg.senderRole === "admin";
+                        const senderLabel = isAdmin
+                          ? (msg.senderName || "Admin AN Wedding")
+                          : (msg.senderName || selectedConv.customer?.name || "Khách hàng");
+                        return (
+                          <div
+                            key={msg._id || idx}
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: isAdmin ? "flex-end" : "flex-start",
+                              maxWidth: "75%",
+                              alignSelf: isAdmin ? "flex-end" : "flex-start",
+                            }}
+                          >
+                            {/* Sender label for EVERY message so it's always clear who sent it */}
+                            <div style={{
+                              fontSize: 11,
+                              color: isAdmin ? "#6a8060" : "#a07060",
+                              marginBottom: 3,
+                              fontWeight: 700,
+                              letterSpacing: "0.2px",
+                            }}>
+                              {senderLabel}
                             </div>
-                          )}
-                          <div style={{
-                            padding: "10px 14px",
-                            borderRadius: msg.senderRole === "admin" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-                            background: msg.senderRole === "admin" ? "linear-gradient(135deg, #4d5637, #3a4129)" : "#fff",
-                            color: msg.senderRole === "admin" ? "#fff" : "#333",
-                            fontSize: 14,
-                            border: msg.senderRole === "admin" ? "none" : "1px solid #ede8e2",
-                            boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-                            wordBreak: "break-word",
-                          }}>
-                            {msg.text}
+                            <div style={{
+                              padding: "10px 14px",
+                              borderRadius: isAdmin ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                              background: isAdmin ? "linear-gradient(135deg, #4d5637, #3a4129)" : "#fff",
+                              color: isAdmin ? "#fff" : "#333",
+                              fontSize: 14,
+                              border: isAdmin ? "none" : "1px solid #ede8e2",
+                              boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                              wordBreak: "break-word",
+                            }}>
+                              {msg.text}
+                            </div>
+                            <div style={{ fontSize: 10, color: "#aaa", marginTop: 3 }}>
+                              {new Date(msg.createdAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
+                            </div>
                           </div>
-                          <div style={{ fontSize: 10, color: "#aaa", marginTop: 3 }}>
-                            {new Date(msg.createdAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                       <div ref={chatEndRef} />
                     </div>
 
