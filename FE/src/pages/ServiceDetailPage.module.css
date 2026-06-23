@@ -1050,3 +1050,85 @@ a.vendorMetaItem:hover {
   background: #3b422a;
   transform: translateY(-1px);
 }
+
+.comparisonSpecsCard {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(77, 86, 55, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.sectionSub {
+  font-size: 13.5px;
+  color: #777;
+  margin-top: -12px;
+  margin-bottom: 24px;
+}
+
+.specsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.specsSubSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.specsSubTitle {
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #c3937c;
+  letter-spacing: 0.1em;
+  margin: 0 0 6px 0;
+  border-bottom: 1px dashed rgba(195, 147, 124, 0.3);
+  padding-bottom: 6px;
+}
+
+.specsList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.specItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: #fbf8f1;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(237, 227, 217, 0.5);
+  transition: all 0.2s ease;
+}
+
+.specItem:hover {
+  background-color: #f5efe6;
+  border-color: #c3937c;
+  transform: translateY(-1px);
+}
+
+.specLabel {
+  font-size: 11px;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.specVal {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .specsList {
+    grid-template-columns: 1fr;
+  }
+}

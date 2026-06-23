@@ -36,6 +36,30 @@ const orderSchema = new mongoose.Schema({
   },
   paymentDate: {
     type: Date
+  },
+  customerName: {
+    type: String
+  },
+  customerPhone: {
+    type: String
+  },
+  customerEmail: {
+    type: String
+  },
+  eventDate: {
+    type: Date
+  },
+  eventTime: {
+    type: String
+  },
+  eventLocation: {
+    type: String
+  },
+  note: {
+    type: String
+  },
+  categorySpecificData: {
+    type: mongoose.Schema.Types.Mixed
   }
 }, { timestamps: true });
 

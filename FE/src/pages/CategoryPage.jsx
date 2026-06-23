@@ -15,8 +15,8 @@ const categoryConfig = {
     quickFilters: ["Tất cả", "Tiệc cưới", "Sân vườn", "View biển", "Sang trọng", "Cổ điển"],
     locations: ["Quận 1", "Tây Hồ", "Thảo Điền", "Hoàn Kiếm", "Hội An", "Sơn Trà"],
     amenities: ["Sân vườn", "View biển", "View hồ", "View sông", "Sảnh lớn", "Bãi đỗ xe", "Phòng cô dâu"],
-    priceMaxLimit: 10000000,
-    priceStep: 500000,
+    priceMaxLimit: 100000000,
+    priceStep: 1000000,
     priceUnit: "đ"
   },
   trang_diem: {
@@ -27,8 +27,8 @@ const categoryConfig = {
     quickFilters: ["Tất cả", "Nhẹ nhàng", "Hàn Quốc", "Cá tính", "Sang trọng", "Cổ điển"],
     locations: ["Quận 1", "Hoàn Kiếm", "Tây Hồ", "Thảo Điền"],
     amenities: ["Mỹ phẩm cao cấp", "Theo sát dặm phấn", "Làm tóc đi kèm", "Thử layout trước"],
-    priceMaxLimit: 10000000,
-    priceStep: 200000,
+    priceMaxLimit: 100000000,
+    priceStep: 1000000,
     priceUnit: "đ"
   },
   xe_hoa: {
@@ -39,8 +39,8 @@ const categoryConfig = {
     quickFilters: ["Tất cả", "Mui trần", "Xe sang", "Cổ điển", "Hiện đại"],
     locations: ["Quận 1", "Hoàn Kiếm", "Tây Hồ"],
     amenities: ["Có tài xế đi kèm", "Trang trí hoa tươi", "Xe đời mới", "Siêu xe sang trọng"],
-    priceMaxLimit: 15000000,
-    priceStep: 500000,
+    priceMaxLimit: 100000000,
+    priceStep: 1000000,
     priceUnit: "đ"
   },
   chup_anh: {
@@ -51,7 +51,7 @@ const categoryConfig = {
     quickFilters: ["Tất cả", "Chụp Studio", "Chụp ngoại cảnh", "Phóng sự cưới", "Ngoại tỉnh"],
     locations: ["Quận 1", "Hoàn Kiếm", "Tây Hồ", "Hai Bà Trưng"],
     amenities: ["Chụp ngoại cảnh", "Chụp studio", "Hỗ trợ trang phục", "Photobook cao cấp", "Chụp tại nước ngoài"],
-    priceMaxLimit: 30000000,
+    priceMaxLimit: 100000000,
     priceStep: 1000000,
     priceUnit: "đ"
   },
@@ -63,7 +63,7 @@ const categoryConfig = {
     quickFilters: ["Tất cả", "Váy cưới", "Vest chú rể", "Váy thiết kế", "Nhập khẩu"],
     locations: ["Quận 1", "Hoàn Kiếm", "Tây Hồ"],
     amenities: ["Váy cưới thiết kế", "Nhập khẩu cao cấp", "Hỗ trợ chỉnh sửa", "Có kèm phụ kiện", "May đo riêng biệt"],
-    priceMaxLimit: 50000000,
+    priceMaxLimit: 100000000,
     priceStep: 1000000,
     priceUnit: "đ"
   }
@@ -95,6 +95,10 @@ const CategoryPage = ({ defaultCategory }) => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9; // 3 cột x 3 hàng
+
   // Đồng bộ lại giá trị tối đa của giá khi chuyển danh mục
   useEffect(() => {
     setPriceMax(config.priceMaxLimit);
@@ -104,6 +108,7 @@ const CategoryPage = ({ defaultCategory }) => {
     setSelectedLocations([]);
     setSelectedAmenities([]);
     setSortBy("default");
+    setCurrentPage(1);
     
     // Đọc danh sách yêu thích từ localStorage
     const savedFavs = localStorage.getItem("wedding_favorites");
@@ -111,6 +116,11 @@ const CategoryPage = ({ defaultCategory }) => {
       setFavorites(JSON.parse(savedFavs));
     }
   }, [currentCategory, config]);
+
+  // Tự động reset trang về 1 khi bất kỳ bộ lọc nào thay đổi
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchInput, activeQuickFilter, priceMax, minCapacity, selectedLocations, selectedAmenities, sortBy]);
 
   // Gọi API lấy dữ liệu mỗi khi bộ lọc thay đổi
   useEffect(() => {
@@ -210,6 +220,17 @@ const CategoryPage = ({ defaultCategory }) => {
       currency: "VND",
       maximumFractionDigits: 0
     }).format(value);
+  };
+
+  // Tính toán chỉ số phân trang
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = services.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(services.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 300, behavior: "smooth" });
   };
 
   return (
@@ -524,127 +545,166 @@ const CategoryPage = ({ defaultCategory }) => {
               </div>
             ) : (
               /* Lưới sản phẩm thực sự */
-              <div className={styles.cardsGrid}>
-                {services.map((item) => {
-                  const isFav = favorites.includes(item._id);
-                  return (
-                    <article 
-                      key={item._id} 
-                      className={styles.card}
-                      onClick={() => navigate(`/service/${item._id}`)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {/* Ảnh & Badge */}
-                      <div className={styles.imageWrapper}>
-                        <img
-                          src={item.image || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=600"}
-                          alt={item.name}
-                          className={styles.cardImage}
-                          loading="lazy"
-                        />
-                        {item.badge && (
-                          <div className={[
-                            styles.badge,
-                            item.badge === "ƯU ĐÃI" ? styles.badgeHighlight : ""
-                          ].join(" ")}>
-                            {item.badge}
-                          </div>
-                        )}
-                        {/* Nút Trái tim */}
-                        <button
-                          type="button"
-                          className={[
-                            styles.favoriteBtn,
-                            isFav ? styles.favoriteActive : ""
-                          ].join(" ")}
-                          onClick={(e) => handleFavoriteToggle(item._id, e)}
-                          aria-label="Yêu thích"
-                        >
-                          <span className={styles.heartIcon}>♥</span>
-                        </button>
-                      </div>
-
-                      {/* Thông tin Body Card */}
-                      <div className={styles.cardBody}>
-                        <div className={styles.cardHeader}>
-                          <h3 className={styles.cardTitle}>{item.name}</h3>
-                          <div className={styles.rating}>
-                            <span className={styles.starIcon}>★</span>
-                            <span>{item.rating}</span>
-                            {item.reviewsCount > 0 && (
-                              <span className={styles.reviewsCountText}>
-                                ({item.reviewsCount})
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Meta thông tin */}
-                        <div className={styles.metaInfo}>
-                          <div className={styles.metaItem}>
-                            <span className={styles.metaIcon}>
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ display: "inline-block", verticalAlign: "middle" }}>
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                <circle cx="12" cy="10" r="3" />
-                              </svg>
-                            </span>
-                            <span>{item.address}</span>
-                          </div>
-                          {item.capacity > 0 && (
-                            <div className={styles.metaItem}>
-                              <span className={styles.metaIcon}>
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ display: "inline-block", verticalAlign: "middle" }}>
-                                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                  <circle cx="12" cy="7" r="4" />
-                                </svg>
-                              </span>
-                              <span>Sức chứa lên tới {item.capacity} khách</span>
+              <>
+                <div className={styles.cardsGrid}>
+                  {currentItems.map((item) => {
+                    const isFav = favorites.includes(item._id);
+                    return (
+                      <article 
+                        key={item._id} 
+                        className={styles.card}
+                        onClick={() => navigate(`/service/${item._id}`)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {/* Ảnh & Badge */}
+                        <div className={styles.imageWrapper}>
+                          <img
+                            src={item.image || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=600"}
+                            alt={item.name}
+                            className={styles.cardImage}
+                            loading="lazy"
+                          />
+                          {item.badge && (
+                            <div className={[
+                              styles.badge,
+                              item.badge === "ƯU ĐÃI" ? styles.badgeHighlight : ""
+                            ].join(" ")}>
+                              {item.badge}
                             </div>
                           )}
-                          {item.amenities && item.amenities.length > 0 && (
-                            <div className={styles.metaItem} style={{ flexWrap: "wrap", marginTop: 4 }}>
-                              {item.amenities.slice(0, 3).map((ame) => (
-                                <span 
-                                  key={ame} 
-                                  style={{
-                                    fontSize: 10,
-                                    backgroundColor: "rgba(77, 86, 55, 0.05)",
-                                    color: "#4d5637",
-                                    padding: "2px 6px",
-                                    borderRadius: 2,
-                                    marginRight: 4
-                                  }}
-                                >
-                                  {ame}
-                                </span>
-                              ))}
-                              {item.amenities.length > 3 && (
-                                <span style={{ fontSize: 10, color: "#b0b0b0" }}>
-                                  +{item.amenities.length - 3}
+                          {/* Nút Trái tim */}
+                          <button
+                            type="button"
+                            className={[
+                              styles.favoriteBtn,
+                              isFav ? styles.favoriteActive : ""
+                            ].join(" ")}
+                            onClick={(e) => handleFavoriteToggle(item._id, e)}
+                            aria-label="Yêu thích"
+                          >
+                            <span className={styles.heartIcon}>♥</span>
+                          </button>
+                        </div>
+
+                        {/* Thông tin Body Card */}
+                        <div className={styles.cardBody}>
+                          <div className={styles.cardHeader}>
+                            <h3 className={styles.cardTitle}>{item.name}</h3>
+                            <div className={styles.rating}>
+                              <span className={styles.starIcon}>★</span>
+                              <span>{item.rating}</span>
+                              {item.reviewsCount > 0 && (
+                                <span className={styles.reviewsCountText}>
+                                  ({item.reviewsCount})
                                 </span>
                               )}
                             </div>
-                          )}
-                        </div>
+                          </div>
 
-                        {/* Footer Card */}
-                        <div className={styles.cardFooter}>
-                          <div className={styles.priceWrapper}>
-                            <span className={styles.priceFrom}>GIÁ DỰ KIẾN</span>
-                            <span className={styles.priceVal}>
-                              {item.priceLabel || formatPrice(item.price)}
+                          {/* Meta thông tin */}
+                          <div className={styles.metaInfo}>
+                            <div className={styles.metaItem}>
+                              <span className={styles.metaIcon}>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ display: "inline-block", verticalAlign: "middle" }}>
+                                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                  <circle cx="12" cy="10" r="3" />
+                                </svg>
+                              </span>
+                              <span>{item.address}</span>
+                            </div>
+                            {item.capacity > 0 && (
+                              <div className={styles.metaItem}>
+                                <span className={styles.metaIcon}>
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ display: "inline-block", verticalAlign: "middle" }}>
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                  </svg>
+                                </span>
+                                <span>Sức chứa lên tới {item.capacity} khách</span>
+                              </div>
+                            )}
+                            {item.amenities && item.amenities.length > 0 && (
+                              <div className={styles.metaItem} style={{ flexWrap: "wrap", marginTop: 4 }}>
+                                {item.amenities.slice(0, 3).map((ame) => (
+                                  <span 
+                                    key={ame} 
+                                    style={{
+                                      fontSize: 10,
+                                      backgroundColor: "rgba(77, 86, 55, 0.05)",
+                                      color: "#4d5637",
+                                      padding: "2px 6px",
+                                      borderRadius: 2,
+                                      marginRight: 4
+                                    }}
+                                  >
+                                    {ame}
+                                  </span>
+                                ))}
+                                {item.amenities.length > 3 && (
+                                  <span style={{ fontSize: 10, color: "#b0b0b0" }}>
+                                    +{item.amenities.length - 3}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Footer Card */}
+                          <div className={styles.cardFooter}>
+                            <div className={styles.priceWrapper}>
+                              <span className={styles.priceFrom}>GIÁ DỰ KIẾN</span>
+                              <span className={styles.priceVal}>
+                                {item.priceLabel || formatPrice(item.price)}
+                              </span>
+                            </div>
+                            
+                            <span className={styles.actionLink}>
+                              CHI TIẾT
                             </span>
                           </div>
-                          
-                          <span className={styles.actionLink}>
-                            CHI TIẾT
-                          </span>
                         </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
+                      </article>
+                    );
+                  })}
+                </div>
+
+                {/* Giao diện Phân trang */}
+                {totalPages > 1 && (
+                  <div className={styles.pagination}>
+                    <button
+                      type="button"
+                      className={styles.pageBtn}
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      &lsaquo; Trước
+                    </button>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        className={[
+                          styles.pageBtn,
+                          currentPage === pageNum ? styles.activePageBtn : ""
+                        ].join(" ")}
+                        onClick={() => handlePageChange(pageNum)}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                    
+                    <button
+                      type="button"
+                      className={styles.pageBtn}
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Sau &rsaquo;
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </section>
         </div>

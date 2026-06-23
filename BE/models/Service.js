@@ -30,7 +30,8 @@ const serviceSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     desc: { type: String }
   }],
-  vendor: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+  vendor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  comparisonAttributes: { type: mongoose.Schema.Types.Mixed }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Service", serviceSchema);

@@ -391,8 +391,14 @@
 /* --- Right Grid of Cards --- */
 .cardsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .cardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .card {
@@ -743,4 +749,49 @@
   .cardsGrid {
     grid-template-columns: 1fr;
   }
+}
+
+/* --- Pagination Styles --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 48px;
+  width: 100%;
+}
+
+.pageBtn {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #4d5637;
+  padding: 8px 16px;
+  font-family: "Raleway", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: #c3937c;
+  color: #c3937c;
+}
+
+.pageBtn:disabled {
+  color: #b0b0b0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.activePageBtn {
+  background-color: #4d5637;
+  border-color: #4d5637;
+  color: #ffffff;
+}
+
+.activePageBtn:hover {
+  background-color: #3b422a;
+  color: #ffffff;
 }

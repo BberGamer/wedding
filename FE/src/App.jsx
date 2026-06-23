@@ -19,6 +19,10 @@ import VendorDashboard from "./pages/VendorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AboutUs from "./pages/AboutUs";
 import VendorProfilePage from "./pages/VendorProfilePage";
+import ComparePage from "./pages/ComparePage";
+import BookingPage from "./pages/BookingPage";
+import MyProjectsPage from "./pages/MyProjectsPage";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 import ChatWidget from "./components/ChatWidget";
 
 import { Analytics } from "@vercel/analytics/react";
@@ -73,6 +77,18 @@ function App() {
         title = "Bảng quản trị hệ thống - AN Wedding";
         metaDescription = "Theo dõi thống kê doanh thu toàn sàn, quản lý người dùng và duyệt đơn thanh toán.";
         break;
+      case "/compare":
+        title = "So sánh dịch vụ - AN Wedding";
+        metaDescription = "So sánh các gói dịch vụ cưới để tìm ra sự lựa chọn tốt nhất.";
+        break;
+      case "/booking":
+        title = "Đặt lịch dịch vụ cưới - AN Wedding";
+        metaDescription = "Nhập thông tin đặt lịch và xác nhận cọc dịch vụ tiệc cưới.";
+        break;
+      case "/my-projects":
+        title = "Dự án của tôi - AN Wedding";
+        metaDescription = "Theo dõi tiến độ các dịch vụ cưới mà bạn đã đặt tại AN Wedding.";
+        break;
     }
 
     if (title) {
@@ -107,6 +123,10 @@ function App() {
         <Route path="/vendor/dashboard" element={<VendorDashboard />} />
         <Route path="/vendor/:id" element={<VendorProfilePage />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/compare" element={<ComparePage />} />
+        <Route path="/booking" element={<BookingPage />} />
+        <Route path="/my-projects" element={<MyProjectsPage />} />
+        <Route path="/my-projects/:id" element={<ProjectDetailPage />} />
       </Routes>
       <Analytics />
       <ChatWidget />

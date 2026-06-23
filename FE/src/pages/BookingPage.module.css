@@ -1,0 +1,520 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: #fbf8f1;
+  color: #4d5637;
+  font-family: "Raleway", sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  background-color: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  height: 60px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoText {
+  font-family: "Cormorant", serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #4d5637;
+  letter-spacing: 2px;
+}
+
+.topbarDivider {
+  color: rgba(77, 86, 55, 0.2);
+}
+
+.topbarSubtitle {
+  font-size: 13px;
+  color: #c3937c;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.topbarCancelBtn {
+  background: transparent;
+  border: 1px solid rgba(77, 86, 55, 0.2);
+  color: #4d5637;
+  padding: 6px 14px;
+  font-family: "Raleway", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.topbarCancelBtn:hover {
+  background-color: rgba(77, 86, 55, 0.05);
+  border-color: #4d5637;
+}
+
+/* Main content */
+.mainContent {
+  flex: 1;
+  width: 100%;
+  padding: 40px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.innerContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Step Progress Indicator */
+.stepProgressContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.stepIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.stepNum {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 2px solid rgba(77, 86, 55, 0.2);
+  color: #787878;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.stepText {
+  font-size: 12px;
+  font-weight: 700;
+  color: #787878;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  width: 150px;
+}
+
+.stepProgressLine {
+  flex: 1;
+  height: 2px;
+  background-color: rgba(77, 86, 55, 0.15);
+  margin: 0 -40px 22px;
+  position: relative;
+  z-index: 1;
+  max-width: 200px;
+}
+
+.lineFill {
+  width: 0%;
+  height: 100%;
+  background-color: #c3937c;
+  transition: width 0.3s ease;
+}
+
+.activeLine {
+  width: 100%;
+}
+
+.activeStep .stepNum {
+  background-color: #c3937c;
+  border-color: #c3937c;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(195, 147, 124, 0.3);
+}
+
+.activeStep .stepText {
+  color: #c3937c;
+}
+
+/* Wizard card */
+.wizardCard {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.015);
+  animation: fadeIn 0.4s ease;
+}
+
+.wizardTitle {
+  font-family: "Cormorant", serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #4d5637;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.wizardSubtitle {
+  font-size: 14px;
+  color: #787878;
+  text-align: center;
+  margin: 0 0 32px 0;
+}
+
+.wizardSubtitle strong {
+  color: #c3937c;
+}
+
+/* Error Alerts */
+.errorAlert {
+  background-color: rgba(224, 108, 117, 0.08);
+  border: 1px solid rgba(224, 108, 117, 0.3);
+  color: #e06c75;
+  padding: 16px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+  animation: slideIn 0.3s ease;
+}
+
+/* Form structure */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.formGridCompact {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.formRow {
+  margin-top: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroup label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4d5637;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.required {
+  color: #e06c75;
+}
+
+.inputGroup input[type="text"],
+.inputGroup input[type="number"],
+.inputGroup input[type="email"],
+.inputGroup input[type="time"],
+.inputGroup input[type="date"],
+.inputGroup textarea {
+  padding: 12px 16px;
+  border: 1px solid rgba(77, 86, 55, 0.2);
+  background-color: #fbf8f1;
+  border-radius: 4px;
+  font-family: "Raleway", sans-serif;
+  font-size: 14px;
+  color: #4d5637;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.inputGroup input:focus,
+.inputGroup textarea:focus {
+  outline: none;
+  border-color: #c3937c;
+  background-color: #ffffff;
+  box-shadow: 0 0 8px rgba(195, 147, 124, 0.1);
+}
+
+.inputError {
+  border-color: #e06c75 !important;
+  background-color: rgba(224, 108, 117, 0.02) !important;
+}
+
+.errorText {
+  color: #e06c75;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Category specifics section */
+.categoryFieldsBox {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px dashed rgba(77, 86, 55, 0.15);
+}
+
+.sectionSubtitle {
+  font-family: "Cormorant", serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #c3937c;
+  margin: 0 0 16px 0;
+  letter-spacing: 0.5px;
+}
+
+.checkboxRow {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #787878;
+  cursor: pointer;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  accent-color: #c3937c;
+  width: 16px;
+  height: 16px;
+}
+
+/* Review Step Styles */
+.reviewLayout {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.reviewMain {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.reviewSection {
+  background-color: #fbf8f1;
+  padding: 20px 24px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(77, 86, 55, 0.08);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.reviewRow:last-child {
+  border-bottom: none;
+}
+
+.reviewLabel {
+  color: #787878;
+  font-weight: 500;
+}
+
+.reviewValue {
+  font-weight: 700;
+  color: #4d5637;
+  text-align: right;
+  max-width: 60%;
+}
+
+.reviewSummary {
+  background-color: #ffffff;
+  border: 1px solid rgba(77, 86, 55, 0.15);
+  padding: 24px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.summaryBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reviewDivider {
+  height: 1px;
+  background-color: rgba(77, 86, 55, 0.15);
+  margin: 6px 0;
+}
+
+.totalPaymentRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totalPaymentRow span:first-child {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.totalPrice {
+  font-size: 20px;
+  font-weight: 800;
+  color: #c3937c;
+}
+
+.policyAgreeBox {
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: rgba(195, 147, 124, 0.04);
+}
+
+.policyAgreeBox .checkboxLabel {
+  align-items: flex-start;
+}
+
+.policyAgreeBox span {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.summaryActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Buttons */
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+.primaryBtn {
+  background-color: #4d5637;
+  color: #ffffff;
+  padding: 12px 28px;
+  font-family: "Raleway", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primaryBtn:hover:not(:disabled) {
+  background-color: #3b422a;
+}
+
+.primaryBtn:disabled {
+  background-color: #b0b0b0;
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  background-color: transparent;
+  border: 1px solid rgba(77, 86, 55, 0.3);
+  color: #4d5637;
+  padding: 11px 24px;
+  font-family: "Raleway", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.secondaryBtn:hover {
+  background-color: rgba(77, 86, 55, 0.05);
+  border-color: #4d5637;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .formGridCompact {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .wizardCard {
+    padding: 24px;
+  }
+  
+  .reviewLayout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .checkboxRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -145,6 +145,9 @@ const SharedHeader = ({ className = "", theme = "light" }) => {
             <Link to="/about" className={styles.navItem}>
               <span className={[styles.navText, isDark ? styles.navTextDark : ""].join(" ")}>About Us</span>
             </Link>
+            <Link to="/compare" className={styles.navItem}>
+              <span className={[styles.navText, isDark ? styles.navTextDark : ""].join(" ")}>So sánh</span>
+            </Link>
             {user && user.role === "admin" ? (
               <Link to="/admin/dashboard" className={styles.navItem}>
                 <span className={[styles.navText, isDark ? styles.navTextDark : "", styles.vendorNavHighlight].join(" ")}>Dashboard Admin</span>
@@ -214,6 +217,7 @@ const SharedHeader = ({ className = "", theme = "light" }) => {
         <Link to="/category/chup_anh" className={styles.mobileNavItem} onClick={() => setMenuOpen(false)}>Chụp ảnh cưới</Link>
         <Link to="/category/vay_cuoi" className={styles.mobileNavItem} onClick={() => setMenuOpen(false)}>Thuê váy & vest cưới</Link>
         <Link to="/about" className={styles.mobileNavItem} onClick={() => setMenuOpen(false)}>About Us</Link>
+        <Link to="/compare" className={styles.mobileNavItem} onClick={() => setMenuOpen(false)}>So sánh dịch vụ</Link>
         <Link to="/partner" className={styles.mobileNavItem} onClick={() => setMenuOpen(false)}>Wedding Planner</Link>
         <div className={styles.mobileNavItem} style={{ padding: "12px 0", color: "#555" }}>contact: 0337774204</div>
 

@@ -3,7 +3,19 @@ const Service = require("../models/Service");
 
 exports.createOrder = async (req, res) => {
   try {
-    const { serviceId, items, amount } = req.body;
+    const { 
+      serviceId, 
+      items, 
+      amount,
+      customerName,
+      customerPhone,
+      customerEmail,
+      eventDate,
+      eventTime,
+      eventLocation,
+      note,
+      categorySpecificData
+    } = req.body;
     
     if (!serviceId || !items || !amount) {
       return res.status(400).json({ message: "Thiếu thông tin bắt buộc" });
@@ -24,7 +36,15 @@ exports.createOrder = async (req, res) => {
       items,
       amount,
       txnRef,
-      status: "pending"
+      status: "pending",
+      customerName,
+      customerPhone,
+      customerEmail,
+      eventDate: eventDate ? new Date(eventDate) : undefined,
+      eventTime,
+      eventLocation,
+      note,
+      categorySpecificData
     });
 
     res.status(201).json(order);
@@ -61,7 +81,7 @@ exports.confirmPayment = async (req, res) => {
 
 exports.getUserOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user.id })
+    const orders = await Order.find({ user: req.user.id, status: "completed" })
       .populate("service")
       .sort({ createdAt: -1 });
       
@@ -168,3 +188,58 @@ exports.getOrderStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Cancel and delete unpaid booking from DB
+exports.cancelOrder = async (req, res) => {
+  try {
+    const { txnRef } = req.params;
+    const order = await Order.findOne({ txnRef, user: req.user.id });
+    if (!order) {
+      return res.status(404).json({ message: "Không tìm thấy đơn đặt hàng cần hủy" });
+    }
+
+    if (order.status !== "completed") {
+      await Order.deleteOne({ _id: order._id });
+      return res.json({ success: true, message: "Đơn đặt lịch đã được hủy thành công" });
+    }
+
+    res.status(400).json({ message: "Không thể hủy đơn đặt lịch đã thanh toán thành công" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Check booking availability (overlapping check)
+exports.checkAvailability = async (req, res) => {
+  try {
+    const { serviceId, eventDate } = req.body;
+    if (!serviceId || !eventDate) {
+      return res.status(400).json({ message: "Thiếu serviceId hoặc eventDate" });
+    }
+
+    const reqDate = new Date(eventDate);
+    
+    // Set range to check the entire day
+    const startOfDay = new Date(reqDate.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(reqDate.setHours(23, 59, 59, 999));
+
+    const existingOrder = await Order.findOne({
+      service: serviceId,
+      status: "completed",
+      eventDate: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      }
+    });
+
+    if (existingOrder) {
+      return res.json({ available: false, message: "Dịch vụ đã bị trùng lịch vào ngày này." });
+    }
+
+    res.json({ available: true });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+

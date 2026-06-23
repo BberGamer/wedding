@@ -61,7 +61,8 @@ const initialFormState = {
   album: [],
   pricingDetails: [
     { name: "Gói cơ bản", price: 5000000, desc: "Dịch vụ cơ bản trọn gói ngày cưới" }
-  ]
+  ],
+  comparisonAttributes: {}
 };
 
 const VendorDashboard = () => {
@@ -134,6 +135,16 @@ const VendorDashboard = () => {
     setFormData((prev) => ({
       ...prev,
       [name]: name === "price" ? Number(value) : value
+    }));
+  };
+
+  const handleComparisonAttributeChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      comparisonAttributes: {
+        ...(prev.comparisonAttributes || {}),
+        [key]: value
+      }
     }));
   };
 
@@ -257,7 +268,8 @@ const VendorDashboard = () => {
       album: service.album || [],
       pricingDetails: service.pricingDetails && service.pricingDetails.length > 0
         ? service.pricingDetails.map(p => ({ name: p.name, price: p.price, desc: p.desc, _id: p._id }))
-        : [{ name: "Gói cơ bản", price: service.price || 0, desc: "Dịch vụ cơ bản trọn gói ngày cưới" }]
+        : [{ name: "Gói cơ bản", price: service.price || 0, desc: "Dịch vụ cơ bản trọn gói ngày cưới" }],
+      comparisonAttributes: service.comparisonAttributes || {}
     });
     setActiveTab("basic");
     setShowModal(true);
@@ -608,6 +620,13 @@ const VendorDashboard = () => {
               >
                 5. Bảng giá dịch vụ
               </button>
+              <button
+                type="button"
+                className={`${styles.tabBtn} ${activeTab === "comparison" ? styles.tabBtnActive : ""}`}
+                onClick={() => setActiveTab("comparison")}
+              >
+                6. Thuộc tính so sánh
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className={styles.modalForm}>
@@ -939,6 +958,770 @@ const VendorDashboard = () => {
                 </div>
               )}
 
+              {/* TAB 6: COMPARISON ATTRIBUTES */}
+              {activeTab === "comparison" && (
+                <div className={styles.tabPane}>
+                  <h4 className={styles.tagManagerTitle}>Thông tin so sánh chung</h4>
+                  <p className={styles.tagManagerSub}>Các thông số chung dùng để so sánh với các dịch vụ khác.</p>
+                  
+                  <div className={styles.formGrid2Col}>
+                    <div className={styles.formGroup}>
+                      <label>Tên nhà cung cấp (Hiển thị khi so sánh)</label>
+                      <input
+                        type="text"
+                        className={styles.formInput}
+                        placeholder="Ví dụ: An Wedding Premium"
+                        value={formData.comparisonAttributes?.providerName || ""}
+                        onChange={(e) => handleComparisonAttributeChange("providerName", e.target.value)}
+                      />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>Trạng thái nhận lịch</label>
+                      <select
+                        className={styles.formSelect}
+                        value={formData.comparisonAttributes?.status || ""}
+                        onChange={(e) => handleComparisonAttributeChange("status", e.target.value)}
+                      >
+                        <option value="">-- Mặc định --</option>
+                        <option value="Đang nhận lịch">Đang nhận lịch</option>
+                        <option value="Còn trống ít ngày">Còn trống ít ngày</option>
+                        <option value="Hết lịch tháng này">Hết lịch tháng này</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className={styles.formGrid2Col}>
+                    <div className={styles.formGroup}>
+                      <label>Chính sách đặt cọc</label>
+                      <input
+                        type="text"
+                        className={styles.formInput}
+                        placeholder="Ví dụ: Đặt cọc trước 30% để giữ ngày"
+                        value={formData.comparisonAttributes?.depositPolicy || ""}
+                        onChange={(e) => handleComparisonAttributeChange("depositPolicy", e.target.value)}
+                      />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>Chính sách hủy lịch</label>
+                      <input
+                        type="text"
+                        className={styles.formInput}
+                        placeholder="Ví dụ: Hủy trước 30 ngày hoàn cọc 100%"
+                        value={formData.comparisonAttributes?.cancellationPolicy || ""}
+                        onChange={(e) => handleComparisonAttributeChange("cancellationPolicy", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.formGrid3Col}>
+                    <div className={styles.formGroup}>
+                      <label>Thời gian phản hồi</label>
+                      <select
+                        className={styles.formSelect}
+                        value={formData.comparisonAttributes?.responseTime || ""}
+                        onChange={(e) => handleComparisonAttributeChange("responseTime", e.target.value)}
+                      >
+                        <option value="">-- Mặc định --</option>
+                        <option value="Dưới 15 phút">Dưới 15 phút</option>
+                        <option value="Trong vòng 1 giờ">Trong vòng 1 giờ</option>
+                        <option value="Trong vòng 2 giờ">Trong vòng 2 giờ</option>
+                        <option value="Trong vòng 24 giờ">Trong vòng 24 giờ</option>
+                      </select>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>Giá tối thiểu ước tính (VNĐ)</label>
+                      <input
+                        type="number"
+                        className={styles.formInput}
+                        value={formData.comparisonAttributes?.minPrice || ""}
+                        onChange={(e) => handleComparisonAttributeChange("minPrice", e.target.value)}
+                      />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>Giá tối đa ước tính (VNĐ)</label>
+                      <input
+                        type="number"
+                        className={styles.formInput}
+                        value={formData.comparisonAttributes?.maxPrice || ""}
+                        onChange={(e) => handleComparisonAttributeChange("maxPrice", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.formGrid2Col} style={{ marginTop: 12 }}>
+                    <div className={styles.formGroup}>
+                      <label>Ưu đãi hiện có</label>
+                      <input
+                        type="text"
+                        className={styles.formInput}
+                        placeholder="Ví dụ: Giảm 10% gói cưới"
+                        value={formData.comparisonAttributes?.promotion || ""}
+                        onChange={(e) => handleComparisonAttributeChange("promotion", e.target.value)}
+                      />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>Ghi chú đặc biệt / Lời khuyên</label>
+                      <input
+                        type="text"
+                        className={styles.formInput}
+                        placeholder="Lời khuyên khi so sánh..."
+                        value={formData.comparisonAttributes?.notes || ""}
+                        onChange={(e) => handleComparisonAttributeChange("notes", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* CATEGORY-SPECIFIC DETAILS */}
+                  <h4 className={styles.tagManagerTitle} style={{ marginTop: 32 }}>Thông số đặc thù cho chuyên mục: {categoryLabels[formData.category]}</h4>
+                  <p className={styles.tagManagerSub}>Điền các thông tin kỹ thuật phục vụ việc so sánh chi tiết cho danh mục này.</p>
+
+                  {formData.category === "nha_hang" && (
+                    <div className={styles.categoryCompareFields}>
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Sức chứa tối đa (Khách)</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 500"
+                            value={formData.comparisonAttributes?.capacity || ""}
+                            onChange={(e) => handleComparisonAttributeChange("capacity", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Số bàn tối thiểu</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 20 bàn"
+                            value={formData.comparisonAttributes?.minTables || ""}
+                            onChange={(e) => handleComparisonAttributeChange("minTables", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Khoảng giá mỗi bàn</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 3.500.000đ/bàn"
+                            value={formData.comparisonAttributes?.pricePerTable || ""}
+                            onChange={(e) => handleComparisonAttributeChange("pricePerTable", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid2Col}>
+                        <div className={styles.formGroup}>
+                          <label>Thực đơn mẫu</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Thực đơn Á-Âu 6 món"
+                            value={formData.comparisonAttributes?.sampleMenu || ""}
+                            onChange={(e) => handleComparisonAttributeChange("sampleMenu", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Loại sảnh tiệc</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Trong nhà & Ngoài trời"
+                            value={formData.comparisonAttributes?.hallType || ""}
+                            onChange={(e) => handleComparisonAttributeChange("hallType", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid2Col}>
+                        <div className={styles.formGroup}>
+                          <label>Sân khấu & Bục phát biểu</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Có sẵn, cao 0.8m, rộng 20m2"
+                            value={formData.comparisonAttributes?.stage || ""}
+                            onChange={(e) => handleComparisonAttributeChange("stage", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Hệ thống âm thanh ánh sáng</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Đèn LED màu, loa JBL chuyên nghiệp"
+                            value={formData.comparisonAttributes?.soundLighting || ""}
+                            onChange={(e) => handleComparisonAttributeChange("soundLighting", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Bãi đỗ xe</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Xe máy & ô tô rộng rãi miễn phí"
+                            value={formData.comparisonAttributes?.parking || ""}
+                            onChange={(e) => handleComparisonAttributeChange("parking", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Phí dịch vụ & VAT</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Đã bao gồm hoặc 5% phí phục vụ"
+                            value={formData.comparisonAttributes?.serviceFee || ""}
+                            onChange={(e) => handleComparisonAttributeChange("serviceFee", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Thời gian tổ chức tiệc</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 4 tiếng"
+                            value={formData.comparisonAttributes?.eventDuration || ""}
+                            onChange={(e) => handleComparisonAttributeChange("eventDuration", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label>Dịch vụ trang trí hoa cưới bao gồm</label>
+                        <input
+                          type="text"
+                          className={styles.formInput}
+                          placeholder="Ví dụ: Cổng hoa tươi, backdrop sân khấu, hoa để bàn"
+                          value={formData.comparisonAttributes?.decorationIncluded || ""}
+                          onChange={(e) => handleComparisonAttributeChange("decorationIncluded", e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.category === "trang_diem" && (
+                    <div className={styles.categoryCompareFields}>
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Loại gói trang điểm</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Gói Makeup cô dâu ngày cưới"
+                            value={formData.comparisonAttributes?.packageType || ""}
+                            onChange={(e) => handleComparisonAttributeChange("packageType", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Phong cách trang điểm</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Hàn Quốc trong trẻo, tự nhiên"
+                            value={formData.comparisonAttributes?.makeupStyle || ""}
+                            onChange={(e) => handleComparisonAttributeChange("makeupStyle", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Trang điểm thử trước lễ</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Có hỗ trợ hoặc Có phí ưu đãi 50%"
+                            value={formData.comparisonAttributes?.trialMakeup || ""}
+                            onChange={(e) => handleComparisonAttributeChange("trialMakeup", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Làm tóc đi kèm</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Làm tóc đi kèm phù hợp gương mặt"
+                            value={formData.comparisonAttributes?.hairStylingIncluded || ""}
+                            onChange={(e) => handleComparisonAttributeChange("hairStylingIncluded", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Thời gian thực hiện (Phút/Giờ)</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 90 phút"
+                            value={formData.comparisonAttributes?.duration || ""}
+                            onChange={(e) => handleComparisonAttributeChange("duration", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Hỗ trợ làm tại nhà</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Có hỗ trợ làm tại nhà (miễn phí nội thành)"
+                            value={formData.comparisonAttributes?.homeService || ""}
+                            onChange={(e) => handleComparisonAttributeChange("homeService", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Số người hỗ trợ tiệc</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 1 chuyên viên chính + 1 trợ lý"
+                            value={formData.comparisonAttributes?.assistantCount || ""}
+                            onChange={(e) => handleComparisonAttributeChange("assistantCount", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Thương hiệu mỹ phẩm sử dụng</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Chanel, Dior, YSL, MAC"
+                            value={formData.comparisonAttributes?.cosmeticsBrand || ""}
+                            onChange={(e) => handleComparisonAttributeChange("cosmeticsBrand", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Phụ phí di chuyển xa</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Miễn phí dưới 10km, sau đó 15.000đ/km"
+                            value={formData.comparisonAttributes?.travelFee || ""}
+                            onChange={(e) => handleComparisonAttributeChange("travelFee", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label>Thời gian cần đặt trước</label>
+                        <input
+                          type="text"
+                          className={styles.formInput}
+                          placeholder="Ví dụ: Đặt trước 1-2 tháng"
+                          value={formData.comparisonAttributes?.bookingAdvanceTime || ""}
+                          onChange={(e) => handleComparisonAttributeChange("bookingAdvanceTime", e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.category === "xe_hoa" && (
+                    <div className={styles.categoryCompareFields}>
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Loại xe hoa</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Mui trần thể thao"
+                            value={formData.comparisonAttributes?.carType || ""}
+                            onChange={(e) => handleComparisonAttributeChange("carType", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Dòng xe chi tiết</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Mercedes C300 Cabriolet"
+                            value={formData.comparisonAttributes?.carModel || ""}
+                            onChange={(e) => handleComparisonAttributeChange("carModel", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Màu sắc xe</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Trắng tinh khôi"
+                            value={formData.comparisonAttributes?.carColor || ""}
+                            onChange={(e) => handleComparisonAttributeChange("carColor", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Thời gian thuê quy định</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 4 tiếng (Nội thành)"
+                            value={formData.comparisonAttributes?.rentalDuration || ""}
+                            onChange={(e) => handleComparisonAttributeChange("rentalDuration", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Giới hạn số km di chuyển</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Giới hạn 50km"
+                            value={formData.comparisonAttributes?.kmLimit || ""}
+                            onChange={(e) => handleComparisonAttributeChange("kmLimit", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Có tài xế đi kèm không?</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Có tài xế riêng lịch sự, mặc vest"
+                            value={formData.comparisonAttributes?.driverIncluded || ""}
+                            onChange={(e) => handleComparisonAttributeChange("driverIncluded", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Trang trí xe hoa có sẵn?</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Có kèm hoa lụa cao cấp"
+                            value={formData.comparisonAttributes?.flowerDecoration || ""}
+                            onChange={(e) => handleComparisonAttributeChange("flowerDecoration", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Phí phụ thu vượt giờ</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 300.000đ/giờ"
+                            value={formData.comparisonAttributes?.overtimeFee || ""}
+                            onChange={(e) => handleComparisonAttributeChange("overtimeFee", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Phí phụ thu quá km</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 15.000đ/km"
+                            value={formData.comparisonAttributes?.extraKmFee || ""}
+                            onChange={(e) => handleComparisonAttributeChange("extraKmFee", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid2Col}>
+                        <div className={styles.formGroup}>
+                          <label>Khu vực phục vụ cho thuê</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Nội thành TP.HCM / Hà Nội"
+                            value={formData.comparisonAttributes?.serviceArea || ""}
+                            onChange={(e) => handleComparisonAttributeChange("serviceArea", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Điều kiện cọc xe / Giữ giấy tờ</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Không giữ giấy tờ, cọc 2 triệu"
+                            value={formData.comparisonAttributes?.depositCondition || ""}
+                            onChange={(e) => handleComparisonAttributeChange("depositCondition", e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.category === "chup_anh" && (
+                    <div className={styles.categoryCompareFields}>
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Loại gói chụp</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Gói chụp Ngoại cảnh & Studio"
+                            value={formData.comparisonAttributes?.packageType || ""}
+                            onChange={(e) => handleComparisonAttributeChange("packageType", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Phong cách nhiếp ảnh</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Cảm xúc tự nhiên, Cinematic"
+                            value={formData.comparisonAttributes?.photographyStyle || ""}
+                            onChange={(e) => handleComparisonAttributeChange("photographyStyle", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Thời lượng buổi chụp</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 8-10 tiếng"
+                            value={formData.comparisonAttributes?.shootingDuration || ""}
+                            onChange={(e) => handleComparisonAttributeChange("shootingDuration", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Số lượng nhiếp ảnh gia</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 2 thợ chụp chính"
+                            value={formData.comparisonAttributes?.photographerCount || ""}
+                            onChange={(e) => handleComparisonAttributeChange("photographerCount", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Số lượng ảnh chỉnh sửa</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 45 ảnh chỉnh sửa cao cấp"
+                            value={formData.comparisonAttributes?.editedPhotos || ""}
+                            onChange={(e) => handleComparisonAttributeChange("editedPhotos", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Trả file ảnh gốc</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Trả toàn bộ ảnh gốc (>1000 file)"
+                            value={formData.comparisonAttributes?.rawPhotos || ""}
+                            onChange={(e) => handleComparisonAttributeChange("rawPhotos", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Quay video phóng sự kèm theo</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Có (Quay phim phóng sự cưới)"
+                            value={formData.comparisonAttributes?.videoIncluded || ""}
+                            onChange={(e) => handleComparisonAttributeChange("videoIncluded", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Video Highlight đi kèm</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Có video highlight 3-5 phút 4K"
+                            value={formData.comparisonAttributes?.highlightVideo || ""}
+                            onChange={(e) => handleComparisonAttributeChange("highlightVideo", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Album cưới đính kèm</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 1 Album Photobook 30x30cm"
+                            value={formData.comparisonAttributes?.albumIncluded || ""}
+                            onChange={(e) => handleComparisonAttributeChange("albumIncluded", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Địa điểm thực hiện chụp</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 1 điểm ngoại cảnh + Studio"
+                            value={formData.comparisonAttributes?.shootingLocation || ""}
+                            onChange={(e) => handleComparisonAttributeChange("shootingLocation", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Thời gian bàn giao (Nhãn chữ)</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 20 ngày"
+                            value={formData.comparisonAttributes?.deliveryTime || ""}
+                            onChange={(e) => handleComparisonAttributeChange("deliveryTime", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Thời gian bàn giao (Số ngày - để so sánh nhanh)</label>
+                          <input
+                            type="number"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 20"
+                            value={formData.comparisonAttributes?.deliveryDaysNum || ""}
+                            onChange={(e) => handleComparisonAttributeChange("deliveryDaysNum", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGroup}>
+                        <label>Phí di chuyển phát sinh của ekip</label>
+                        <input
+                          type="text"
+                          className={styles.formInput}
+                          placeholder="Ví dụ: Đã bao gồm hoặc Chưa bao gồm vé vào cổng phim trường"
+                          value={formData.comparisonAttributes?.travelFee || ""}
+                          onChange={(e) => handleComparisonAttributeChange("travelFee", e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.category === "vay_cuoi" && (
+                    <div className={styles.categoryCompareFields}>
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Loại trang phục cưới</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Váy cưới dòng Luxury & Vest"
+                            value={formData.comparisonAttributes?.outfitType || ""}
+                            onChange={(e) => handleComparisonAttributeChange("outfitType", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Số lượng trang phục trong gói</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 2 váy cưới + 1 bộ vest"
+                            value={formData.comparisonAttributes?.outfitQuantity || ""}
+                            onChange={(e) => handleComparisonAttributeChange("outfitQuantity", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Thời hạn thuê giữ váy</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 3 ngày (72 giờ)"
+                            value={formData.comparisonAttributes?.rentalDuration || ""}
+                            onChange={(e) => handleComparisonAttributeChange("rentalDuration", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Có hỗ trợ thử đồ thoải mái?</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Thử đồ không giới hạn số lượng"
+                            value={formData.comparisonAttributes?.fittingAvailable || ""}
+                            onChange={(e) => handleComparisonAttributeChange("fittingAvailable", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Hỗ trợ chỉnh sửa số đo</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Có hỗ trợ chỉnh sửa theo số đo cô dâu"
+                            value={formData.comparisonAttributes?.sizeAdjustment || ""}
+                            onChange={(e) => handleComparisonAttributeChange("sizeAdjustment", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Phí giặt là hấp sấy sau thuê</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Miễn phí giặt ủi hoặc Đã bao gồm phí hấp sấy"
+                            value={formData.comparisonAttributes?.cleaningFee || ""}
+                            onChange={(e) => handleComparisonAttributeChange("cleaningFee", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid3Col}>
+                        <div className={styles.formGroup}>
+                          <label>Tiền cọc thế chấp váy</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Cọc 50% giá trị váy thuê hoặc giữ CCCD"
+                            value={formData.comparisonAttributes?.depositAmount || ""}
+                            onChange={(e) => handleComparisonAttributeChange("depositAmount", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Chính sách đền bù hư hại</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Đền bù 10-30% nếu hỏng nhẹ, 100% nếu hỏng nặng"
+                            value={formData.comparisonAttributes?.damagePolicy || ""}
+                            onChange={(e) => handleComparisonAttributeChange("damagePolicy", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Size trang phục sẵn có tại tiệm</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: S, M, L (dây cột co giãn)"
+                            value={formData.comparisonAttributes?.availableSizes || ""}
+                            onChange={(e) => handleComparisonAttributeChange("availableSizes", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formGrid2Col}>
+                        <div className={styles.formGroup}>
+                          <label>Phụ kiện đi kèm váy/vest</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: Kèm voan cài đầu, trang sức, tùng váy"
+                            value={formData.comparisonAttributes?.accessoriesIncluded || ""}
+                            onChange={(e) => handleComparisonAttributeChange("accessoriesIncluded", e.target.value)}
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label>Phí thuê quá hạn mỗi ngày</label>
+                          <input
+                            type="text"
+                            className={styles.formInput}
+                            placeholder="Ví dụ: 500.000đ/ngày"
+                            value={formData.comparisonAttributes?.extraDayFee || ""}
+                            onChange={(e) => handleComparisonAttributeChange("extraDayFee", e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Modal footer controls */}
               <div className={styles.modalFooter}>
                 <div className={styles.modalFooterNavigation}>
@@ -951,12 +1734,13 @@ const VendorDashboard = () => {
                         else if (activeTab === "services") setActiveTab("contact");
                         else if (activeTab === "images") setActiveTab("services");
                         else if (activeTab === "pricing") setActiveTab("images");
+                        else if (activeTab === "comparison") setActiveTab("pricing");
                       }}
                     >
                       ← Tab trước
                     </button>
                   )}
-                  {activeTab !== "pricing" && (
+                  {activeTab !== "comparison" && (
                     <button
                       type="button"
                       className={styles.navFormBtnNext}
@@ -965,6 +1749,7 @@ const VendorDashboard = () => {
                         else if (activeTab === "contact") setActiveTab("services");
                         else if (activeTab === "services") setActiveTab("images");
                         else if (activeTab === "images") setActiveTab("pricing");
+                        else if (activeTab === "pricing") setActiveTab("comparison");
                       }}
                     >
                       Tab tiếp theo →

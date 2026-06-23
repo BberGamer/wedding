@@ -1383,15 +1383,39 @@ const AdminDashboard = () => {
                                 </>
                               )}
                               {o.status === "completed" && (
-                                <button 
-                                  className={styles.btnResetStatus}
-                                  onClick={() => handleUpdateOrderStatus(o._id, o.status, "pending")}
-                                  disabled={actionLoading}
-                                  title="Đặt lại trạng thái chờ duyệt"
+                                <button
+                                  className={styles.btnApprove}
+                                  style={{ background: "linear-gradient(135deg, #c3937c, #d6a663)", border: "none" }}
+                                  onClick={async () => {
+                                    const tok = localStorage.getItem("token");
+                                    try {
+                                      const r = await fetch(`${API_URL}/api/projects`, {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json", Authorization: `Bearer ${tok}` },
+                                        body: JSON.stringify({
+                                          orderId: o._id,
+                                          title: `Dự án - ${o.service?.name || "Dịch vụ cưới"}`,
+                                          milestones: [
+                                            { title: "Ký kết hợp đồng & đặt cọc", order: 0 },
+                                            { title: "Chuẩn bị & lên kế hoạch chi tiết", order: 1 },
+                                            { title: "Thực hiện dịch vụ", order: 2 },
+                                            { title: "Nghiệm thu & hoàn thành", order: 3 },
+                                          ]
+                                        })
+                                      });
+                                      const d = await r.json();
+                                      if (!r.ok) throw new Error(d.message);
+                                      alert(`✅ Đã tạo dự án thành công!\nDự án: "${d.project.title}"`);
+                                    } catch (err) {
+                                      alert(`❌ ${err.message}`);
+                                    }
+                                  }}
+                                  title="Tạo dự án theo dõi tiến độ từ đơn này"
                                 >
-                                  🔄 Hoàn chuyển
+                                  📋 Tạo Dự Án
                                 </button>
                               )}
+
                               {o.status === "failed" && (
                                 <button 
                                   className={styles.btnResetStatus}
