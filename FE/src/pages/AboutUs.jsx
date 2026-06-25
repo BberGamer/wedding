@@ -65,7 +65,7 @@ const AboutUs = () => {
             <div className={styles.valueCard}>
               <div className={styles.valueIconWrapper}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+                  <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
                 </svg>
               </div>
               <h3 className={styles.valueTitle}>Tinh Te &amp; Doc Ban</h3>
@@ -77,7 +77,7 @@ const AboutUs = () => {
             <div className={styles.valueCard}>
               <div className={styles.valueIconWrapper}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
               </div>
               <h3 className={styles.valueTitle}>Tin Cay Tuyet Doi</h3>
@@ -89,7 +89,7 @@ const AboutUs = () => {
             <div className={styles.valueCard}>
               <div className={styles.valueIconWrapper}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
               </div>
               <h3 className={styles.valueTitle}>Ket Noi Lien Mach</h3>
@@ -138,7 +138,7 @@ const AboutUs = () => {
             <div className={styles.teamCard}>
               <div className={styles.teamImageWrapper}>
                 <img
-                  src="/team/chu-duc-doanh.png"
+                  src="/team/chu-duc-doanh.jpg"
                   alt="Chu Duc Doanh - CEO"
                   className={styles.teamImage}
                 />
