@@ -1,18 +1,14 @@
 const Order = require("../models/Order");
 const User = require("../models/User");
 const Service = require("../models/Service");
-
-// Global simulated visits counter that persists in memory
-let siteVisits = 14580 + Math.floor(Math.random() * 100);
+const WebsiteVisit = require("../models/WebsiteVisit");
 
 exports.getAdminStats = async (req, res) => {
   try {
-    // Increase visits slightly for each stats query to simulate active traffic
-    siteVisits += Math.floor(Math.random() * 5) + 1;
-
     // 1. General counts
     const totalUsers = await User.countDocuments();
     const totalServices = await Service.countDocuments();
+    const websiteVisits = await WebsiteVisit.countDocuments();
     
     // User breakdown by roles
     const adminCount = await User.countDocuments({ role: "admin" });
@@ -69,7 +65,7 @@ exports.getAdminStats = async (req, res) => {
         totalServices,
         totalOrders,
         totalRevenue,
-        websiteVisits: siteVisits,
+        websiteVisits,
         userBreakdown: {
           admin: adminCount,
           vendor: vendorCount,

@@ -24,6 +24,8 @@ import BookingPage from "./pages/BookingPage";
 import MyProjectsPage from "./pages/MyProjectsPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
 import ChatWidget from "./components/ChatWidget";
+import { API_URL } from "./config";
+import { trackPageView } from "./googleAnalytics";
 
 import { Analytics } from "@vercel/analytics/react";
 
@@ -38,6 +40,35 @@ function App() {
       window.scrollTo(0, 0);
     }
   }, [action, pathname]);
+
+  useEffect(() => {
+    const storageKey = "anWeddingVisitorSessionId";
+    let sessionId = localStorage.getItem(storageKey);
+
+    if (!sessionId) {
+      sessionId =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      localStorage.setItem(storageKey, sessionId);
+    }
+
+    const token = localStorage.getItem("token");
+
+    fetch(`${API_URL}/api/analytics/visit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      },
+      body: JSON.stringify({
+        sessionId,
+        path: `${pathname}${location.search || ""}`,
+        title: document.title,
+        referrer: document.referrer
+      })
+    }).catch(() => {});
+  }, [location.search, pathname]);
 
   useEffect(() => {
     let title = "";
@@ -104,6 +135,10 @@ function App() {
       }
     }
   }, [pathname]);
+
+  useEffect(() => {
+    trackPageView(`${pathname}${location.search || ""}`, document.title);
+  }, [location.search, pathname]);
 
   return (
     <>

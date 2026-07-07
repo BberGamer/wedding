@@ -621,7 +621,7 @@ const AdminDashboard = () => {
               <div>
                 <span className={styles.panelCardLabel}>Lượt Truy Cập Website</span>
                 <h3 className={styles.panelCardValue}>{stats.websiteVisits.toLocaleString()}</h3>
-                <span className={styles.panelCardSubtext}>Tăng trưởng 15% tuần qua</span>
+                <span className={styles.panelCardSubtext}>Ghi nhận từ lượt mở và chuyển trang thực tế</span>
               </div>
               <div className={styles.panelCardIcon}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
