@@ -5,11 +5,11 @@ import Footer1 from "../components/Footer1";
 import styles from "./CategoryPage.module.css";
 import { API_URL } from "../config";
 
-// Cấu hình dữ liệu tĩnh cho các danh mục dịch vụ cưới
+// Configuration data for wedding categories
 const categoryConfig = {
   nha_hang: {
     title: "Nhà hàng tổ chức tiệc cưới",
-    subtitle: "— BỘ SƯU TẬP 2026 —",
+    subtitle: "— BỘ SƯU TẬP KHÔNG GIAN 2026 —",
     description: "Khám phá những không gian tiệc cưới sang trọng, thơ mộng và lãng mạn nhất. Được tuyển chọn kỹ lưỡng để lưu giữ trọn vẹn khoảnh khắc thiêng liêng nhất đời bạn.",
     searchPlaceholder: "Tìm theo tên nhà hàng hoặc địa điểm...",
     quickFilters: ["Tất cả", "Tiệc cưới", "Sân vườn", "View biển", "Sang trọng", "Cổ điển"],
@@ -73,11 +73,11 @@ const CategoryPage = ({ defaultCategory }) => {
   const { categoryType } = useParams();
   const navigate = useNavigate();
   
-  // Xác định danh mục hiện tại (nếu từ route /nha_hang thì dùng defaultCategory)
+  // Determine current category
   const currentCategory = categoryType || defaultCategory || "nha_hang";
   const config = categoryConfig[currentCategory] || categoryConfig.nha_hang;
 
-  // State Tìm kiếm & Lọc
+  // Search & Filter States
   const [searchInput, setSearchInput] = useState("");
   const [activeQuickFilter, setActiveQuickFilter] = useState("Tất cả");
   const [priceMax, setPriceMax] = useState(config.priceMaxLimit);
@@ -87,19 +87,19 @@ const CategoryPage = ({ defaultCategory }) => {
   const [sortBy, setSortBy] = useState("default");
   
   // UI Toggles
-  const [viewMode, setViewMode] = useState("grid"); // "grid" hoặc "map"
+  const [viewMode, setViewMode] = useState("grid"); // "grid" or "map"
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
 
-  // Dữ liệu lấy từ API
+  // Fetch data
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Phân trang
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9; // 3 cột x 3 hàng
+  const itemsPerPage = 9;
 
-  // Đồng bộ lại giá trị tối đa của giá khi chuyển danh mục
+  // Sync state values on category changes
   useEffect(() => {
     setPriceMax(config.priceMaxLimit);
     setSearchInput("");
@@ -110,50 +110,42 @@ const CategoryPage = ({ defaultCategory }) => {
     setSortBy("default");
     setCurrentPage(1);
     
-    // Đọc danh sách yêu thích từ localStorage
     const savedFavs = localStorage.getItem("wedding_favorites");
     if (savedFavs) {
       setFavorites(JSON.parse(savedFavs));
     }
   }, [currentCategory, config]);
 
-  // Tự động reset trang về 1 khi bất kỳ bộ lọc nào thay đổi
+  // Reset page to 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchInput, activeQuickFilter, priceMax, minCapacity, selectedLocations, selectedAmenities, sortBy]);
 
-  // Gọi API lấy dữ liệu mỗi khi bộ lọc thay đổi
+  // Fetch services from API
   useEffect(() => {
     setLoading(true);
     let url = `${API_URL}/api/services?category=${currentCategory}`;
 
-    // Lọc theo search input
     if (searchInput) {
       url += `&search=${encodeURIComponent(searchInput)}`;
     } else if (activeQuickFilter !== "Tất cả") {
-      // Tận dụng thanh tìm kiếm / quick filter ở backend
       url += `&search=${encodeURIComponent(activeQuickFilter)}`;
     }
 
-    // Khoảng giá
     url += `&priceMax=${priceMax}`;
 
-    // Sức chứa (nếu là nhà hàng)
     if (currentCategory === "nha_hang" && minCapacity > 0) {
       url += `&capacity=${minCapacity}`;
     }
 
-    // Khu vực
     if (selectedLocations.length > 0) {
       url += `&location=${encodeURIComponent(selectedLocations.join(","))}`;
     }
 
-    // Tiện ích
     if (selectedAmenities.length > 0) {
       url += `&amenities=${encodeURIComponent(selectedAmenities.join(","))}`;
     }
 
-    // Sắp xếp
     if (sortBy !== "default") {
       url += `&sort=${sortBy}`;
     }
@@ -165,12 +157,11 @@ const CategoryPage = ({ defaultCategory }) => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Lỗi fetch services:", err);
+        console.error("Error fetching services:", err);
         setLoading(false);
       });
   }, [currentCategory, searchInput, activeQuickFilter, priceMax, minCapacity, selectedLocations, selectedAmenities, sortBy]);
 
-  // Xử lý nút Reset bộ lọc
   const handleResetFilters = () => {
     setPriceMax(config.priceMaxLimit);
     setMinCapacity(0);
@@ -181,7 +172,6 @@ const CategoryPage = ({ defaultCategory }) => {
     setSortBy("default");
   };
 
-  // Toggle khu vực
   const handleLocationToggle = (loc) => {
     if (selectedLocations.includes(loc)) {
       setSelectedLocations(selectedLocations.filter((item) => item !== loc));
@@ -190,7 +180,6 @@ const CategoryPage = ({ defaultCategory }) => {
     }
   };
 
-  // Toggle tiện ích
   const handleAmenityToggle = (ame) => {
     if (selectedAmenities.includes(ame)) {
       setSelectedAmenities(selectedAmenities.filter((item) => item !== ame));
@@ -199,7 +188,6 @@ const CategoryPage = ({ defaultCategory }) => {
     }
   };
 
-  // Toggle yêu thích (Favorite)
   const handleFavoriteToggle = (id, e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -213,7 +201,6 @@ const CategoryPage = ({ defaultCategory }) => {
     localStorage.setItem("wedding_favorites", JSON.stringify(updated));
   };
 
-  // Format hiển thị tiền VNĐ
   const formatPrice = (value) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -222,7 +209,6 @@ const CategoryPage = ({ defaultCategory }) => {
     }).format(value);
   };
 
-  // Tính toán chỉ số phân trang
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = services.slice(indexOfFirstItem, indexOfLastItem);
@@ -230,7 +216,22 @@ const CategoryPage = ({ defaultCategory }) => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    window.scrollTo({ top: 300, behavior: "smooth" });
+    window.scrollTo({ top: 400, behavior: "smooth" });
+  };
+
+  const getHeroBackground = () => {
+    switch (currentCategory) {
+      case "nha_hang":
+        return "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1600";
+      case "trang_diem":
+        return "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=1600";
+      case "xe_hoa":
+        return "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1600";
+      case "chup_anh":
+        return "https://images.unsplash.com/photo-1537907690979-ee8e01276184?q=80&w=1600";
+      default:
+        return "https://images.unsplash.com/photo-1594552072238-b8a33785b261?q=80&w=1600";
+    }
   };
 
   return (
@@ -238,46 +239,132 @@ const CategoryPage = ({ defaultCategory }) => {
       <Header1 />
       
       <main className={styles.mainContent}>
-        {/* Section Hero */}
-        <section className={styles.hero}>
-          <span className={styles.subTitle}>{config.subtitle}</span>
-          <h1 className={styles.mainTitle}>{config.title}</h1>
-          <p className={styles.description}>{config.description}</p>
+        {/* Modern Hero Search Section */}
+        <section className={styles.heroSection}>
+          <div className={styles.heroBgWrapper}>
+            <img src={getHeroBackground()} alt="Hero Background" className={styles.heroBgImage} />
+            <div className={styles.heroOverlay} />
+          </div>
+          
+          <div className={styles.heroContent}>
+            <span className={styles.heroSub}>{config.subtitle}</span>
+            <h1 className={styles.heroTitle}>{config.title}</h1>
+            <p className={styles.heroDesc}>{config.description}</p>
 
-          {/* Ô Tìm Kiếm chính */}
-          <form 
-            className={styles.searchBar} 
-            onSubmit={(e) => {
-              e.preventDefault();
-              const term = e.target.search.value;
-              setSearchInput(term);
-            }}
-          >
-            <input
-              type="text"
-              name="search"
-              placeholder={config.searchPlaceholder}
-              className={styles.searchInput}
-              defaultValue={searchInput}
-            />
-            <button type="submit" className={styles.searchButton}>
-              TÌM KIẾM
-            </button>
-          </form>
+            {/* Immersive Floating Discovery Panel */}
+            <div className={styles.discoveryPanel}>
+              <form 
+                className={styles.searchForm}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setSearchInput(e.target.search.value);
+                }}
+              >
+                <div className={styles.searchFieldsGrid}>
+                  {/* Search Keyword */}
+                  <div className={styles.inputGroup}>
+                    <label className={styles.inputLabel}>Từ khóa</label>
+                    <div className={styles.inputWrapper}>
+                      <span className={styles.inputIcon}>🔍</span>
+                      <input
+                        type="text"
+                        name="search"
+                        placeholder={config.searchPlaceholder}
+                        className={styles.discoveryInput}
+                        defaultValue={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                      />
+                    </div>
+                  </div>
 
-          {/* Quick Filters */}
-          <div className={styles.quickTags}>
+                  {/* Location Selector */}
+                  <div className={styles.inputGroup}>
+                    <label className={styles.inputLabel}>Khu vực</label>
+                    <div className={styles.inputWrapper}>
+                      <span className={styles.inputIcon}>📍</span>
+                      <select 
+                        className={styles.discoverySelect}
+                        value={selectedLocations[0] || ""}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setSelectedLocations(val ? [val] : []);
+                        }}
+                      >
+                        <option value="">Tất cả khu vực</option>
+                        {config.locations.map(loc => (
+                          <option key={loc} value={loc}>{loc}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Capacity Selector (nha_hang specific) */}
+                  {currentCategory === "nha_hang" && (
+                    <div className={styles.inputGroup}>
+                      <label className={styles.inputLabel}>Sức chứa</label>
+                      <div className={styles.inputWrapper}>
+                        <span className={styles.inputIcon}>👥</span>
+                        <select
+                          className={styles.discoverySelect}
+                          value={minCapacity}
+                          onChange={(e) => setMinCapacity(Number(e.target.value))}
+                        >
+                          <option value="0">Bất kỳ sức chứa</option>
+                          <option value="150">Trên 150 khách</option>
+                          <option value="300">Trên 300 khách</option>
+                          <option value="500">Trên 500 khách</option>
+                          <option value="800">Trên 800 khách</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Price budget */}
+                  <div className={styles.inputGroup}>
+                    <label className={styles.inputLabel}>Ngân sách tối đa</label>
+                    <div className={styles.inputWrapper}>
+                      <span className={styles.inputIcon}>💰</span>
+                      <select
+                        className={styles.discoverySelect}
+                        value={priceMax}
+                        onChange={(e) => setPriceMax(Number(e.target.value))}
+                      >
+                        <option value={config.priceMaxLimit}>Mọi mức giá</option>
+                        <option value="5000000">Dưới 5.000.000đ</option>
+                        <option value="15000000">Dưới 15.000.000đ</option>
+                        <option value="30000000">Dưới 30.000.000đ</option>
+                        <option value="60000000">Dưới 60.000.000đ</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Search Button */}
+                  <div className={styles.searchBtnGroup}>
+                    <span className={styles.btnSpacerLabel}>&nbsp;</span>
+                    <button type="submit" className={styles.discoverySearchBtn}>
+                      TÌM KIẾM
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        {/* Quick Filter Chips */}
+        <section className={styles.chipsSection}>
+          <div className={styles.chipsScroll}>
             {config.quickFilters.map((tag) => (
               <button
                 key={tag}
                 type="button"
                 className={[
-                  styles.tagButton,
-                  activeQuickFilter === tag ? styles.activeTag : ""
+                  styles.filterChip,
+                  activeQuickFilter === tag ? styles.activeChip : ""
                 ].join(" ")}
                 onClick={() => {
                   setActiveQuickFilter(tag);
-                  setSearchInput(""); // reset search input để dùng quick tag
+                  setSearchInput("");
                 }}
               >
                 {tag}
@@ -286,265 +373,228 @@ const CategoryPage = ({ defaultCategory }) => {
           </div>
         </section>
 
-        {/* Thanh Điều khiển Phụ (Control Bar) */}
-        <div className={styles.controlsBar}>
-          <div className={styles.resultsCount}>
-            {services.length} {currentCategory === "nha_hang" ? "nhà hàng" : "dịch vụ"} phù hợp
-          </div>
-          
-          <div className={styles.rightControls}>
-            {/* Toggle Lưới / Bản đồ */}
-            <div className={styles.viewToggles}>
-              <button
-                className={[
-                  styles.viewToggleBtn,
-                  viewMode === "grid" ? styles.activeViewToggle : ""
-                ].join(" ")}
-                onClick={() => setViewMode("grid")}
+        {/* Sticky Toolbar */}
+        <div className={styles.stickyToolbar}>
+          <div className={styles.toolbarInner}>
+            <div className={styles.resultsCount}>
+              <span>{services.length}</span> {currentCategory === "nha_hang" ? "không gian tiệc" : "nhà cung cấp"} được tìm thấy
+            </div>
+            
+            <div className={styles.toolbarActions}>
+              {/* Reset filter indicator */}
+              {(selectedLocations.length > 0 || selectedAmenities.length > 0 || minCapacity > 0 || searchInput !== "" || activeQuickFilter !== "Tất cả") && (
+                <button className={styles.resetToolbarBtn} onClick={handleResetFilters}>
+                  Đặt lại lọc ✕
+                </button>
+              )}
+
+              {/* View mode toggle */}
+              <div className={styles.viewToggleGroup}>
+                <button
+                  className={`${styles.toolbarActionBtn} ${viewMode === "grid" ? styles.activeActionBtn : ""}`}
+                  onClick={() => setViewMode("grid")}
+                  title="Xem dạng lưới"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                  </svg>
+                  <span>LƯỚI</span>
+                </button>
+                <button
+                  className={`${styles.toolbarActionBtn} ${viewMode === "map" ? styles.activeActionBtn : ""}`}
+                  onClick={() => setViewMode("map")}
+                  title="Xem bản đồ"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+                    <line x1="9" y1="3" x2="9" y2="18"/>
+                    <line x1="15" y1="6" x2="15" y2="21"/>
+                  </svg>
+                  <span>BẢN ĐỒ</span>
+                </button>
+              </div>
+
+              {/* Sort dropdown */}
+              <div className={styles.sortDropdownWrapper}>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className={styles.sortSelect}
+                >
+                  <option value="default">✨ PHỔ BIẾN NHẤT</option>
+                  <option value="price_asc">📈 GIÁ TĂNG DẦN</option>
+                  <option value="price_desc">📉 GIÁ GIẢM DẦN</option>
+                  <option value="popular">⭐ ĐÁNH GIÁ TỐT</option>
+                </select>
+              </div>
+
+              {/* Mobile Filter Toggle */}
+              <button 
+                className={styles.mobileFilterBtn}
+                onClick={() => setMobileFilterOpen(true)}
               >
-                ☰ LƯỚI
-              </button>
-              <button
-                className={[
-                  styles.viewToggleBtn,
-                  viewMode === "map" ? styles.activeViewToggle : ""
-                ].join(" ")}
-                onClick={() => setViewMode("map")}
-              >
-                BẢN ĐỒ
+                🎛 BỘ LỌC
               </button>
             </div>
-
-            {/* Dropdown Sắp xếp */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className={styles.sortSelect}
-            >
-              <option value="default">PHỔ BIẾN NHẤT</option>
-              <option value="price_asc">GIÁ TĂNG DẦN</option>
-              <option value="price_desc">GIÁ GIẢM DẦN</option>
-              <option value="popular">ĐÁNH GIÁ TỐT NHẤT</option>
-            </select>
           </div>
         </div>
 
-        {/* Nút lọc trượt trên Mobile */}
-        <button 
-          className={styles.mobileFilterToggle}
-          onClick={() => setMobileFilterOpen(true)}
-        >
-          🔍 BỘ LỌC NÂNG CAO
-        </button>
-
-        {/* Bố cục chính */}
-        <div className={styles.bodyLayout}>
-          {/* Overlay cho Mobile filter */}
+        {/* Discovery Layout Grid & Filters */}
+        <div className={styles.discoveryLayout}>
+          {/* Sidebar Filters Drawer */}
           {mobileFilterOpen && (
-            <div 
-              className={styles.sidebarOverlay} 
-              onClick={() => setMobileFilterOpen(false)}
-            />
+            <div className={styles.drawerOverlay} onClick={() => setMobileFilterOpen(false)} />
           )}
 
-          {/* Sidebar - Bộ lọc bên trái */}
           <aside className={[
-            styles.sidebar,
-            mobileFilterOpen ? styles.sidebarOpen : ""
+            styles.filterSidebar,
+            mobileFilterOpen ? styles.sidebarDrawerOpen : ""
           ].join(" ")}>
             <div className={styles.sidebarHeader}>
-              <h2 className={styles.sidebarTitle}>Bộ lọc</h2>
-              {mobileFilterOpen && (
-                <button 
-                  className={styles.resetBtn} 
-                  style={{ marginRight: 16 }}
-                  onClick={() => setMobileFilterOpen(false)}
-                >
-                  Đóng ✕
-                </button>
-              )}
-              <button 
-                type="button" 
-                className={styles.resetBtn}
-                onClick={handleResetFilters}
-              >
-                Đặt lại
-              </button>
-            </div>
-
-            {/* Bộ lọc Khoảng giá */}
-            <div className={styles.filterSection}>
-              <span className={styles.filterLabel}>Khoảng giá tối đa</span>
-              <div className={styles.rangeInputs}>
-                <input
-                  type="range"
-                  min="0"
-                  max={config.priceMaxLimit}
-                  step={config.priceStep}
-                  value={priceMax}
-                  onChange={(e) => setPriceMax(Number(e.target.value))}
-                  className={styles.rangeSlider}
-                />
-                <div className={styles.rangeValues}>
-                  <span>Dưới:</span>
-                  <span style={{ fontWeight: 600, color: "#c3937c" }}>
-                    {formatPrice(priceMax)}
-                  </span>
-                </div>
+              <h3>Bộ lọc nâng cao</h3>
+              <div className={styles.sidebarHeaderActions}>
+                <button className={styles.resetSidebarBtn} onClick={handleResetFilters}>Đặt lại</button>
+                {mobileFilterOpen && (
+                  <button className={styles.closeDrawerBtn} onClick={() => setMobileFilterOpen(false)}>✕</button>
+                )}
               </div>
             </div>
 
-            {/* Bộ lọc Sức chứa - Chỉ hiển thị cho Nhà Hàng */}
-            {currentCategory === "nha_hang" && (
-              <div className={styles.filterSection}>
-                <span className={styles.filterLabel}>Sức chứa tối thiểu</span>
-                <div className={styles.rangeInputs}>
+            <div className={styles.sidebarContent}>
+              {/* Price slider */}
+              <div className={styles.filterGroup}>
+                <h4 className={styles.filterGroupTitle}>Mức giá giới hạn</h4>
+                <div className={styles.sliderContainer}>
                   <input
                     type="range"
                     min="0"
-                    max="1000"
-                    step="50"
-                    value={minCapacity}
-                    onChange={(e) => setMinCapacity(Number(e.target.value))}
-                    className={styles.rangeSlider}
+                    max={config.priceMaxLimit}
+                    step={config.priceStep}
+                    value={priceMax}
+                    onChange={(e) => setPriceMax(Number(e.target.value))}
+                    className={styles.modernSlider}
                   />
-                  <div className={styles.rangeValues}>
-                    <span>Sức chứa:</span>
-                    <span style={{ fontWeight: 600, color: "#c3937c" }}>
-                      {minCapacity === 0 ? "Bất kỳ" : `${minCapacity} khách`}
-                    </span>
+                  <div className={styles.sliderValues}>
+                    <span>Dưới</span>
+                    <strong>{formatPrice(priceMax)}</strong>
                   </div>
                 </div>
               </div>
-            )}
 
-            {/* Bộ lọc Khu vực */}
-            <div className={styles.filterSection}>
-              <span className={styles.filterLabel}>Khu vực</span>
-              <div className={styles.locationTags}>
-                {config.locations.map((loc) => {
-                  const isActive = selectedLocations.includes(loc);
-                  return (
-                    <button
-                      key={loc}
-                      type="button"
-                      className={[
-                        styles.locationTag,
-                        isActive ? styles.activeLocationTag : ""
-                      ].join(" ")}
-                      onClick={() => handleLocationToggle(loc)}
-                    >
-                      {loc}
-                    </button>
-                  );
-                })}
+              {/* Capacity slider (nha_hang specific) */}
+              {currentCategory === "nha_hang" && (
+                <div className={styles.filterGroup}>
+                  <h4 className={styles.filterGroupTitle}>Sức chứa tối thiểu</h4>
+                  <div className={styles.sliderContainer}>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1000"
+                      step="50"
+                      value={minCapacity}
+                      onChange={(e) => setMinCapacity(Number(e.target.value))}
+                      className={styles.modernSlider}
+                    />
+                    <div className={styles.sliderValues}>
+                      <span>Tối thiểu</span>
+                      <strong>{minCapacity === 0 ? "Bất kỳ" : `${minCapacity} khách`}</strong>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Locations Checklist */}
+              <div className={styles.filterGroup}>
+                <h4 className={styles.filterGroupTitle}>Khu vực</h4>
+                <div className={styles.checklistGrid}>
+                  {config.locations.map((loc) => {
+                    const isChecked = selectedLocations.includes(loc);
+                    return (
+                      <label key={loc} className={styles.checkLabel}>
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => handleLocationToggle(loc)}
+                          className={styles.checkboxInput}
+                        />
+                        <span className={styles.checkText}>{loc}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
 
-            {/* Bộ lọc Tiện ích */}
-            <div className={styles.filterSection}>
-              <span className={styles.filterLabel}>Tiện ích / Đặc điểm</span>
-              <div className={styles.checkboxList}>
-                {config.amenities.map((ame) => {
-                  const isChecked = selectedAmenities.includes(ame);
-                  return (
-                    <label key={ame} className={styles.checkboxItem}>
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => handleAmenityToggle(ame)}
-                        className={styles.checkboxInput}
-                      />
-                      <span>{ame}</span>
-                    </label>
-                  );
-                })}
+              {/* Amenities Checklist */}
+              <div className={styles.filterGroup}>
+                <h4 className={styles.filterGroupTitle}>Tiện ích & Dịch vụ đi kèm</h4>
+                <div className={styles.checklistColumn}>
+                  {config.amenities.map((ame) => {
+                    const isChecked = selectedAmenities.includes(ame);
+                    return (
+                      <label key={ame} className={styles.checkLabelBlock}>
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => handleAmenityToggle(ame)}
+                          className={styles.checkboxInput}
+                        />
+                        <span className={styles.checkText}>{ame}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </aside>
 
-          {/* Danh sách thẻ bên phải */}
-          <section style={{ width: "100%" }}>
+          {/* Listing Content Area */}
+          <section className={styles.listingSection}>
             {loading ? (
-              <div className={styles.loadingContainer}>
-                <div className={styles.spinner}></div>
-                <p style={{ color: "#787878", fontSize: 14 }}>Đang tìm các dịch vụ tốt nhất...</p>
+              /* Premium loading skeletons */
+              <div className={styles.skeletonGrid}>
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className={styles.skeletonCard}>
+                    <div className={styles.skeletonImage} />
+                    <div className={styles.skeletonBody}>
+                      <div className={styles.skeletonTitle} />
+                      <div className={styles.skeletonText} />
+                      <div className={styles.skeletonTextSmall} />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : viewMode === "map" ? (
-              /* Bản đồ Visual Mockup */
-              <div style={{
-                backgroundColor: "#ffffff",
-                height: 500,
-                borderRadius: 8,
-                overflow: "hidden",
-                border: "1px solid rgba(0, 0, 0, 0.05)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                padding: 24,
-                textAlign: "center"
-              }}>
+              /* Map mock view */
+              <div className={styles.mapContainer}>
                 <img 
                   src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800" 
                   alt="Bản đồ"
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    opacity: 0.15,
-                    pointerEvents: "none"
-                  }}
+                  className={styles.mapBgImage}
                 />
-                <div style={{ zIndex: 1, maxWidth: 450 }}>
-                  <div style={{ marginBottom: 16, color: "#4d5637" }}>
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                  </div>
-                  <h3 className={styles.emptyTitle}>Tính năng Bản Đồ Đang Trực Quan Hóa</h3>
-                  <p className={styles.emptyDesc}>
-                    Hệ thống đang tích hợp hiển thị vị trí các nhà cung cấp cưới trên Google Maps để hai bạn dễ dàng lựa chọn khu vực tối ưu.
-                  </p>
-                  <button 
-                    type="button" 
-                    className={styles.searchButton}
-                    onClick={() => setViewMode("grid")}
-                    style={{ marginTop: 8 }}
-                  >
-                    Xem Dạng Lưới Danh Sách
+                <div className={styles.mapContent}>
+                  <div className={styles.mapIcon}>📍</div>
+                  <h3>Khám phá trực quan trên Bản đồ</h3>
+                  <p>Hệ thống định vị thông minh đang thiết lập vị trí các đối tác tiệc cưới giúp hai bạn tối ưu quãng đường di chuyển.</p>
+                  <button className={styles.mapReturnBtn} onClick={() => setViewMode("grid")}>
+                    Quay lại danh sách dạng lưới
                   </button>
                 </div>
               </div>
             ) : services.length === 0 ? (
-              /* Trống kết quả */
+              /* Empty results state */
               <div className={styles.emptyState}>
-                <div style={{ marginBottom: 16, color: "#4d5637" }}>
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M2 22C2 22 8 18 12 14C16 10 22 2 22 2C22 2 14 8 10 12C6 16 2 22 2 22Z" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M12 14C12 14 14 12 16 10" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M10 12C10 12 12 10 14 8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
-                <h3 className={styles.emptyTitle}>Không tìm thấy dịch vụ phù hợp</h3>
-                <p className={styles.emptyDesc}>
-                  Hãy thử điều chỉnh lại bộ lọc giá, đổi tiện ích hoặc thay đổi cụm từ tìm kiếm của bạn.
-                </p>
-                <button 
-                  type="button" 
-                  className={styles.searchButton}
-                  onClick={handleResetFilters}
-                >
-                  Đặt lại bộ lọc
+                <div className={styles.emptyIcon}>🔍</div>
+                <h3>Không tìm thấy dịch vụ phù hợp</h3>
+                <p>Hãy điều chỉnh lại khoảng ngân sách, chọn khu vực khác hoặc làm sạch các bộ lọc để bắt đầu lại.</p>
+                <button className={styles.emptyResetBtn} onClick={handleResetFilters}>
+                  Đặt lại tất cả lọc
                 </button>
               </div>
             ) : (
-              /* Lưới sản phẩm thực sự */
+              /* Modern Premium Grid Listing */
               <>
                 <div className={styles.cardsGrid}>
                   {currentItems.map((item) => {
@@ -552,115 +602,98 @@ const CategoryPage = ({ defaultCategory }) => {
                     return (
                       <article 
                         key={item._id} 
-                        className={styles.card}
+                        className={styles.venueCard}
                         onClick={() => navigate(`/service/${item._id}`)}
-                        style={{ cursor: "pointer" }}
                       >
-                        {/* Ảnh & Badge */}
-                        <div className={styles.imageWrapper}>
+                        {/* Immersive Image with badges */}
+                        <div className={styles.cardImageWrapper}>
                           <img
                             src={item.image || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=600"}
                             alt={item.name}
-                            className={styles.cardImage}
+                            className={styles.venueImage}
                             loading="lazy"
                           />
+                          
+                          {/* Floating badges */}
                           {item.badge && (
-                            <div className={[
-                              styles.badge,
-                              item.badge === "ƯU ĐÃI" ? styles.badgeHighlight : ""
-                            ].join(" ")}>
+                            <span className={`${styles.badge} ${item.badge === "ƯU ĐÃI" ? styles.badgeHighlight : styles.badgeNormal}`}>
                               {item.badge}
-                            </div>
+                            </span>
                           )}
-                          {/* Nút Trái tim */}
+
+                          {/* Heart favorite button */}
                           <button
                             type="button"
-                            className={[
-                              styles.favoriteBtn,
-                              isFav ? styles.favoriteActive : ""
-                            ].join(" ")}
+                            className={`${styles.favBtn} ${isFav ? styles.favBtnActive : ""}`}
                             onClick={(e) => handleFavoriteToggle(item._id, e)}
                             aria-label="Yêu thích"
                           >
-                            <span className={styles.heartIcon}>♥</span>
+                            <svg viewBox="0 0 24 24" fill={isFav ? "#d32f2f" : "none"} stroke={isFav ? "#d32f2f" : "#ffffff"} strokeWidth="2.5" width="20" height="20">
+                              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
                           </button>
                         </div>
 
-                        {/* Thông tin Body Card */}
-                        <div className={styles.cardBody}>
-                          <div className={styles.cardHeader}>
-                            <h3 className={styles.cardTitle}>{item.name}</h3>
-                            <div className={styles.rating}>
-                              <span className={styles.starIcon}>★</span>
-                              <span>{item.rating}</span>
+                        {/* Venue details info */}
+                        <div className={styles.venueDetails}>
+                          <div className={styles.venueHeader}>
+                            <h3 className={styles.venueName}>{item.name}</h3>
+                            <div className={styles.ratingInfo}>
+                              <span className={styles.ratingStar}>★</span>
+                              <strong className={styles.ratingVal}>{item.rating}</strong>
                               {item.reviewsCount > 0 && (
-                                <span className={styles.reviewsCountText}>
-                                  ({item.reviewsCount})
-                                </span>
+                                <span className={styles.ratingCount}>({item.reviewsCount})</span>
                               )}
                             </div>
                           </div>
 
-                          {/* Meta thông tin */}
-                          <div className={styles.metaInfo}>
-                            <div className={styles.metaItem}>
-                              <span className={styles.metaIcon}>
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ display: "inline-block", verticalAlign: "middle" }}>
-                                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                  <circle cx="12" cy="10" r="3" />
-                                </svg>
-                              </span>
-                              <span>{item.address}</span>
-                            </div>
+                          <p className={styles.venueLocation}>
+                            <span className={styles.locIcon}>📍</span> {item.address}
+                          </p>
+
+                          <div className={styles.venueSpecs}>
                             {item.capacity > 0 && (
-                              <div className={styles.metaItem}>
-                                <span className={styles.metaIcon}>
-                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ display: "inline-block", verticalAlign: "middle" }}>
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                    <circle cx="12" cy="7" r="4" />
-                                  </svg>
-                                </span>
-                                <span>Sức chứa lên tới {item.capacity} khách</span>
-                              </div>
+                              <span className={styles.specItem}>
+                                👥 Lên tới {item.capacity} khách
+                              </span>
                             )}
-                            {item.amenities && item.amenities.length > 0 && (
-                              <div className={styles.metaItem} style={{ flexWrap: "wrap", marginTop: 4 }}>
-                                {item.amenities.slice(0, 3).map((ame) => (
-                                  <span 
-                                    key={ame} 
-                                    style={{
-                                      fontSize: 10,
-                                      backgroundColor: "rgba(77, 86, 55, 0.05)",
-                                      color: "#4d5637",
-                                      padding: "2px 6px",
-                                      borderRadius: 2,
-                                      marginRight: 4
-                                    }}
-                                  >
-                                    {ame}
-                                  </span>
-                                ))}
-                                {item.amenities.length > 3 && (
-                                  <span style={{ fontSize: 10, color: "#b0b0b0" }}>
-                                    +{item.amenities.length - 3}
-                                  </span>
-                                )}
-                              </div>
-                            )}
+                            <span className={styles.specItem}>
+                              🏷️ {currentCategory === "nha_hang" ? "Địa điểm cưới" : "Dịch vụ cưới"}
+                            </span>
                           </div>
 
-                          {/* Footer Card */}
-                          <div className={styles.cardFooter}>
-                            <div className={styles.priceWrapper}>
-                              <span className={styles.priceFrom}>GIÁ DỰ KIẾN</span>
-                              <span className={styles.priceVal}>
+                          {/* Amenities labels */}
+                          {item.amenities && item.amenities.length > 0 && (
+                            <div className={styles.cardTagsRow}>
+                              {item.amenities.slice(0, 3).map((ame) => (
+                                <span key={ame} className={styles.cardTagLabel}>
+                                  {ame}
+                                </span>
+                              ))}
+                              {item.amenities.length > 3 && (
+                                <span className={styles.cardTagsMore}>
+                                  +{item.amenities.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Pricing and Action row */}
+                          <div className={styles.venueFooter}>
+                            <div className={styles.priceContainer}>
+                              <span className={styles.priceTitle}>GIÁ DỰ KIẾN</span>
+                              <strong className={styles.priceValue}>
                                 {item.priceLabel || formatPrice(item.price)}
-                              </span>
+                              </strong>
                             </div>
                             
-                            <span className={styles.actionLink}>
-                              CHI TIẾT
-                            </span>
+                            <button type="button" className={styles.cardActionBtn}>
+                              Chi tiết 
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                              </svg>
+                            </button>
                           </div>
                         </div>
                       </article>
@@ -668,26 +701,23 @@ const CategoryPage = ({ defaultCategory }) => {
                   })}
                 </div>
 
-                {/* Giao diện Phân trang */}
+                {/* Modern Pagination controls */}
                 {totalPages > 1 && (
-                  <div className={styles.pagination}>
+                  <div className={styles.paginationContainer}>
                     <button
                       type="button"
-                      className={styles.pageBtn}
+                      className={styles.arrowPageBtn}
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
                     >
-                      &lsaquo; Trước
+                      ←
                     </button>
                     
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                       <button
                         key={pageNum}
                         type="button"
-                        className={[
-                          styles.pageBtn,
-                          currentPage === pageNum ? styles.activePageBtn : ""
-                        ].join(" ")}
+                        className={`${styles.pageNumBtn} ${currentPage === pageNum ? styles.activePageNumBtn : ""}`}
                         onClick={() => handlePageChange(pageNum)}
                       >
                         {pageNum}
@@ -696,11 +726,11 @@ const CategoryPage = ({ defaultCategory }) => {
                     
                     <button
                       type="button"
-                      className={styles.pageBtn}
+                      className={styles.arrowPageBtn}
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
                     >
-                      Sau &rsaquo;
+                      →
                     </button>
                   </div>
                 )}

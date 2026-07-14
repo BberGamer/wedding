@@ -23,7 +23,9 @@ import ComparePage from "./pages/ComparePage";
 import BookingPage from "./pages/BookingPage";
 import MyProjectsPage from "./pages/MyProjectsPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
+import BlogPage from "./pages/BlogPage";
 import ChatWidget from "./components/ChatWidget";
+import SocialFloatingWidget from "./components/SocialFloatingWidget";
 import { API_URL } from "./config";
 import { trackPageView } from "./googleAnalytics";
 
@@ -162,9 +164,11 @@ function App() {
         <Route path="/booking" element={<BookingPage />} />
         <Route path="/my-projects" element={<MyProjectsPage />} />
         <Route path="/my-projects/:id" element={<ProjectDetailPage />} />
+        <Route path="/blog" element={<BlogPage />} />
       </Routes>
       <Analytics />
       <ChatWidget />
+      <SocialFloatingWidget />
     </>
   );
 }

@@ -32,6 +32,7 @@ const vendorRoutes = require("./routes/vendorRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const blogRoutes = require("./routes/blogRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
@@ -43,6 +44,7 @@ app.use("/api/vendors", vendorRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/blogs", blogRoutes);
 
 // --- Socket.io authentication middleware ---
 io.use((socket, next) => {

@@ -138,6 +138,16 @@
   from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
+.dropdownRight {
+  left: auto;
+  right: 0;
+  transform: none;
+  animation: dropFadeRight 0.2s ease;
+}
+@keyframes dropFadeRight {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 .dropdownHeader {
   padding: 16px 18px 12px;
   background: #fbf8f1;
@@ -340,4 +350,304 @@
   .brandName { font-size: 18px; top: 16px; left: 36px; }
   .nav { display: none; }
   .hamburger { display: flex; }
+}
+
+/* ===== REDESIGNED MEGA MENU ===== */
+.megaMenuContainer {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 660px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(77, 86, 55, 0.08);
+  border: 1px solid #ece6dd;
+  padding: 28px;
+  box-sizing: border-box;
+  z-index: 1000;
+  animation: megaFadeDown 0.25s ease-out;
+  cursor: default;
+}
+
+@keyframes megaFadeDown {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.megaMenuInner {
+  display: flex;
+  gap: 32px;
+}
+
+.megaMenuCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.featuredCol {
+  border-left: 1px solid rgba(77, 86, 55, 0.08);
+  padding-left: 32px;
+}
+
+.megaColTitle {
+  font-family: Cormorant, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #4d5637;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #ead9c9;
+  padding-bottom: 6px;
+  align-self: flex-start;
+}
+
+.megaCategoriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.megaCategoryCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.25s ease;
+}
+
+.megaCategoryCard:hover {
+  background-color: rgba(77, 86, 55, 0.04);
+  transform: translateY(-1px);
+}
+
+.megaCategoryIcon {
+  color: #c3937c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.megaCategoryCard:hover .megaCategoryIcon {
+  transform: scale(1.1);
+}
+
+.megaCategoryInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.megaCategoryInfo h4 {
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #333333;
+  margin: 0;
+}
+
+.megaCategoryInfo p {
+  font-family: Montserrat, sans-serif;
+  font-size: 11px;
+  color: #888888;
+  margin: 0;
+}
+
+.megaArrow {
+  font-size: 14px;
+  color: #c3937c;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: all 0.2s ease;
+  margin-left: auto;
+  font-weight: 700;
+}
+
+.megaCategoryCard:hover .megaArrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Featured Section Ctr Column */
+.featuredList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.featuredCard {
+  display: flex;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  padding: 8px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  align-items: center;
+}
+
+.featuredCard:hover {
+  background-color: rgba(77, 86, 55, 0.03);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(77, 86, 55, 0.05);
+}
+
+.featuredThumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.featuredCard:hover .featuredThumb {
+  transform: scale(1.05);
+}
+
+.featuredCardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.featuredCardInfo h5 {
+  font-family: Montserrat, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #333333;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.featuredRating {
+  font-size: 10px;
+  color: #c3937c;
+  font-weight: 700;
+}
+
+.featuredCardInfo p {
+  font-family: Montserrat, sans-serif;
+  font-size: 11px;
+  color: #888888;
+  margin: 0;
+}
+
+.featuredPlaceholder {
+  font-family: Montserrat, sans-serif;
+  font-size: 12px;
+  color: #888888;
+  text-align: center;
+  padding: 40px 0;
+  font-style: italic;
+}
+
+/* Quick Access Cards */
+.quickAccessList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quickCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  background-color: rgba(77, 86, 55, 0.02);
+  border: 1px solid #f0ebe2;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.25s ease;
+}
+
+.quickCard:hover {
+  background-color: rgba(195, 147, 124, 0.05);
+  border-color: #ead9c9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(77, 86, 55, 0.04);
+}
+
+.quickCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: Montserrat, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4d5637;
+}
+
+.quickCard p {
+  font-family: Montserrat, sans-serif;
+  font-size: 10px;
+  color: #888888;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Mobile Accordion Menu */
+.mobileAccordion {
+  width: 100%;
+}
+
+.mobileAccordionToggle {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px 0;
+  font-family: Cormorant, serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #4d5637;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.mobileAccordionContent {
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+  background-color: rgba(77, 86, 55, 0.02);
+  border-radius: 12px;
+}
+
+.mobileAccordionOpen {
+  max-height: 300px;
+  transition: max-height 0.3s cubic-bezier(0.9, 0, 0.1, 1);
+  padding: 8px 0;
+  margin-bottom: 8px;
+}
+
+.mobileAccordionItem {
+  padding: 10px 20px;
+  font-family: Montserrat, sans-serif;
+  font-size: 14px;
+  color: #555555;
+  text-decoration: none;
+  display: block;
+  font-weight: 500;
+}
+
+.mobileAccordionItem:hover {
+  color: #c3937c;
 }

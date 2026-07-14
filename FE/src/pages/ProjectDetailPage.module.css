@@ -586,3 +586,258 @@
   .serviceHeroBody { padding: 24px 20px; }
   .serviceImg { min-height: 200px; max-height: 220px; }
 }
+
+/* Vendor Milestone Update Panel */
+.vendorEditPanel {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(195, 147, 124, 0.25);
+  text-align: left;
+}
+
+.vendorEditTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4c5637;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 10px;
+}
+
+.editBtn {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4c5637;
+  background-color: rgba(76, 86, 55, 0.08);
+  border: 1px solid rgba(76, 86, 55, 0.2);
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editBtn:hover {
+  background-color: rgba(76, 86, 55, 0.15);
+  border-color: #4c5637;
+}
+
+.editForm {
+  background-color: #fcfbf7;
+  border: 1px solid #ece6dd;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.statusSelect {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.85rem;
+  color: #333;
+  padding: 8px 12px;
+  background-color: #fff;
+  border: 1px solid #ece6dd;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+}
+
+.notesTextarea {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.85rem;
+  color: #333;
+  padding: 10px 12px;
+  background-color: #fff;
+  border: 1px solid #ece6dd;
+  border-radius: 8px;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.formActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.saveBtn {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: #4c5637;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background-color: #c3937c;
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelBtn {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  background-color: #fff;
+  border: 1px solid #ece6dd;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn:hover {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+}
+
+/* Add Milestone Section */
+.addMilestoneSection {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.addMilestoneBtn {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: #4c5637;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(76, 86, 55, 0.15);
+}
+
+.addMilestoneBtn:hover {
+  background-color: #c3937c;
+  box-shadow: 0 4px 12px rgba(195, 147, 124, 0.2);
+}
+
+.addMilestoneForm {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 16px;
+  background: #fff;
+  border: 1px solid rgba(195, 147, 124, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(77, 86, 55, 0.08);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.addFormTitle {
+  font-family: Cormorant, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #3a3226;
+  margin: 0 0 16px;
+}
+
+.addFormRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.addFormLabel {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4c5637;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.addFormInput {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.85rem;
+  padding: 10px 12px;
+  border: 1px solid #ece6dd;
+  border-radius: 8px;
+  background-color: #fcfbf7;
+  outline: none;
+}
+
+.addFormTextarea {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.85rem;
+  padding: 10px 12px;
+  border: 1px solid #ece6dd;
+  border-radius: 8px;
+  background-color: #fcfbf7;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.addFormActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.submitNewBtn {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: #4c5637;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitNewBtn:hover {
+  background-color: #c3937c;
+}
+
+.cancelNewBtn {
+  font-family: Montserrat, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  background-color: #fff;
+  border: 1px solid #ece6dd;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelNewBtn:hover {
+  background-color: #f5f5f5;
+}
+

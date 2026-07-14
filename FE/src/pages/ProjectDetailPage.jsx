@@ -84,7 +84,20 @@ export default function ProjectDetailPage() {
   const [activeTab, setActiveTab] = useState("timeline");
   const [expandedMilestone, setExpandedMilestone] = useState(null);
 
+  // Milestone edit states
+  const [updatingMilestoneId, setUpdatingMilestoneId] = useState(null);
+  const [mStatus, setMStatus] = useState("pending");
+  const [mNotes, setMNotes] = useState("");
+
+  // Add milestone states
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addTitle, setAddTitle] = useState("");
+  const [addDesc, setAddDesc] = useState("");
+  const [addDueDate, setAddDueDate] = useState("");
+  const [submittingMilestone, setSubmittingMilestone] = useState(false);
+
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const fetchProject = useCallback(async () => {
     if (!token) {
@@ -110,6 +123,69 @@ export default function ProjectDetailPage() {
     fetchProject();
   }, [fetchProject]);
 
+  // Handler to update milestone
+  const handleUpdateMilestone = async (milestoneId) => {
+    try {
+      setSubmittingMilestone(true);
+      const res = await fetch(`${API_URL}/api/projects/${project._id}/milestones/${milestoneId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          status: mStatus,
+          notes: mNotes,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Cập nhật mốc thất bại");
+      setProject(data.project);
+      setUpdatingMilestoneId(null);
+      alert("Đã cập nhật tiến độ thành công!");
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSubmittingMilestone(false);
+    }
+  };
+
+  // Handler to add milestone
+  const handleAddMilestone = async (e) => {
+    e.preventDefault();
+    if (!addTitle.trim()) {
+      alert("Vui lòng điền tiêu đề mốc tiến độ!");
+      return;
+    }
+    try {
+      setSubmittingMilestone(true);
+      const res = await fetch(`${API_URL}/api/projects/${project._id}/milestones`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: addTitle.trim(),
+          description: addDesc.trim(),
+          dueDate: addDueDate || null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Thêm mốc thất bại");
+      setProject(data.project);
+      setAddTitle("");
+      setAddDesc("");
+      setAddDueDate("");
+      setShowAddForm(false);
+      alert("Đã thêm mốc tiến độ mới thành công!");
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSubmittingMilestone(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.loadingPage}>
@@ -131,6 +207,12 @@ export default function ProjectDetailPage() {
       </div>
     );
   }
+
+  const vendorId = project?.vendor?._id || project?.vendor;
+  const userId = user?._id || user?.id;
+  const isVendorForThisProject = user && user.role === "vendor" && vendorId && userId && String(vendorId) === String(userId);
+  const isAdmin = user && user.role === "admin";
+  const canEdit = isAdmin || isVendorForThisProject;
 
   const progress = calculateProgress(project.milestones);
   const projectStatus = projectStatusConfig[project.status] || projectStatusConfig.active;
@@ -258,6 +340,61 @@ export default function ProjectDetailPage() {
         {/* ── Tab: Timeline ─────────────── */}
         {activeTab === "timeline" && (
           <div className={styles.timelineContainer}>
+            {canEdit && (
+              <div className={styles.addMilestoneSection}>
+                <button
+                  type="button"
+                  className={styles.addMilestoneBtn}
+                  onClick={() => setShowAddForm(!showAddForm)}
+                >
+                  {showAddForm ? "✕ Đóng biểu mẫu" : "➕ Thêm mốc tiến độ mới"}
+                </button>
+
+                {showAddForm && (
+                  <form onSubmit={handleAddMilestone} className={styles.addMilestoneForm}>
+                    <h3 className={styles.addFormTitle}>Thêm mốc tiến độ mới</h3>
+                    <div className={styles.addFormRow}>
+                      <label className={styles.addFormLabel}>Tiêu đề mốc *</label>
+                      <input
+                        type="text"
+                        value={addTitle}
+                        onChange={(e) => setAddTitle(e.target.value)}
+                        placeholder="Ví dụ: Đặt cọc lần 1, Khảo sát địa điểm..."
+                        className={styles.addFormInput}
+                        required
+                      />
+                    </div>
+                    <div className={styles.addFormRow}>
+                      <label className={styles.addFormLabel}>Mô tả chi tiết</label>
+                      <textarea
+                        value={addDesc}
+                        onChange={(e) => setAddDesc(e.target.value)}
+                        placeholder="Mô tả các đầu việc hoặc thông tin liên quan..."
+                        className={styles.addFormTextarea}
+                      />
+                    </div>
+                    <div className={styles.addFormRow}>
+                      <label className={styles.addFormLabel}>Hạn hoàn thành</label>
+                      <input
+                        type="date"
+                        value={addDueDate}
+                        onChange={(e) => setAddDueDate(e.target.value)}
+                        className={styles.addFormInput}
+                      />
+                    </div>
+                    <div className={styles.addFormActions}>
+                      <button type="submit" className={styles.submitNewBtn} disabled={submittingMilestone}>
+                        {submittingMilestone ? "Đang thêm..." : "Thêm mốc"}
+                      </button>
+                      <button type="button" className={styles.cancelNewBtn} onClick={() => setShowAddForm(false)}>
+                        Hủy
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
+
             {sortedMilestones.length === 0 ? (
               <div className={styles.emptyTimeline}>
                 <span>📋</span>
@@ -321,7 +458,7 @@ export default function ProjectDetailPage() {
 
                         {/* Expanded content */}
                         {isExpanded && (
-                          <div className={styles.milestoneDetail}>
+                          <div className={styles.milestoneDetail} onClick={(e) => e.stopPropagation()}>
                             {milestone.description && (
                               <div className={styles.milestoneDetailSection}>
                                 <h4 className={styles.milestoneDetailLabel}>Mô tả</h4>
@@ -372,6 +509,68 @@ export default function ProjectDetailPage() {
                             )}
                             {!milestone.description && !milestone.notes && !milestone.completedAt && (
                               <p className={styles.noDetailText}>Chưa có thông tin chi tiết cho mốc này.</p>
+                            )}
+
+                            {/* Vendor update milestone panel */}
+                            {canEdit && (
+                              <div className={styles.vendorEditPanel}>
+                                <h4 className={styles.vendorEditTitle}>🛠️ Cập nhật tiến độ (Vendor/Admin)</h4>
+                                {updatingMilestoneId === milestone._id ? (
+                                  <div className={styles.editForm}>
+                                    <div className={styles.formRow}>
+                                      <label className={styles.formLabel}>Trạng thái:</label>
+                                      <select
+                                        className={styles.statusSelect}
+                                        value={mStatus}
+                                        onChange={(e) => setMStatus(e.target.value)}
+                                      >
+                                        <option value="pending">Chờ thực hiện</option>
+                                        <option value="in_progress">Đang thực hiện</option>
+                                        <option value="completed">Hoàn thành</option>
+                                        <option value="rejected">Từ chối</option>
+                                      </select>
+                                    </div>
+                                    <div className={styles.formRow}>
+                                      <label className={styles.formLabel}>Ghi chú:</label>
+                                      <textarea
+                                        className={styles.notesTextarea}
+                                        value={mNotes}
+                                        onChange={(e) => setMNotes(e.target.value)}
+                                        placeholder="Nhập hướng dẫn, ghi chú tiến độ tại đây..."
+                                      />
+                                    </div>
+                                    <div className={styles.formActions}>
+                                      <button
+                                        type="button"
+                                        className={styles.saveBtn}
+                                        disabled={submittingMilestone}
+                                        onClick={() => handleUpdateMilestone(milestone._id)}
+                                      >
+                                        {submittingMilestone ? "Đang lưu..." : "Lưu lại"}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className={styles.cancelBtn}
+                                        onClick={() => setUpdatingMilestoneId(null)}
+                                      >
+                                        Hủy
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    className={styles.editBtn}
+                                    onClick={() => {
+                                      setUpdatingMilestoneId(milestone._id);
+                                      setMStatus(milestone.status);
+                                      setMNotes(milestone.notes || "");
+                                    }}
+                                  >
+                                    ✏️ Cập nhật tiến độ & Ghi chú
+                                  </button>
+                                )}
+                              </div>
                             )}
                           </div>
                         )}

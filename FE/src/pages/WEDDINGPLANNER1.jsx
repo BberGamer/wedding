@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SharedHeader from "../components/SharedHeader";
 import UserReviews1 from "../components/UserReviews1";
+import Footer1 from "../components/Footer1";
 import styles from "./WEDDINGPLANNER1.module.css";
 import { API_URL } from "../config";
 
@@ -576,59 +577,7 @@ const WEDDINGPLANNER1 = () => {
           <img className={styles.layer1Icon3} alt="" src="/Layer-1.svg" />
         </div>
       </section>
-      <footer className={styles.footer}>
-        <div className={styles.titleParent}>
-          <h1 className={styles.title}>
-            Our wedding planners will leave you breathless on your special day.
-          </h1>
-          <div className={styles.copyrightDetails}>
-            <div className={styles.copyright2020LaaParent}>
-              <div className={styles.termsOfUse}>
-                Copyright Dotcreativemarket
-              </div>
-              <div className={styles.legalLinks}>
-                <div className={styles.termsOfUse}>Terms of Use</div>
-                <div className={styles.termsOfUse}>Privacy Policy</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.footerLinks}>
-          <div className={styles.sitemap}>
-            <h3 className={styles.sitemap2}>Sitemap</h3>
-            <div className={styles.pageLinks}>
-              <div className={styles.termsOfUse}>Home</div>
-              <div className={styles.termsOfUse}>About</div>
-              <div className={styles.termsOfUse}>Services</div>
-              <div className={styles.termsOfUse}>Blog</div>
-              <div className={styles.events}>Events</div>
-              <div className={styles.termsOfUse}>Contact Us</div>
-            </div>
-          </div>
-          <div className={styles.newsletter}>
-            <h3 className={styles.newsletter2}>newsletter</h3>
-            <div className={styles.emailForm}>
-              <div className={styles.enterYouEmailAddressParent}>
-                <div className={styles.enterYouEmail}>
-                  enter you email address
-                </div>
-                <input
-                  className={styles.subscribeAction}
-                  placeholder="subscribe"
-                  type="text"
-                />
-              </div>
-              <div className={styles.emailDivider} />
-            </div>
-            <img
-              className={styles.pathStrokeIcon}
-              loading="lazy"
-              alt=""
-              src="/Path-Stroke.svg"
-            />
-          </div>
-        </div>
-      </footer>
+      <Footer1 />
     </div>
   );
 };

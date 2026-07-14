@@ -22,10 +22,10 @@ const AboutUs = () => {
         <section className={styles.heroSection}>
           <div className={styles.heroOverlay} />
           <div className={styles.heroContent}>
-            <span className={styles.eyebrow}>GIOI THIEU VE AN WEDDING</span>
-            <h1 className={styles.heroTitle}>Hanh Trinh Kien Tao Hanh Phuc</h1>
+            <span className={styles.eyebrow}>GIỚI THIỆU VỀ AN WEDDING</span>
+            <h1 className={styles.heroTitle}>Hành Trình Kiến Tạo Hạnh Phúc</h1>
             <p className={styles.heroSubtitle}>
-              Chao mung ban den voi AN Wedding - Nen tang ket noi dich vu cuoi cao cap, noi nhung y tuong lang man nhat duoc thap sang thanh hien thuc tron ven va an tam tuyet doi.
+              Chào mừng bạn đến với AN Wedding - Nền tảng kết nối dịch vụ cưới cao cấp, nơi những ý tưởng lãng mạn nhất được thắp sáng thành hiện thực trọn vẹn và an tâm tuyệt đối.
             </p>
           </div>
         </section>
@@ -34,13 +34,13 @@ const AboutUs = () => {
         <section className={styles.narrativeSection}>
           <div className={styles.narrativeGrid}>
             <div className={styles.narrativeText}>
-              <span className={styles.sectionLabel}>CAU CHUYEN CUA CHUNG TOI</span>
-              <h2 className={styles.sectionTitle}>Su menh ton vinh ngay chung doi</h2>
+              <span className={styles.sectionLabel}>CÂU CHUYỆN CỦA CHÚNG TÔI</span>
+              <h2 className={styles.sectionTitle}>Sứ mệnh tôn vinh ngày chung đôi</h2>
               <p className={styles.paragraph}>
-                Duoc thanh lap voi khat vong don gian hoa hanh trinh chuan bi cuoi day lo toan, <strong>AN Wedding</strong> dong vai tro la chiec cau noi nghe thuat giua cac cap doi va nhung nha cung cap dich vu cuoi hang dau tai Viet Nam.
+                Được thành lập với khát vọng đơn giản hóa hành trình chuẩn bị cưới đầy lo toan, <strong>AN Wedding</strong> đóng vai trò là chiếc cầu nối nghệ thuật giữa các cặp đôi và những nhà cung cấp dịch vụ cưới hàng đầu tại Việt Nam.
               </p>
               <p className={styles.paragraph}>
-                Chung toi hieu rang, moi dam cuoi la mot cau chuyen tinh yeu doc ban. Khong chi dung lai o viec tim kiem dia diem hay trang diem, AN Wedding mang den mot he sinh thai thong minh giup ban hoach dinh, so sanh bao gia chi tiet va hien thuc hoa dam cuoi trong mo mot cach sang trong, tinh te nhat.
+                Chúng tôi hiểu rằng, mỗi đám cưới là một câu chuyện tình yêu độc bản. Không chỉ dừng lại ở việc tìm kiếm địa điểm hay trang điểm, AN Wedding mang đến một hệ sinh thái thông minh giúp bạn hoạch định, so sánh báo giá chi tiết và hiện thực hóa đám cưới trong mơ một cách sang trọng, tinh tế nhất.
               </p>
             </div>
             <div className={styles.narrativeImageWrapper}>
@@ -57,8 +57,8 @@ const AboutUs = () => {
         {/* Core Values Section */}
         <section className={styles.valuesSection}>
           <div className={styles.valuesHeader}>
-            <span className={styles.sectionLabel}>GIA TRI COT LOI</span>
-            <h2 className={styles.sectionTitle} style={{ textAlign: "center" }}>Ba tru cot tao nen su khac biet</h2>
+            <span className={styles.sectionLabel}>GIÁ TRỊ CỐT LÕI</span>
+            <h2 className={styles.sectionTitle} style={{ textAlign: "center" }}>Ba trụ cột tạo nên sự khác biệt</h2>
           </div>
 
           <div className={styles.valuesGrid}>
@@ -68,9 +68,9 @@ const AboutUs = () => {
                   <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
                 </svg>
               </div>
-              <h3 className={styles.valueTitle}>Tinh Te &amp; Doc Ban</h3>
+              <h3 className={styles.valueTitle}>Tinh Tế &amp; Độc Bản</h3>
               <p className={styles.valueText}>
-                Tung nha hang, chuyen vien trang diem, xe hoa hay bo vay cuoi tren AN Wedding deu duoc tuyen chon khat khe de dam bao phong cach luxury va ton vinh ca tinh rieng biet cua co dau chu re.
+                Từng nhà hàng, chuyên viên trang điểm, xe hoa hay bộ váy cưới trên AN Wedding đều được tuyển chọn khắt khe để đảm bảo phong cách luxury và tôn vinh cá tính riêng biệt của cô dâu chú rể.
               </p>
             </div>
 
@@ -80,9 +80,9 @@ const AboutUs = () => {
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
               </div>
-              <h3 className={styles.valueTitle}>Tin Cay Tuyet Doi</h3>
+              <h3 className={styles.valueTitle}>Tin Cậy Tuyệt Đối</h3>
               <p className={styles.valueText}>
-                He thong bao ve giao dich thong qua Admin kiem duyet va tich hop Webhook thong minh SePay bao chung 100% dong tien cua ban luon an toan truoc khi dich vu duoc hoan thanh.
+                Hệ thống bảo vệ giao dịch thông qua Admin kiểm duyệt và tích hợp Webhook thông minh SePay bảo chứng 100% dòng tiền của bạn luôn an toàn trước khi dịch vụ được hoàn thành.
               </p>
             </div>
 
@@ -92,9 +92,9 @@ const AboutUs = () => {
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
               </div>
-              <h3 className={styles.valueTitle}>Ket Noi Lien Mach</h3>
+              <h3 className={styles.valueTitle}>Kết Nối Liền Mạch</h3>
               <p className={styles.valueText}>
-                Xoa bo rao can thong tin giua cac cap doi va nha cung cap. Moi goi dich vu, chinh sach gia, tien ich di kem deu hien thi minh bach giup tiet kiem toi da thoi gian chuan bi dam cuoi.
+                Xóa bỏ rào cản thông tin giữa các cặp đôi và nhà cung cấp. Mọi gói dịch vụ, chính sách giá, tiện ích đi kèm đều hiển thị minh bạch giúp tiết kiệm tối đa thời gian chuẩn bị đám cưới.
               </p>
             </div>
           </div>
@@ -113,13 +113,13 @@ const AboutUs = () => {
             </div>
 
             <div className={styles.securityText}>
-              <span className={styles.sectionLabel}>CONG NGHE BAO MAT GIAO DICH</span>
-              <h2 className={styles.sectionTitle}>Giai phap thanh toan SePay VietQR dot pha</h2>
+              <span className={styles.sectionLabel}>CÔNG NGHỆ BẢO MẬT GIAO DỊCH</span>
+              <h2 className={styles.sectionTitle}>Giải pháp thanh toán SePay VietQR đột phá</h2>
               <p className={styles.paragraph}>
-                Tai AN Wedding, chung toi tien phong ung dung cong nghe bao chung giao dich 3 ben. Thay vi thanh toan truc tiep cho nha cung cap va doi mat voi rui ro dich vu khong nhu y, moi khoan thanh toan tu cap doi se duoc chuyen truc tiep vao tai khoan an toan cua Platform Owner (Admin).
+                Tại AN Wedding, chúng tôi tiên phong ứng dụng công nghệ bảo chứng giao dịch 3 bên. Thay vì thanh toán trực tiếp cho nhà cung cấp và đối mặt với rủi ro dịch vụ không như ý, mọi khoản thanh toán từ cặp đôi sẽ được chuyển trực tiếp vào tài khoản an toàn của Platform Owner (Admin).
               </p>
               <p className={styles.paragraph}>
-                Nho vao ket noi <strong>Webhook SePay tu dong hien thi don hang thanh cong trong 2 giay</strong>, he thong se xac nhan dat cho lap tuc. Khoan tien chi duoc giai ngan cho doi tac cung cap dich vu sau khi ngay vui cua hai ban hoan tat tot dep va co xac nhan kiem duyet chat luong tu Admin.
+                Nhờ vào kết nối <strong>Webhook SePay tự động hiển thị đơn hàng thành công trong 2 giây</strong>, hệ thống sẽ xác nhận đặt chỗ lập tức. Khoản tiền chỉ được giải ngân cho đối tác cung cấp dịch vụ sau khi ngày vui của hai bạn hoàn tất tốt đẹp và có xác nhận kiểm duyệt chất lượng từ Admin.
               </p>
             </div>
           </div>
@@ -128,8 +128,8 @@ const AboutUs = () => {
         {/* Team / Founders Section */}
         <section className={styles.teamSection}>
           <div className={styles.valuesHeader}>
-            <span className={styles.sectionLabel}>DOI NGU SANG LAP</span>
-            <h2 className={styles.sectionTitle} style={{ textAlign: "center" }}>Nhung nguoi dong hanh cung ban</h2>
+            <span className={styles.sectionLabel}>ĐỘI NGŨ SÁNG LẬP</span>
+            <h2 className={styles.sectionTitle} style={{ textAlign: "center" }}>Những người đồng hành cùng bạn</h2>
           </div>
 
           {/* Row 1: top 3 */}
@@ -139,14 +139,14 @@ const AboutUs = () => {
               <div className={styles.teamImageWrapper}>
                 <img
                   src="/team/chu-duc-doanh.jpg"
-                  alt="Chu Duc Doanh - CEO"
+                  alt="Chu Đức Doanh - CEO"
                   className={styles.teamImage}
                 />
               </div>
-              <h3 className={styles.teamName}>Chu Duc Doanh</h3>
+              <h3 className={styles.teamName}>Chu Đức Doanh</h3>
               <p className={styles.teamRole}>CEO</p>
               <p className={styles.teamDesc}>
-                Phu trach chien luoc tong the, tam nhin, hop tac doi tac va la dai dien phap luat.
+                Phụ trách chiến lược tổng thể, tầm nhìn, hợp tác đối tác và là đại diện pháp luật.
               </p>
             </div>
 
@@ -155,14 +155,14 @@ const AboutUs = () => {
               <div className={styles.teamImageWrapper}>
                 <img
                   src="/team/nguyen-thi-hong-nhung.png"
-                  alt="Nguyen Thi Hong Nhung - COO"
+                  alt="Nguyễn Thị Hồng Nhung - COO"
                   className={styles.teamImage}
                 />
               </div>
-              <h3 className={styles.teamName}>Nguyen Thi Hong Nhung</h3>
+              <h3 className={styles.teamName}>Nguyễn Thị Hồng Nhung</h3>
               <p className={styles.teamRole}>COO</p>
               <p className={styles.teamDesc}>
-                Chi dao sang tao ve nhan dien hinh anh, noi dung truyen thong. Lam content quang cao (video, hinh anh, bai viet) cho cac chien dich Marketing.
+                Chỉ đạo sáng tạo về nhận diện hình ảnh, nội dung truyền thông. Làm content quảng cáo (video, hình ảnh, bài viết) cho các chiến dịch Marketing.
               </p>
             </div>
 
@@ -171,14 +171,14 @@ const AboutUs = () => {
               <div className={styles.teamImageWrapper}>
                 <img
                   src="/team/do-van-binh.png"
-                  alt="Do Van Binh - CTO"
+                  alt="Đỗ Văn Bình - CTO"
                   className={styles.teamImage}
                 />
               </div>
-              <h3 className={styles.teamName}>Do Van Binh</h3>
+              <h3 className={styles.teamName}>Đỗ Văn Bình</h3>
               <p className={styles.teamRole}>CTO</p>
               <p className={styles.teamDesc}>
-                Chi dao sang tao ve nhan dien hinh anh, noi dung truyen thong. Lam content quang cao (video, hinh anh, bai viet) cho cac chien dich Marketing.
+                Giám đốc Công nghệ, vị trí quản lý cấp cao chịu trách nhiệm dẫn dắt chiến lược công nghệ, nghiên cứu & phát triển (R&D), và tối ưu hóa hệ thống kỹ thuật
               </p>
             </div>
           </div>
@@ -190,14 +190,14 @@ const AboutUs = () => {
               <div className={styles.teamImageWrapper}>
                 <img
                   src="/team/dinh-quang-huy.png"
-                  alt="Dinh Quang Huy - CFO, CMO"
+                  alt="Đinh Quang Huy - CFO, CMO"
                   className={styles.teamImage}
                 />
               </div>
-              <h3 className={styles.teamName}>Dinh Quang Huy</h3>
+              <h3 className={styles.teamName}>Đinh Quang Huy</h3>
               <p className={styles.teamRole}>CFO, CMO</p>
               <p className={styles.teamDesc}>
-                Quan ly ngan sach, dong tien, rui ro tai chinh va lam viec voi cac nha dau tu, chiu trach nhiem chien luoc thu hut nguoi dung va phat trien thuong hieu. Xay dung cac chien dich truyen thong.
+                Quản lý ngân sách, dòng tiền, rủi ro tài chính và làm việc với các nhà đầu tư, chịu trách nhiệm chiến lược thu hút người dùng và phát triển thương hiệu. Xây dựng các chiến dịch truyền thông.
               </p>
             </div>
 
@@ -206,14 +206,14 @@ const AboutUs = () => {
               <div className={styles.teamImageWrapper}>
                 <img
                   src="/team/dam-phuong-thao.png"
-                  alt="Dam Phuong Thao - Marketing"
+                  alt="Đàm Phương Thảo - Marketing"
                   className={styles.teamImage}
                 />
               </div>
-              <h3 className={styles.teamName}>Dam Phuong Thao</h3>
+              <h3 className={styles.teamName}>Đàm Phương Thảo</h3>
               <p className={styles.teamRole}>Marketing</p>
               <p className={styles.teamDesc}>
-                Phu trach toan bo hoat dong marketing, xay dung thuong hieu va trien khai cac chien dich truyen thong cho AN Wedding.
+                Phụ trách toàn bộ hoạt động marketing, xây dựng thương hiệu và triển khai các chiến dịch truyền thông cho AN Wedding.
               </p>
             </div>
           </div>
@@ -222,8 +222,8 @@ const AboutUs = () => {
         {/* Contact Banner */}
         <section className={styles.contactBanner}>
           <div className={styles.contactBannerContent}>
-            <h2>Dong hanh cung hai ban viet tiep cau chuyen tinh yeu</h2>
-            <p>Neu ban co bat cu thac mac nao, doi ngu tu van vien cua chung toi luon san sang ho tro truc tuyen 24/7.</p>
+            <h2>Đồng hành cùng hai bạn viết tiếp câu chuyện tình yêu</h2>
+            <p>Nếu bạn có bất cứ thắc mắc nào, đội ngũ tư vấn viên của chúng tôi luôn sẵn sàng hỗ trợ trực tuyến 24/7.</p>
             <div className={styles.contactNumber}>contact: 0337774204</div>
           </div>
         </section>

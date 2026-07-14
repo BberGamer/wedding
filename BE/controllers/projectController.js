@@ -2,14 +2,65 @@ const Project = require("../models/Project");
 const Order = require("../models/Order");
 const Service = require("../models/Service");
 
-// ─── Customer: Get all projects for logged-in customer ───────────────────────
 exports.getMyProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ customer: req.user.id })
-      .populate("service", "name category image price priceLabel address phone")
-      .populate("vendor", "name email phone avatar")
-      .populate("order", "amount status paymentDate eventDate txnRef")
-      .sort({ createdAt: -1 });
+    let projects = [];
+
+    if (req.user.role === "vendor") {
+      // Find projects where vendor field matches directly
+      const directProjects = await Project.find({ vendor: req.user.id })
+        .populate("service", "name category image price priceLabel address phone vendor")
+        .populate("vendor", "name email phone avatar")
+        .populate("customer", "name email phone")
+        .populate("order", "amount status paymentDate eventDate txnRef")
+        .sort({ createdAt: -1 });
+
+      // Also find projects where the service's vendor matches (fallback)
+      const serviceIds = await Service.find({ vendor: req.user.id }).select("_id");
+      const serviceIdList = serviceIds.map(s => s._id);
+      const serviceProjects = await Project.find({
+        service: { $in: serviceIdList },
+        _id: { $nin: directProjects.map(p => p._id) }
+      })
+        .populate("service", "name category image price priceLabel address phone vendor")
+        .populate("vendor", "name email phone avatar")
+        .populate("customer", "name email phone")
+        .populate("order", "amount status paymentDate eventDate txnRef")
+        .sort({ createdAt: -1 });
+
+      // Backfill vendor field on projects that don't have it
+      for (const proj of serviceProjects) {
+        if (!proj.vendor) {
+          proj.vendor = req.user.id;
+          await proj.save();
+        }
+      }
+
+      // Re-populate after save
+      const allIds = [...directProjects.map(p => p._id), ...serviceProjects.map(p => p._id)];
+      projects = await Project.find({ _id: { $in: allIds } })
+        .populate("service", "name category image price priceLabel address phone vendor")
+        .populate("vendor", "name email phone avatar")
+        .populate("customer", "name email phone")
+        .populate("order", "amount status paymentDate eventDate txnRef")
+        .sort({ createdAt: -1 });
+
+    } else if (req.user.role === "customer") {
+      projects = await Project.find({ customer: req.user.id })
+        .populate("service", "name category image price priceLabel address phone vendor")
+        .populate("vendor", "name email phone avatar")
+        .populate("customer", "name email phone")
+        .populate("order", "amount status paymentDate eventDate txnRef")
+        .sort({ createdAt: -1 });
+    } else {
+      // Admin sees all
+      projects = await Project.find({})
+        .populate("service", "name category image price priceLabel address phone vendor")
+        .populate("vendor", "name email phone avatar")
+        .populate("customer", "name email phone")
+        .populate("order", "amount status paymentDate eventDate txnRef")
+        .sort({ createdAt: -1 });
+    }
 
     res.json({ success: true, projects });
   } catch (err) {
@@ -90,9 +141,17 @@ exports.updateProject = async (req, res) => {
   try {
     const { title, description, startDate, endDate, status, notes, coverImage } = req.body;
 
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.id).populate("service", "vendor");
     if (!project) {
       return res.status(404).json({ success: false, message: "Không tìm thấy dự án" });
+    }
+
+    if (req.user.role === "vendor") {
+      const projectVendor = project.vendor ? project.vendor.toString() : null;
+      const serviceVendor = project.service?.vendor ? project.service.vendor.toString() : null;
+      if (projectVendor !== req.user.id && serviceVendor !== req.user.id) {
+        return res.status(403).json({ success: false, message: "Bạn không có quyền sửa dự án này" });
+      }
     }
 
     if (title !== undefined) project.title = title;
@@ -122,9 +181,17 @@ exports.updateMilestone = async (req, res) => {
     const { projectId, milestoneId } = req.params;
     const { status, notes, completedAt } = req.body;
 
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId).populate("service", "vendor");
     if (!project) {
       return res.status(404).json({ success: false, message: "Không tìm thấy dự án" });
+    }
+
+    if (req.user.role === "vendor") {
+      const projectVendor = project.vendor ? project.vendor.toString() : null;
+      const serviceVendor = project.service?.vendor ? project.service.vendor.toString() : null;
+      if (projectVendor !== req.user.id && serviceVendor !== req.user.id) {
+        return res.status(403).json({ success: false, message: "Bạn không có quyền sửa mốc tiến độ của dự án này" });
+      }
     }
 
     const milestone = project.milestones.id(milestoneId);
@@ -167,9 +234,17 @@ exports.addMilestone = async (req, res) => {
   try {
     const { title, description, dueDate, order: milestoneOrder } = req.body;
 
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.id).populate("service", "vendor");
     if (!project) {
       return res.status(404).json({ success: false, message: "Không tìm thấy dự án" });
+    }
+
+    if (req.user.role === "vendor") {
+      const projectVendor = project.vendor ? project.vendor.toString() : null;
+      const serviceVendor = project.service?.vendor ? project.service.vendor.toString() : null;
+      if (projectVendor !== req.user.id && serviceVendor !== req.user.id) {
+        return res.status(403).json({ success: false, message: "Bạn không có quyền thêm mốc tiến độ cho dự án này" });
+      }
     }
 
     project.milestones.push({

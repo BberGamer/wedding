@@ -1,0 +1,44 @@
+.socialFloatingWrapper {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.socialFabBtn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.facebookBtn {
+  background: linear-gradient(135deg, #1877F2, #0a58ca);
+  box-shadow: 0 6px 24px rgba(24, 119, 242, 0.4);
+}
+
+.facebookBtn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 30px rgba(24, 119, 242, 0.5);
+}
+
+.tiktokBtn {
+  background: linear-gradient(135deg, #010101, #333333);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.tiktokBtn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}

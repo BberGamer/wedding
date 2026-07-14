@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SharedHeader from "../components/SharedHeader";
 import Footer1 from "../components/Footer1";
@@ -7,16 +7,16 @@ import styles from "./ComparePage.module.css";
 
 // 5 Categories Configuration
 const CATEGORIES = [
-  { id: "nha_hang", name: "Nhà hàng tiệc cưới" },
-  { id: "trang_diem", name: "Trang điểm cô dâu" },
-  { id: "xe_hoa", name: "Xe hoa ngày cưới" },
-  { id: "chup_anh", name: "Chụp ảnh, phóng sự" },
-  { id: "vay_cuoi", name: "Thuê váy & vest cưới" }
+  { id: "nha_hang", name: "Sảnh tiệc cưới", icon: "🍽️" },
+  { id: "chup_anh", name: "Chụp ảnh cưới", icon: "📸" },
+  { id: "trang_diem", name: "Trang điểm cô dâu", icon: "💄" },
+  { id: "xe_hoa", name: "Xe hoa ngày cưới", icon: "🚗" },
+  { id: "vay_cuoi", name: "Thuê váy & vest", icon: "👗" }
 ];
 
 // Helper to generate consistent mock details for criteria that are not stored in standard DB
 const generateAttributes = (service) => {
-  if (!service) return {};
+  if (!service) return null;
 
   const name = service.name || "";
   const id = service._id || "";
@@ -33,41 +33,146 @@ const generateAttributes = (service) => {
   };
 
   const basePrice = service.price || 0;
-  const ratingVal = service.rating || 5.0;
+  const ratingVal = service.rating || 4.8;
+  const reviewCountVal = service.reviewsCount || getSeededValue(seed + "rev", [28, 45, 89, 124, 256, 412]);
+
+  // Gallery images based on category (use real album from DB if available)
+  let gallery = (service.album && service.album.length > 0) ? service.album : [];
+  if (gallery.length === 0) {
+    if (service.category === "nha_hang") {
+      gallery = [
+        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=600",
+        "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=600",
+        "https://images.unsplash.com/photo-1507504038482-7621c51b3050?q=80&w=600"
+      ];
+    } else if (service.category === "chup_anh") {
+      gallery = [
+        "https://images.unsplash.com/photo-1537633552985-df8429e8048b?q=80&w=600",
+        "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600",
+        "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=600"
+      ];
+    } else if (service.category === "trang_diem") {
+      gallery = [
+        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=600",
+        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=600",
+        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=600"
+      ];
+    } else if (service.category === "xe_hoa") {
+      gallery = [
+        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=600",
+        "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?q=80&w=600",
+        "https://images.unsplash.com/photo-1532581291347-9c39cf10a73c?q=80&w=600"
+      ];
+    } else {
+      gallery = [
+        "https://images.unsplash.com/photo-1594552072238-b8a33785b261?q=80&w=600",
+        "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=600",
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600"
+      ];
+    }
+  }
+
+  // Pros & Cons
+  const pros = getSeededValue(seed + "pros", [
+    ["Không gian sang trọng bậc nhất", "Thực đơn tiệc phong phú cực ngon", "Đội ngũ phục vụ chuyên nghiệp tận tâm"],
+    ["Chụp ảnh bắt trọn khoảnh khắc nghệ thuật", "Nhiều ưu đãi album kèm theo", "Bàn giao sản phẩm đúng cam kết"],
+    ["Mỹ phẩm chính hãng cao cấp từ Pháp", "Phong cách trang điểm trong suốt tự nhiên", "Kèm phụ kiện tóc thiết kế sang chảnh"],
+    ["Dòng xe Mercedes/Audi mui trần đời mới", "Tài xế lịch sự, tác phong chuyên nghiệp", "Hỗ trợ trang trí hoa lụa cao cấp miễn phí"],
+    ["Mẫu váy cưới cao cấp thiết kế độc quyền", "Không giới hạn số lần thử váy", "Hỗ trợ chỉnh sửa số đo nhanh chóng"]
+  ]);
+
+  const cons = getSeededValue(seed + "cons", [
+    ["Phụ thu phí phục vụ tiệc vào dịp cuối tuần", "Chỗ đậu xe ô tô giờ cao điểm hơi chật"],
+    ["Phụ thu phí đi lại khi chụp ngoại tỉnh", "Lịch trống các tháng mùa cưới rất hạn chế"],
+    ["Cần đặt trước dịch vụ ít nhất 1 tháng", "Phụ thu trang điểm tại nhà trước 5h sáng"],
+    ["Phí trội giờ thêm tương đối cao", "Chỉ phục vụ đưa đón khu vực nội thành"],
+    ["Yêu cầu đặt cọc giữ váy tương đối lớn", "Hạn chế thay đổi kiểu dáng sát ngày cưới"]
+  ]);
+
+  // Ratings Detail
+  const ratingsDetail = {
+    overall: ratingVal,
+    food: getSeededValue(seed + "food", [4.8, 4.6, 4.4, 4.7, 4.9]),
+    decor: getSeededValue(seed + "decor", [4.7, 4.5, 4.8, 4.6, 4.9]),
+    service: getSeededValue(seed + "service", [4.6, 4.7, 4.5, 4.8, 4.9]),
+    staff: getSeededValue(seed + "staff", [4.8, 4.7, 4.6, 4.5, 4.9]),
+    cleanliness: getSeededValue(seed + "clean", [4.9, 4.8, 4.7, 4.6, 4.5]),
+    value: getSeededValue(seed + "val", [4.5, 4.6, 4.7, 4.8, 4.4])
+  };
+
+  // AI Recommendation tag
+  const aiRecommendation = getSeededValue(seed + "airec", [
+    "Dành cho đám cưới xa hoa: Không gian và dịch vụ chuẩn Luxury hoàn hảo cho số lượng khách lớn.",
+    "Lựa chọn tối ưu ngân sách: Đầy đủ dịch vụ tiện ích với mức giá vô cùng hợp lý và chất lượng tuyệt vời.",
+    "Phù hợp với sự chỉn chu: Đội ngũ chuyên nghiệp tận tâm, hoàn hảo cho những tiệc cưới đòi hỏi khắt khe.",
+    "Phong cách truyền thống: Thiết kế và dịch vụ mang đậm văn hóa cưới truyền thống của Việt Nam.",
+    "Tiệc cưới lãng mạn ngoài trời: Thích hợp nhất cho các buổi tiệc sân vườn hoặc chụp ảnh phong cách thiên nhiên."
+  ]);
+
+  // Reviews timeline
+  const reviews = [
+    {
+      id: "rev1",
+      author: getSeededValue(seed + "aut1", ["Nguyễn Minh Anh", "Lê Thu Hà", "Trần Tiến Đạt"]),
+      date: "12/05/2026",
+      rating: 5.0,
+      content: "Trải nghiệm vô cùng tuyệt vời! Dịch vụ chuẩn 5 sao, đội ngũ hỗ trợ tận tình đến tận phút cuối cùng. Rất xứng đáng với chi phí bỏ ra.",
+      verified: true,
+      helpful: 12,
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100"
+    },
+    {
+      id: "rev2",
+      author: getSeededValue(seed + "aut2", ["Hoàng Quốc Bảo", "Phan Thanh Vân", "Vũ Mai Chi"]),
+      date: "28/04/2026",
+      rating: 4.8,
+      content: "Mọi thứ đều hoàn hảo từ khâu chuẩn bị đến thực hiện. Dù liên hệ sát ngày nhưng ekip vẫn phản hồi nhanh chóng và chuẩn bị rất chu đáo.",
+      verified: true,
+      helpful: 8,
+      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100"
+    }
+  ];
 
   const compAttr = service.comparisonAttributes || {};
 
   const common = {
     id: service._id,
     name: service.name,
-    categoryName: service.category === "nha_hang" ? "Nhà hàng tiệc cưới" :
+    category: service.category,
+    categoryName: service.category === "nha_hang" ? "Sảnh tiệc cưới" :
                   service.category === "trang_diem" ? "Trang điểm cô dâu" :
                   service.category === "xe_hoa" ? "Xe hoa ngày cưới" :
-                  service.category === "chup_anh" ? "Chụp ảnh, phóng sự" : "Thuê váy & vest cưới",
+                  service.category === "chup_anh" ? "Chụp ảnh cưới" : "Thuê váy & vest cưới",
     providerName: compAttr.providerName || (service.vendor?.name) || getSeededValue(seed + "vendor", ["An Wedding Premium", "Gia Đình Việt Planner", "Happy Day Studio", "Luxury Wedding Organizer", "ROYAL Wedding Decor"]),
     imageUrl: service.image || "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600",
-    location: service.location || "Quận 1",
+    location: service.location || "Quận 1, TP. HCM",
     address: service.address || "Chưa cập nhật",
     basePrice: basePrice,
     minPrice: compAttr.minPrice ? Number(compAttr.minPrice) : (basePrice * 0.9),
-    maxPrice: compAttr.maxPrice ? Number(compAttr.maxPrice) : (basePrice * 1.5),
+    maxPrice: compAttr.maxPrice ? Number(compAttr.maxPrice) : (basePrice * 1.3),
     rating: ratingVal,
-    reviewCount: service.reviewsCount || compAttr.reviewCount || getSeededValue(seed + "rev", [18, 45, 89, 124, 256, 412]),
+    reviewCount: reviewCountVal,
     status: compAttr.status || getSeededValue(seed + "status", ["Đang nhận lịch", "Còn trống ít ngày", "Hết lịch tháng này"]),
-    promotion: service.badge || compAttr.promotion || getSeededValue(seed + "promo", ["Giảm 10% gói cưới", "Tặng cổng hoa tươi", "Tặng album cưới mini", "Không có ưu đãi"]),
+    promotion: service.badge || compAttr.promotion || getSeededValue(seed + "promo", ["Giảm 10% gói cưới", "Tặng cổng hoa tươi", "Tặng album cưới mini", "Tặng Voucher giảm 2.000.000đ"]),
     depositPolicy: compAttr.depositPolicy || getSeededValue(seed + "deposit", ["Đặt cọc trước 30% để giữ ngày", "Đặt cọc trước 50%", "Đặt cọc trước 20%"]),
     cancellationPolicy: compAttr.cancellationPolicy || getSeededValue(seed + "cancel", ["Hủy trước 30 ngày hoàn cọc 100%", "Hủy trước 15 ngày hoàn cọc 50%", "Không hoàn cọc khi hủy"]),
     responseTime: compAttr.responseTime || getSeededValue(seed + "response", ["Dưới 15 phút", "Trong vòng 1 giờ", "Trong vòng 2 giờ", "Trong vòng 24 giờ"]),
     includedServices: service.includedServices && service.includedServices.length > 0 
       ? service.includedServices.join(", ") 
       : (compAttr.includedServices || getSeededValue(seed + "inc", [
-          "Hỗ trợ tư vấn kịch bản cưới hỏi, Nhân sự hỗ trợ tiệc cưới, Âm thanh sân khấu cơ bản",
+          "Tư vấn kịch bản cưới hỏi, Nhân sự kỹ thuật hỗ trợ, Âm thanh ánh sáng sân khấu cơ bản",
           "Trọn gói chuẩn bị, Dặm phấn nhẹ trước giờ đón khách, Làm tóc cơ bản",
           "Tài xế chuyên nghiệp lái xe, Xăng xe nội thành dưới 50km, Trang trí hoa lụa cao cấp",
           "Hỗ trợ chỉnh sửa toàn bộ ảnh, Tặng kèm album photobook, Ekip 2 nhiếp ảnh gia",
           "Hỗ trợ chỉnh sửa số đo váy cưới, Cho thuê 3 ngày, Kèm trang sức voan cưới cô dâu"
         ])),
-    notes: service.description || compAttr.notes || "Dịch vụ cưới hỏi chất lượng cao, mang lại trải nghiệm tuyệt vời cho ngày hạnh phúc của bạn."
+    notes: service.description || compAttr.notes || "Dịch vụ cưới hỏi chất lượng cao, mang lại trải nghiệm tuyệt vời cho ngày hạnh phúc của bạn.",
+    pros,
+    cons,
+    ratingsDetail,
+    aiRecommendation,
+    reviews,
+    gallery
   };
 
   let specific = {};
@@ -159,21 +264,31 @@ const ComparePage = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Selected services state
-  const [service1Id, setService1Id] = useState("");
-  const [service2Id, setService2Id] = useState("");
-  
-  // Favorite state (sync with localStorage)
+  // Redesigned Comparison States
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [isComparing, setIsComparing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+
+  // Filter States
+  const [filters, setFilters] = useState({
+    priceMin: 0,
+    priceMax: 150000000,
+    location: "",
+    rating: "",
+    status: ""
+  });
+
+  // Favorites state
   const [favorites, setFavorites] = useState([]);
-  
-  // Alert/Feedback state
-  const [alertMsg, setAlertMsg] = useState("");
-  const [notification, setNotification] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
+
+  // Real reviews state
+  const [realReviews, setRealReviews] = useState({});
 
   // Scroll to top on load
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Load favorites from local storage
     const stored = localStorage.getItem("wedding_favorites");
     if (stored) {
       setFavorites(JSON.parse(stored));
@@ -183,18 +298,26 @@ const ComparePage = () => {
   // Fetch services when category changes
   useEffect(() => {
     setLoading(true);
-    setService1Id("");
-    setService2Id("");
-    setAlertMsg("");
-    setNotification("");
-    
+    setSelectedServices([]);
+    setIsComparing(false);
+    setSearchQuery("");
+    setRealReviews({}); // Reset real reviews
+    setFilters({
+      priceMin: 0,
+      priceMax: 150000000,
+      location: "",
+      rating: "",
+      status: ""
+    });
+
     fetch(`${API_URL}/api/services?category=${currentCategory}`)
       .then((res) => {
         if (!res.ok) throw new Error("Không thể tải danh sách dịch vụ");
         return res.json();
       })
       .then((data) => {
-        setServices(data || []);
+        const enriched = (data || []).map(s => generateAttributes(s));
+        setServices(enriched);
         setLoading(false);
       })
       .catch((err) => {
@@ -204,32 +327,59 @@ const ComparePage = () => {
       });
   }, [currentCategory]);
 
+  // Fetch real reviews for selected services
+  useEffect(() => {
+    if (selectedServices.length === 0) {
+      setRealReviews({});
+      return;
+    }
+
+    selectedServices.forEach(s => {
+      if (!realReviews[s.id]) {
+        fetch(`${API_URL}/api/reviews?serviceId=${s.id}`)
+          .then(res => res.json())
+          .then(data => {
+            setRealReviews(prev => ({
+              ...prev,
+              [s.id]: data || []
+            }));
+          })
+          .catch(err => {
+            console.error("Error fetching reviews for service:", s.id, err);
+            setRealReviews(prev => ({
+              ...prev,
+              [s.id]: []
+            }));
+          });
+      }
+    });
+  }, [selectedServices]);
+
   const handleCategoryChange = (catId) => {
     setCurrentCategory(catId);
   };
 
-  const handleSelectService1 = (e) => {
-    const val = e.target.value;
-    setService1Id(val);
-    setAlertMsg("");
-    setNotification("");
-    if (val && val === service2Id) {
-      setAlertMsg("Vui lòng chọn 2 dịch vụ khác nhau để so sánh.");
+  // Toggle select service to compare
+  const toggleCompare = (service) => {
+    const isSelected = selectedServices.some(s => s.id === service.id);
+    if (isSelected) {
+      setSelectedServices(prev => prev.filter(s => s.id !== service.id));
+    } else {
+      if (selectedServices.length >= 3) {
+        showToast("Bạn chỉ có thể so sánh tối đa 3 dịch vụ cùng lúc.");
+        return;
+      }
+      setSelectedServices(prev => [...prev, service]);
     }
   };
 
-  const handleSelectService2 = (e) => {
-    const val = e.target.value;
-    setService2Id(val);
-    setAlertMsg("");
-    setNotification("");
-    if (val && val === service1Id) {
-      setAlertMsg("Vui lòng chọn 2 dịch vụ khác nhau để so sánh.");
-    }
+  const removeSelectedService = (id) => {
+    setSelectedServices(prev => prev.filter(s => s.id !== id));
   };
 
   // Toggle favorite helper
-  const toggleFavorite = (serviceId) => {
+  const toggleFavorite = (serviceId, e) => {
+    if (e) e.stopPropagation();
     let updated;
     if (favorites.includes(serviceId)) {
       updated = favorites.filter((id) => id !== serviceId);
@@ -243,43 +393,32 @@ const ComparePage = () => {
   };
 
   const showToast = (msg) => {
-    setNotification(msg);
+    setToastMessage(msg);
     setTimeout(() => {
-      setNotification("");
+      setToastMessage("");
     }, 3000);
   };
 
-  const handleBookConsultation = (serviceName) => {
+  const handleBookConsultation = (serviceName, e) => {
+    if (e) e.stopPropagation();
     showToast(`Đã gởi yêu cầu tư vấn cho "${serviceName}"! Chúng tôi sẽ phản hồi sớm nhất.`);
   };
 
-  const handleSelectServiceDirect = (service) => {
-    if (!service) return;
-    showToast(`Đang chuyển hướng đến trang đặt lịch dịch vụ "${service.name}"...`);
+  const handleSelectServiceDirect = (serviceId, servicePrice, serviceCategory, serviceName, e) => {
+    if (e) e.stopPropagation();
+    showToast("Đang chuyển hướng đến trang đặt lịch...");
     setTimeout(() => {
       navigate("/booking", {
         state: {
-          serviceId: service._id,
-          serviceName: service.name,
-          category: service.category,
-          amount: service.price,
+          serviceId,
+          serviceName,
+          category: serviceCategory,
+          amount: servicePrice,
           selectedPackages: "Đặt trực tiếp từ So sánh"
         }
       });
-    }, 1500);
+    }, 1200);
   };
-
-  // Find actual service objects
-  const s1Raw = services.find((s) => s._id === service1Id);
-  const s2Raw = services.find((s) => s._id === service2Id);
-
-  // Generate enriched attributes
-  const s1 = s1Raw ? generateAttributes(s1Raw) : null;
-  const s2 = s2Raw ? generateAttributes(s2Raw) : null;
-
-  // Logic values validation
-  const hasEnoughServices = services.length >= 2;
-  const hasSelectedBoth = s1 && s2 && service1Id !== service2Id;
 
   // Format Helpers
   const formatPrice = (price) => {
@@ -287,831 +426,672 @@ const ComparePage = () => {
     return price.toLocaleString("vi-VN") + "đ";
   };
 
-  const formatRating = (rating) => {
-    if (!rating) return "Chưa cập nhật";
-    return `${rating}/5`;
-  };
+  // Filter & Search Logic
+  const filteredServices = services.filter((s) => {
+    const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.providerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.location.toLowerCase().includes(searchQuery.toLowerCase());
 
-  // Parse response time to minutes for comparison
-  const parseResponseTime = (timeStr) => {
-    if (!timeStr) return 9999;
-    if (timeStr.includes("15 phút")) return 15;
-    if (timeStr.includes("1 giờ")) return 60;
-    if (timeStr.includes("2 giờ")) return 120;
-    return 1440; // 24 hours or longer
-  };
+    const matchesPrice = s.basePrice >= filters.priceMin && s.basePrice <= filters.priceMax;
+    const matchesLocation = filters.location ? s.location.includes(filters.location) : true;
+    const matchesRating = filters.rating ? s.rating >= parseFloat(filters.rating) : true;
+    const matchesStatus = filters.status ? s.status === filters.status : true;
 
-  // Highlights calculator
-  const getHighlight = (key) => {
-    if (!s1 || !s2) return {};
-    
-    switch (key) {
-      case "basePrice":
-        if (s1.basePrice < s2.basePrice) return { s1: "Tiết kiệm hơn" };
-        if (s2.basePrice < s1.basePrice) return { s2: "Tiết kiệm hơn" };
-        break;
-      case "rating":
-        if (s1.rating > s2.rating) return { s1: "Đánh giá tốt hơn" };
-        if (s2.rating > s1.rating) return { s2: "Đánh giá tốt hơn" };
-        break;
-      case "responseTime":
-        const t1 = parseResponseTime(s1.responseTime);
-        const t2 = parseResponseTime(s2.responseTime);
-        if (t1 < t2) return { s1: "Phản hồi nhanh hơn" };
-        if (t2 < t1) return { s2: "Phản hồi nhanh hơn" };
-        break;
-      case "deliveryTime": // specifically for chụp ảnh
-        const d1 = s1.deliveryDaysNum || 999;
-        const d2 = s2.deliveryDaysNum || 999;
-        if (d1 < d2) return { s1: "Nhanh hơn" };
-        if (d2 < d1) return { s2: "Nhanh hơn" };
-        break;
-      case "amenities":
-        const len1 = s1Raw?.amenities?.length || 0;
-        const len2 = s2Raw?.amenities?.length || 0;
-        if (len1 > len2) return { s1: "Nhiều tiện ích hơn" };
-        if (len2 > len1) return { s2: "Nhiều tiện ích hơn" };
-        break;
-      default:
-        return {};
-    }
-    return {};
-  };
+    return matchesSearch && matchesPrice && matchesLocation && matchesRating && matchesStatus;
+  });
 
-  // Render Table Criteria rows
-  const renderRow = (label, key, isPrice = false, isRating = false, isHighlightable = false) => {
-    if (!s1 || !s2) return null;
-    const val1 = s1[key] || "Chưa cập nhật";
-    const val2 = s2[key] || "Chưa cập nhật";
-    
-    let display1 = isPrice ? formatPrice(val1) : isRating ? formatRating(val1) : val1;
-    let display2 = isPrice ? formatPrice(val2) : isRating ? formatRating(val2) : val2;
-
-    const hl = isHighlightable ? getHighlight(key) : {};
-
-    return (
-      <tr key={key} className={hl.s1 || hl.s2 ? styles.highlightRow : ""}>
-        <td className={styles.colCriteria}>{label}</td>
-        <td className={styles.colService}>
-          {display1}
-          {hl.s1 && <span className={[styles.badgeHighlight, styles.badgeBetter].join(" ")}>{hl.s1}</span>}
-        </td>
-        <td className={styles.colService}>
-          {display2}
-          {hl.s2 && <span className={[styles.badgeHighlight, styles.badgeBetter].join(" ")}>{hl.s2}</span>}
-        </td>
-      </tr>
-    );
-  };
-
-  // Dynamic Suggestion generation based on comparative attributes
-  const getSuggestions = () => {
-    if (!s1 || !s2) return [];
-    
-    const suggestions = [];
-
-    // Price suggestion
-    if (s1.basePrice < s2.basePrice) {
-      suggestions.push({
-        target: s1.name,
-        text: `Phù hợp nếu bạn muốn tối ưu chi phí (tiết kiệm ${(s2.basePrice - s1.basePrice).toLocaleString("vi-VN")}đ).`
-      });
-    } else if (s2.basePrice < s1.basePrice) {
-      suggestions.push({
-        target: s2.name,
-        text: `Phù hợp nếu bạn muốn tối ưu chi phí (tiết kiệm ${(s1.basePrice - s2.basePrice).toLocaleString("vi-VN")}đ).`
-      });
-    }
-
-    // Rating suggestion
-    if (s1.rating > s2.rating) {
-      suggestions.push({
-        target: s1.name,
-        text: `Phù hợp nếu bạn ưu tiên chất lượng đánh giá từ người dùng (${s1.rating}/5 so với ${s2.rating}/5).`
-      });
-    } else if (s2.rating > s1.rating) {
-      suggestions.push({
-        target: s2.name,
-        text: `Phù hợp nếu bạn ưu tiên chất lượng đánh giá từ người dùng (${s2.rating}/5 so với ${s1.rating}/5).`
-      });
-    }
-
-    // Category specific recommendations
-    if (currentCategory === "nha_hang") {
-      const cap1 = parseInt(s1.capacity) || 0;
-      const cap2 = parseInt(s2.capacity) || 0;
-      if (cap1 > cap2) {
-        suggestions.push({
-          target: s1.name,
-          text: `Phù hợp với tiệc cưới có số lượng khách lớn (Sức chứa lên đến ${s1.capacity}).`
-        });
-      } else if (cap2 > cap1) {
-        suggestions.push({
-          target: s2.name,
-          text: `Phù hợp với tiệc cưới có số lượng khách lớn (Sức chứa lên đến ${s2.capacity}).`
-        });
-      }
-    } else if (currentCategory === "trang_diem") {
-      if (s1.homeService && s1.homeService.includes("miễn phí")) {
-        suggestions.push({
-          target: s1.name,
-          text: `Phù hợp nếu bạn muốn tiết kiệm thời gian di chuyển trong ngày cưới (Hỗ trợ làm tại nhà miễn phí).`
-        });
-      }
-      if (s2.homeService && s2.homeService.includes("miễn phí")) {
-        suggestions.push({
-          target: s2.name,
-          text: `Phù hợp nếu bạn muốn tiết kiệm thời gian di chuyển trong ngày cưới (Hỗ trợ làm tại nhà miễn phí).`
-        });
-      }
-    } else if (currentCategory === "xe_hoa") {
-      if (s1.rentalDuration && s1.rentalDuration.includes("Trọn gói")) {
-        suggestions.push({
-          target: s1.name,
-          text: `Phù hợp nếu lịch trình rước dâu và tiệc cưới kéo dài trong ngày (Thuê trọn gói ngày cưới).`
-        });
-      } else if (s2.rentalDuration && s2.rentalDuration.includes("Trọn gói")) {
-        suggestions.push({
-          target: s2.name,
-          text: `Phù hợp nếu lịch trình rước dâu và tiệc cưới kéo dài trong ngày (Thuê trọn gói ngày cưới).`
-        });
-      }
-    } else if (currentCategory === "chup_anh") {
-      const photos1 = parseInt(s1.editedPhotos) || 0;
-      const photos2 = parseInt(s2.editedPhotos) || 0;
-      if (photos1 > photos2) {
-        suggestions.push({
-          target: s1.name,
-          text: `Phù hợp nếu bạn muốn có nhiều ảnh hoàn thiện chất lượng cao hơn (${s1.editedPhotos}).`
-        });
-      } else if (photos2 > photos1) {
-        suggestions.push({
-          target: s2.name,
-          text: `Phù hợp nếu bạn muốn có nhiều ảnh hoàn thiện chất lượng cao hơn (${s2.editedPhotos}).`
-        });
-      }
-    } else if (currentCategory === "vay_cuoi") {
-      if (s1.sizeAdjustment && s1.sizeAdjustment.includes("theo số đo")) {
-        suggestions.push({
-          target: s1.name,
-          text: `Phù hợp nếu bạn muốn trang phục cưới vừa vặn tuyệt đối (Có thợ chỉnh sửa chi tiết theo số đo).`
-        });
-      }
-      if (s2.sizeAdjustment && s2.sizeAdjustment.includes("theo số đo")) {
-        suggestions.push({
-          target: s2.name,
-          text: `Phù hợp nếu bạn muốn trang phục cưới vừa vặn tuyệt đối (Có thợ chỉnh sửa chi tiết theo số đo).`
-        });
-      }
-    }
-
-    return suggestions;
-  };
+  // Extract unique locations for filtering
+  const locations = Array.from(new Set(services.map(s => s.location.split(",").pop().trim()))).filter(Boolean);
 
   return (
     <div className={styles.comparePage}>
-      {/* Shared Header Component */}
       <SharedHeader theme="light" />
 
-      {/* Floating Notification/Toast */}
-      {notification && (
-        <div style={{
-          position: "fixed",
-          top: "100px",
-          right: "24px",
-          backgroundColor: "#4d5637",
-          color: "#ffffff",
-          padding: "12px 24px",
-          borderRadius: "4px",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-          zIndex: 9999,
-          fontSize: "14px",
-          fontWeight: "600",
-          animation: "fadeIn 0.3s ease"
-        }}>
-          ✨ {notification}
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className={styles.toast}>
+          <span>✨ {toastMessage}</span>
         </div>
       )}
 
-      <main className={styles.container}>
-        {/* Title Section */}
-        <section className={styles.hero}>
-          <span className={styles.subTitle}>— DÀNH CHO NGÀY CƯỚI TRỌN VẸN —</span>
-          <h1 className={styles.mainTitle}>So Sánh Dịch Vụ Cưới</h1>
-          <p className={styles.description}>
-            Chọn 2 dịch vụ cùng danh mục để so sánh giá thành, tiện ích và các tiêu chí quan trọng trước khi đưa ra lựa chọn phù hợp cho ngày cưới của bạn.
-          </p>
-          <p className={styles.alertDesc}>
-            * Bạn chỉ có thể so sánh các dịch vụ thuộc cùng một danh mục.
+      <main className={styles.mainContainer}>
+        {/* Hero Section */}
+        <section className={styles.heroSection}>
+          <span className={styles.badge}>✨ So sánh tối đa 3 dịch vụ</span>
+          <h1 className={styles.heroTitle}>So Sánh Dịch Vụ Cưới</h1>
+          <p className={styles.heroSubtitle}>
+            Tìm kiếm, đối chiếu chi phí, đánh giá và thông số kỹ thuật của các nhà cung cấp tiệc cưới cao cấp hàng đầu trước khi đưa ra quyết định đặt lịch.
           </p>
         </section>
 
-        {/* Category Selector Tabs */}
-        <section className={styles.categoryTabs}>
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              className={[styles.tabBtn, currentCategory === cat.id ? styles.tabBtnActive : ""].join(" ")}
-              onClick={() => handleCategoryChange(cat.id)}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </section>
-
-        {/* Warn if not enough services in category */}
-        {!loading && !hasEnoughServices && (
-          <div className={styles.alertBanner}>
-            ⚠️ Danh mục này hiện chưa có đủ dịch vụ để tiến hành so sánh. Vui lòng thêm dịch vụ mới hoặc chọn danh mục khác!
-          </div>
-        )}
-
-        {/* Warn if same service selected */}
-        {alertMsg && (
-          <div className={styles.alertBanner}>
-            ⚠️ {alertMsg}
-          </div>
-        )}
-
-        {/* Selectors and Previews Area */}
-        {hasEnoughServices && (
-          <section className={styles.selectorsArea}>
-            {/* Service 1 Selection Card */}
-            <div className={styles.selectorCard}>
-              <h3 className={styles.selectorLabel}>Dịch vụ thứ nhất</h3>
-              <select
-                className={styles.selectDropdown}
-                value={service1Id}
-                onChange={handleSelectService1}
-              >
-                <option value="">-- Chọn dịch vụ thứ nhất --</option>
-                {services.map((s) => (
-                  <option key={s._id} value={s._id}>{s.name} ({s.location})</option>
-                ))}
-              </select>
-
-              {s1 && (
-                <div className={styles.previewContainer}>
-                  <div className={styles.previewImageWrapper}>
-                    <img src={s1.imageUrl} alt={s1.name} className={styles.previewImage} />
-                    {s1Raw?.badge && <span className={styles.badge}>{s1Raw.badge}</span>}
-                  </div>
-                  <div className={styles.previewBody}>
-                    <p className={styles.previewProvider}>{s1.providerName}</p>
-                    <h4 className={styles.previewTitle}>{s1.name}</h4>
-                    <div className={styles.previewMeta}>
-                      <div className={styles.previewMetaRow}>
-                        <span>📍</span> {s1.location}
-                      </div>
-                      <div className={styles.previewMetaRow}>
-                        <span className={styles.previewRating}>
-                          <span className={styles.starIcon}>★</span> {s1.rating}
-                          <span className={styles.reviewsCountText}>({s1.reviewCount} đánh giá)</span>
-                        </span>
-                      </div>
-                      <div className={styles.previewPrice}>
-                        {s1Raw?.priceLabel || formatPrice(s1.basePrice)}
-                      </div>
-                    </div>
-                    <Link to={`/service/${s1.id}`} className={styles.viewDetailBtn}>
-                      Xem chi tiết
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Service 2 Selection Card */}
-            <div className={styles.selectorCard}>
-              <h3 className={styles.selectorLabel}>Dịch vụ thứ hai</h3>
-              <select
-                className={styles.selectDropdown}
-                value={service2Id}
-                onChange={handleSelectService2}
-              >
-                <option value="">-- Chọn dịch vụ thứ hai --</option>
-                {services.map((s) => (
-                  <option key={s._id} value={s._id}>{s.name} ({s.location})</option>
-                ))}
-              </select>
-
-              {s2 && (
-                <div className={styles.previewContainer}>
-                  <div className={styles.previewImageWrapper}>
-                    <img src={s2.imageUrl} alt={s2.name} className={styles.previewImage} />
-                    {s2Raw?.badge && <span className={styles.badge}>{s2Raw.badge}</span>}
-                  </div>
-                  <div className={styles.previewBody}>
-                    <p className={styles.previewProvider}>{s2.providerName}</p>
-                    <h4 className={styles.previewTitle}>{s2.name}</h4>
-                    <div className={styles.previewMeta}>
-                      <div className={styles.previewMetaRow}>
-                        <span>📍</span> {s2.location}
-                      </div>
-                      <div className={styles.previewMetaRow}>
-                        <span className={styles.previewRating}>
-                          <span className={styles.starIcon}>★</span> {s2.rating}
-                          <span className={styles.reviewsCountText}>({s2.reviewCount} đánh giá)</span>
-                        </span>
-                      </div>
-                      <div className={styles.previewPrice}>
-                        {s2Raw?.priceLabel || formatPrice(s2.basePrice)}
-                      </div>
-                    </div>
-                    <Link to={`/service/${s2.id}`} className={styles.viewDetailBtn}>
-                      Xem chi tiết
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* Empty States */}
-        {!hasSelectedBoth && !loading && (
-          <section className={styles.emptyState}>
-            <div className={styles.emptyIcon}>⚖️</div>
-            <h3 className={styles.emptyTitle}>Chưa đủ dữ liệu so sánh</h3>
-            <p className={styles.emptyText}>
-              {service1Id || service2Id
-                ? "Vui lòng chọn tiếp dịch vụ còn lại thuộc cùng danh mục để mở bảng so sánh chi tiết."
-                : "Vui lòng chọn danh mục dịch vụ ở thanh menu trên, sau đó chọn 2 dịch vụ cưới để xem bảng đánh giá chi tiết."}
-            </p>
-          </section>
-        )}
-
-        {loading && (
-          <section className={styles.emptyState}>
-            <div style={{
-              width: "40px",
-              height: "40px",
-              border: "3px solid rgba(195, 147, 124, 0.3)",
-              borderTopColor: "#c3937c",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite"
-            }} />
-            <p style={{ marginTop: "12px", color: "#787878" }}>Đang tải dữ liệu dịch vụ từ sàn cưới...</p>
-            <style>{`
-              @keyframes spin {
-                to { transform: rotate(360deg); }
-              }
-            `}</style>
-          </section>
-        )}
-
-        {/* Comparison Table Section (Desktop only) */}
-        {hasSelectedBoth && !loading && (
+        {!isComparing ? (
           <>
-            <section className={styles.tableSection}>
-              <div className={styles.tableWrapper}>
-                <table className={styles.compareTable}>
-                  <thead>
-                    <tr>
-                      <th className={styles.colCriteria}>Tiêu chí so sánh</th>
-                      <th className={styles.colService}>{s1.name}</th>
-                      <th className={styles.colService}>{s2.name}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* Common Criteria */}
-                    <tr>
-                      <td colSpan={3} style={{ background: "rgba(195, 147, 124, 0.08)", fontWeight: "bold", fontFamily: "Cormorant, serif", fontSize: "16px" }}>
-                        📌 THÔNG TIN CHUNG
-                      </td>
-                    </tr>
-                    {renderRow("Tên dịch vụ", "name")}
-                    {renderRow("Nhà cung cấp", "providerName")}
-                    {renderRow("Danh mục", "categoryName")}
-                    {renderRow("Khu vực / Địa điểm", "location")}
-                    {renderRow("Giá khởi điểm", "basePrice", true, false, true)}
-                    {renderRow("Giá tối thiểu ước tính", "minPrice", true)}
-                    {renderRow("Giá tối đa ước tính", "maxPrice", true)}
-                    {renderRow("Đánh giá trung bình", "rating", false, true, true)}
-                    {renderRow("Số lượt đánh giá", "reviewCount")}
-                    {renderRow("Trạng thái nhận lịch", "status")}
-                    {renderRow("Ưu đãi hiện có", "promotion")}
-                    {renderRow("Chính sách đặt cọc", "depositPolicy")}
-                    {renderRow("Chính sách hủy lịch", "cancellationPolicy")}
-                    {renderRow("Thời gian phản hồi", "responseTime", false, false, true)}
-                    {renderRow("Tiện ích đi kèm", "includedServices")}
-                    {renderRow("Ghi chú đặc biệt", "notes")}
+            {/* Category Selector Chips */}
+            <section className={styles.categorySelector}>
+              <div className={styles.chipsScroll}>
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.id}
+                    className={[
+                      styles.chipBtn,
+                      currentCategory === cat.id ? styles.chipBtnActive : ""
+                    ].join(" ")}
+                    onClick={() => handleCategoryChange(cat.id)}
+                  >
+                    <span className={styles.chipIcon}>{cat.icon}</span>
+                    <span className={styles.chipName}>{cat.name}</span>
+                    {currentCategory === cat.id && <span className={styles.chipDot} />}
+                  </button>
+                ))}
+              </div>
+            </section>
 
-                    {/* Category-Specific Criteria */}
+            {/* Search & Filter Toolbar */}
+            <section className={styles.toolbarSection}>
+              <div className={styles.searchBar}>
+                <span className={styles.searchIcon}>🔍</span>
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm nhà cung cấp, địa điểm, từ khóa..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles.searchInput}
+                />
+                {searchQuery && (
+                  <button className={styles.clearSearch} onClick={() => setSearchQuery("")}>✕</button>
+                )}
+              </div>
+
+              <button
+                className={[styles.filterToggleBtn, showFilterPanel ? styles.filterActive : ""].join(" ")}
+                onClick={() => setShowFilterPanel(!showFilterPanel)}
+              >
+                <span>🎛️ Bộ lọc nâng cao</span>
+                <span className={styles.arrowIcon}>{showFilterPanel ? "▲" : "▼"}</span>
+              </button>
+            </section>
+
+            {/* Expandable Filter Panel */}
+            {showFilterPanel && (
+              <section className={styles.filterPanel}>
+                <div className={styles.filterGrid}>
+                  <div className={styles.filterGroup}>
+                    <label className={styles.filterLabel}>Khoảng giá tối đa</label>
+                    <div className={styles.rangeWrapper}>
+                      <input
+                        type="range"
+                        min="0"
+                        max="150000000"
+                        step="5000000"
+                        value={filters.priceMax}
+                        onChange={(e) => setFilters(prev => ({ ...prev, priceMax: Number(e.target.value) }))}
+                        className={styles.rangeInput}
+                      />
+                      <span className={styles.rangeVal}>Dưới {formatPrice(filters.priceMax)}</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.filterGroup}>
+                    <label className={styles.filterLabel}>Khu vực / Tỉnh thành</label>
+                    <select
+                      value={filters.location}
+                      onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
+                      className={styles.filterSelect}
+                    >
+                      <option value="">Tất cả khu vực</option>
+                      {locations.map(loc => (
+                        <option key={loc} value={loc}>{loc}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className={styles.filterGroup}>
+                    <label className={styles.filterLabel}>Đánh giá tối thiểu</label>
+                    <select
+                      value={filters.rating}
+                      onChange={(e) => setFilters(prev => ({ ...prev, rating: e.target.value }))}
+                      className={styles.filterSelect}
+                    >
+                      <option value="">Tất cả đánh giá</option>
+                      <option value="4.8">⭐️ 4.8 sao trở lên</option>
+                      <option value="4.5">⭐️ 4.5 sao trở lên</option>
+                      <option value="4.0">⭐️ 4.0 sao trở lên</option>
+                    </select>
+                  </div>
+
+                  <div className={styles.filterGroup}>
+                    <label className={styles.filterLabel}>Trạng thái đặt chỗ</label>
+                    <select
+                      value={filters.status}
+                      onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                      className={styles.filterSelect}
+                    >
+                      <option value="">Tất cả trạng thái</option>
+                      <option value="Đang nhận lịch">Đang nhận lịch</option>
+                      <option value="Còn trống ít ngày">Còn trống ít ngày</option>
+                      <option value="Hết lịch tháng này">Hết lịch tháng này</option>
+                    </select>
+                  </div>
+                </div>
+                <button
+                  className={styles.resetFiltersBtn}
+                  onClick={() => setFilters({
+                    priceMin: 0,
+                    priceMax: 150000000,
+                    location: "",
+                    rating: "",
+                    status: ""
+                  })}
+                >
+                  Xóa bộ lọc
+                </button>
+              </section>
+            )}
+
+            {/* Service Grid List */}
+            {loading ? (
+              <section className={styles.loadingSection}>
+                <div className={styles.spinner} />
+                <p>Đang quét danh sách nhà cung cấp cưới cao cấp...</p>
+              </section>
+            ) : filteredServices.length === 0 ? (
+              <section className={styles.emptyBrowseState}>
+                <div className={styles.emptyBrowseIcon}>🍃</div>
+                <h3>Không tìm thấy dịch vụ phù hợp</h3>
+                <p>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm khác để nhận được kết quả tốt hơn.</p>
+              </section>
+            ) : (
+              <section className={styles.serviceGrid}>
+                {filteredServices.map((service) => {
+                  const isSelected = selectedServices.some(s => s.id === service.id);
+                  const isFav = favorites.includes(service.id);
+                  return (
+                    <div
+                      key={service.id}
+                      className={[
+                        styles.serviceCard,
+                        isSelected ? styles.cardSelected : ""
+                      ].join(" ")}
+                      onClick={() => toggleCompare(service)}
+                    >
+                      {/* Card Cover */}
+                      <div className={styles.cardImageArea}>
+                        <img src={service.imageUrl} alt={service.name} className={styles.cardCoverImg} />
+                        <button
+                          className={[styles.favBtn, isFav ? styles.favBtnActive : ""].join(" ")}
+                          onClick={(e) => toggleFavorite(service.id, e)}
+                        >
+                          {isFav ? "❤️" : "🤍"}
+                        </button>
+                        {service.status && (
+                          <span className={styles.statusLabel}>{service.status}</span>
+                        )}
+                      </div>
+
+                      {/* Card Body */}
+                      <div className={styles.cardContent}>
+                        <div className={styles.vendorRow}>
+                          <span className={styles.vendorName}>{service.providerName}</span>
+                          <span className={styles.ratingBadge}>
+                            ★ {service.rating.toFixed(1)} <span>({service.reviewCount})</span>
+                          </span>
+                        </div>
+                        <h3 className={styles.serviceNameTitle}>{service.name}</h3>
+                        <p className={styles.locationText}>📍 {service.location}</p>
+
+                        {service.capacity && (
+                          <p className={styles.capacityText}>👥 Sức chứa: {service.capacity}</p>
+                        )}
+
+                        <div className={styles.cardDivider} />
+
+                        <div className={styles.priceRow}>
+                          <div className={styles.priceLabelCol}>
+                            <span className={styles.startingPriceLabel}>Giá khởi điểm</span>
+                            <span className={styles.priceValue}>{formatPrice(service.basePrice)}</span>
+                          </div>
+
+                          <button
+                            className={[
+                              styles.compareCheckBtn,
+                              isSelected ? styles.compareCheckBtnSelected : ""
+                            ].join(" ")}
+                          >
+                            {isSelected ? "✓ Đã chọn" : "+ So sánh"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </section>
+            )}
+
+            {/* Bottom Sticky Compare Bar */}
+            {selectedServices.length > 0 && (
+              <div className={styles.stickyCompareBar}>
+                <div className={styles.compareBarContainer}>
+                  <div className={styles.compareBarLeft}>
+                    <span className={styles.compareCount}>
+                      Đã chọn <strong>{selectedServices.length}</strong>/3 dịch vụ
+                    </span>
+                    <div className={styles.compareThumbnails}>
+                      {selectedServices.map(s => (
+                        <div key={s.id} className={styles.thumbWrapper}>
+                          <img src={s.imageUrl} alt={s.name} className={styles.thumbImg} />
+                          <button className={styles.removeThumb} onClick={(e) => {
+                            e.stopPropagation();
+                            removeSelectedService(s.id);
+                          }}>✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className={styles.compareBarRight}>
+                    <button
+                      className={styles.clearAllBtn}
+                      onClick={() => setSelectedServices([])}
+                    >
+                      Xóa hết
+                    </button>
+                    <button
+                      className={styles.compareNowBtn}
+                      disabled={selectedServices.length < 2}
+                      onClick={() => setIsComparing(true)}
+                    >
+                      So sánh ngay ({selectedServices.length})
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          /* Redesigned Apple Style Comparison View */
+          <section className={styles.comparisonDashboard}>
+            {/* Header / Nav Control */}
+            <div className={styles.comparisonHeader}>
+              <button className={styles.backBtn} onClick={() => setIsComparing(false)}>
+                ← Quay lại lựa chọn dịch vụ
+              </button>
+              <h2 className={styles.comparisonDashboardTitle}>So sánh đối chiếu chi tiết</h2>
+            </div>
+
+            {/* Apple Style Comparison Grid */}
+            <div className={styles.comparisonGridContainer}>
+              {/* Column 1: Header Labels */}
+              <div className={styles.criteriaLabelsColumn}>
+                <div className={styles.stickyHeaderSpacer} />
+                
+                {/* Accordion 1: Tổng quan */}
+                <div className={styles.sectionLabelTitle}>📌 TỔNG QUAN</div>
+                <div className={styles.labelRow}>Nhà cung cấp</div>
+                <div className={styles.labelRow}>Địa điểm</div>
+                <div className={styles.labelRow}>Phản hồi</div>
+                
+                {/* Accordion 2: Chi phí */}
+                <div className={styles.sectionLabelTitle}>💰 GIÁ CẢ & CHÍNH SÁCH</div>
+                <div className={styles.labelRow}>Giá cọc giữ ngày</div>
+                <div className={styles.labelRow}>Chính sách hủy</div>
+                <div className={styles.labelRow}>Khuyến mãi</div>
+
+                {/* Accordion 3: Tiện ích chi tiết */}
+                <div className={styles.sectionLabelTitle}>🛠️ THÔNG SỐ CHI TIẾT</div>
+                {currentCategory === "nha_hang" && (
+                  <>
+                    <div className={styles.labelRow}>Sức chứa</div>
+                    <div className={styles.labelRow}>Bàn tối thiểu</div>
+                    <div className={styles.labelRow}>Thực đơn tiệc</div>
+                    <div className={styles.labelRow}>Bãi đỗ xe</div>
+                    <div className={styles.labelRow}>Phí phục vụ</div>
+                  </>
+                )}
+                {currentCategory === "trang_diem" && (
+                  <>
+                    <div className={styles.labelRow}>Loại gói</div>
+                    <div className={styles.labelRow}>Hỗ trợ tại nhà</div>
+                    <div className={styles.labelRow}>Hãng mỹ phẩm</div>
+                    <div className={styles.labelRow}>Dặm phấn thử</div>
+                  </>
+                )}
+                {currentCategory === "xe_hoa" && (
+                  <>
+                    <div className={styles.labelRow}>Mẫu xe cưới</div>
+                    <div className={styles.labelRow}>Màu sắc xe</div>
+                    <div className={styles.labelRow}>Tài xế đi kèm</div>
+                    <div className={styles.labelRow}>Trang trí hoa xe</div>
+                  </>
+                )}
+                {currentCategory === "chup_anh" && (
+                  <>
+                    <div className={styles.labelRow}>Phong cách chụp</div>
+                    <div className={styles.labelRow}>Sản phẩm bàn giao</div>
+                    <div className={styles.labelRow}>Thời gian trả ảnh</div>
+                    <div className={styles.labelRow}>Kèm quay video</div>
+                  </>
+                )}
+                {currentCategory === "vay_cuoi" && (
+                  <>
+                    <div className={styles.labelRow}>Gói váy cưới</div>
+                    <div className={styles.labelRow}>Chỉnh sửa số đo</div>
+                    <div className={styles.labelRow}>Thời gian giữ đồ</div>
+                    <div className={styles.labelRow}>Phụ kiện kèm voan</div>
+                  </>
+                )}
+
+                <div className={styles.sectionLabelTitle}>⭐️ ĐÁNH GIÁ (1 - 5)</div>
+                <div className={styles.labelRow}>Điểm tổng quan</div>
+                <div className={styles.labelRow}>Phong cách phục vụ</div>
+                <div className={styles.labelRow}>Trang trí/Thực tế</div>
+                <div className={styles.labelRow}>Giá trị tương ứng</div>
+
+                <div className={styles.sectionLabelTitle}>💡 ĐIỂM CỘNG & ĐIỂM TRỪ</div>
+                <div className={`${styles.labelRow} ${styles.tagsLabelRow}`}>Điểm mạnh nổi trội</div>
+                <div className={`${styles.labelRow} ${styles.tagsLabelRow}`}>Hạn chế lưu ý</div>
+              </div>
+
+              {/* Columns for Selected Services */}
+              <div className={styles.columnsScroller}>
+                {selectedServices.map((s) => (
+                  <div key={s.id} className={styles.serviceColumn}>
+                    {/* Sticky Card Header Overview */}
+                    <div className={styles.stickyColumnHeader}>
+                      <button className={styles.removeColumnBtn} onClick={() => removeSelectedService(s.id)}>✕</button>
+                      <img src={s.imageUrl} alt={s.name} className={styles.colCoverImg} />
+                      <h3 className={styles.colServiceName}>{s.name}</h3>
+                      <div className={styles.colPriceText}>{formatPrice(s.basePrice)}</div>
+                      <button
+                        className={styles.colBookBtn}
+                        onClick={(e) => handleSelectServiceDirect(s.id, s.basePrice, s.category, s.name, e)}
+                      >
+                        Đặt lịch ngay
+                      </button>
+                    </div>
+
+                    {/* Overview Values */}
+                    <div className={styles.valueTitleGroupMobile}>📌 TỔNG QUAN</div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Nhà cung cấp: </span>
+                      {s.providerName}
+                    </div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Địa điểm: </span>
+                      {s.location}
+                    </div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Phản hồi: </span>
+                      {s.responseTime}
+                    </div>
+
+                    {/* Pricing Values */}
+                    <div className={styles.valueTitleGroupMobile}>💰 GIÁ CẢ & CHÍNH SÁCH</div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Giá cọc giữ ngày: </span>
+                      {s.depositPolicy}
+                    </div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Chính sách hủy: </span>
+                      {s.cancellationPolicy}
+                    </div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Khuyến mãi: </span>
+                      <span className={styles.highlightBadge}>{s.promotion}</span>
+                    </div>
+
+                    {/* Specifications Values */}
+                    <div className={styles.valueTitleGroupMobile}>🛠️ THÔNG SỐ CHI TIẾT</div>
                     {currentCategory === "nha_hang" && (
                       <>
-                        <tr>
-                          <td colSpan={3} style={{ background: "rgba(195, 147, 124, 0.08)", fontWeight: "bold", fontFamily: "Cormorant, serif", fontSize: "16px" }}>
-                            🏢 TIÊU CHÍ RIÊNG: NHÀ HÀNG TIỆC CƯỚI
-                          </td>
-                        </tr>
-                        {renderRow("Sức chứa tối đa", "capacity")}
-                        {renderRow("Số bàn tối thiểu", "minTables")}
-                        {renderRow("Khoảng giá mỗi bàn", "pricePerTable")}
-                        {renderRow("Thực đơn mẫu", "sampleMenu")}
-                        {renderRow("Loại sảnh tiệc", "hallType")}
-                        {renderRow("Sân khấu & Bục phát biểu", "stage")}
-                        {renderRow("Hệ thống âm thanh ánh sáng", "soundLighting")}
-                        {renderRow("Bãi đỗ xe", "parking")}
-                        {renderRow("Phí dịch vụ & VAT", "serviceFee")}
-                        {renderRow("Thời gian tổ chức tiệc", "eventDuration")}
-                        {renderRow("Dịch vụ trang trí hoa cưới", "decorationIncluded")}
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Sức chứa: </span>
+                          {s.capacity}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Bàn tối thiểu: </span>
+                          {s.minTables}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Thực đơn tiệc: </span>
+                          {s.sampleMenu}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Bãi đỗ xe: </span>
+                          {s.parking}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Phí phục vụ: </span>
+                          {s.serviceFee}
+                        </div>
                       </>
                     )}
-
                     {currentCategory === "trang_diem" && (
                       <>
-                        <tr>
-                          <td colSpan={3} style={{ background: "rgba(195, 147, 124, 0.08)", fontWeight: "bold", fontFamily: "Cormorant, serif", fontSize: "16px" }}>
-                            💄 TIÊU CHÍ RIÊNG: TRANG ĐIỂM CÔ DÂU
-                          </td>
-                        </tr>
-                        {renderRow("Loại gói trang điểm", "packageType")}
-                        {renderRow("Phong cách trang điểm", "makeupStyle")}
-                        {renderRow("Trang điểm thử trước lễ", "trialMakeup")}
-                        {renderRow("Làm tóc đi kèm", "hairStylingIncluded")}
-                        {renderRow("Thời gian thực hiện (phút)", "duration")}
-                        {renderRow("Có dặm phấn tại nhà", "homeService")}
-                        {renderRow("Số người hỗ trợ tiệc", "assistantCount")}
-                        {renderRow("Thương hiệu mỹ phẩm", "cosmeticsBrand")}
-                        {renderRow("Phụ phí di chuyển xa", "travelFee")}
-                        {renderRow("Thời gian đặt lịch trước", "bookingAdvanceTime")}
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Loại gói: </span>
+                          {s.packageType}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Hỗ trợ tại nhà: </span>
+                          {s.homeService}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Hãng mỹ phẩm: </span>
+                          {s.cosmeticsBrand}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Dặm phấn thử: </span>
+                          {s.trialMakeup}
+                        </div>
                       </>
                     )}
-
                     {currentCategory === "xe_hoa" && (
                       <>
-                        <tr>
-                          <td colSpan={3} style={{ background: "rgba(195, 147, 124, 0.08)", fontWeight: "bold", fontFamily: "Cormorant, serif", fontSize: "16px" }}>
-                            🚗 TIÊU CHÍ RIÊNG: XE HOA NGÀY CƯỚI
-                          </td>
-                        </tr>
-                        {renderRow("Loại xe hoa", "carType")}
-                        {renderRow("Dòng xe chi tiết", "carModel")}
-                        {renderRow("Màu sắc xe", "carColor")}
-                        {renderRow("Thời gian thuê quy định", "rentalDuration")}
-                        {renderRow("Giới hạn số km đi chuyển", "kmLimit")}
-                        {renderRow("Có tài xế đi kèm", "driverIncluded")}
-                        {renderRow("Trang trí xe cưới sẵn", "flowerDecoration")}
-                        {renderRow("Phí vượt giờ phụ thu", "overtimeFee")}
-                        {renderRow("Phí vượt số km phụ thu", "extraKmFee")}
-                        {renderRow("Khu vực phục vụ cho thuê", "serviceArea")}
-                        {renderRow("Điều kiện đặt cọc xe", "depositCondition")}
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Mẫu xe cưới: </span>
+                          {s.carModel}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Màu sắc xe: </span>
+                          {s.carColor}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Tài xế đi kèm: </span>
+                          {s.driverIncluded}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Trang trí hoa xe: </span>
+                          {s.flowerDecoration}
+                        </div>
                       </>
                     )}
-
                     {currentCategory === "chup_anh" && (
                       <>
-                        <tr>
-                          <td colSpan={3} style={{ background: "rgba(195, 147, 124, 0.08)", fontWeight: "bold", fontFamily: "Cormorant, serif", fontSize: "16px" }}>
-                            📸 TIÊU CHÍ RIÊNG: CHỤP ẢNH & PHÓNG SỰ
-                          </td>
-                        </tr>
-                        {renderRow("Loại gói chụp ảnh", "packageType")}
-                        {renderRow("Phong cách nhiếp ảnh", "photographyStyle")}
-                        {renderRow("Thời lượng buổi chụp", "shootingDuration")}
-                        {renderRow("Số lượng nhiếp ảnh gia", "photographerCount")}
-                        {renderRow("Số lượng ảnh chỉnh sửa", "editedPhotos")}
-                        {renderRow("Trả file ảnh gốc", "rawPhotos")}
-                        {renderRow("Quay video phóng sự", "videoIncluded")}
-                        {renderRow("Video Highlight đi kèm", "highlightVideo")}
-                        {renderRow("Album cưới đính kèm", "albumIncluded")}
-                        {renderRow("Địa điểm thực hiện chụp", "shootingLocation")}
-                        {renderRow("Thời gian bàn giao sản phẩm", "deliveryTime", false, false, true)}
-                        {renderRow("Phí di chuyển phát sinh", "travelFee")}
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Phong cách chụp: </span>
+                          {s.photographyStyle}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Sản phẩm bàn giao: </span>
+                          {s.editedPhotos}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Thời gian trả ảnh: </span>
+                          {s.deliveryTime}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Kèm quay video: </span>
+                          {s.videoIncluded}
+                        </div>
                       </>
                     )}
-
                     {currentCategory === "vay_cuoi" && (
                       <>
-                        <tr>
-                          <td colSpan={3} style={{ background: "rgba(195, 147, 124, 0.08)", fontWeight: "bold", fontFamily: "Cormorant, serif", fontSize: "16px" }}>
-                            👗 TIÊU CHÍ RIÊNG: THUÊ VÁY & VEST CƯỚI
-                          </td>
-                        </tr>
-                        {renderRow("Loại trang phục cưới", "outfitType")}
-                        {renderRow("Số lượng đồ trong gói", "outfitQuantity")}
-                        {renderRow("Thời hạn thuê giữ váy", "rentalDuration")}
-                        {renderRow("Có thử đồ thoải mái", "fittingAvailable")}
-                        {renderRow("Hỗ trợ chỉnh sửa số đo", "sizeAdjustment")}
-                        {renderRow("Phí giặt là hấp sấy", "cleaningFee")}
-                        {renderRow("Tiền cọc thế chấp", "depositAmount")}
-                        {renderRow("Chính sách đền bù hư hại", "damagePolicy")}
-                        {renderRow("Size trang phục sẵn có", "availableSizes")}
-                        {renderRow("Phụ kiện đi kèm váy/vest", "accessoriesIncluded")}
-                        {renderRow("Phí thuê quá hạn mỗi ngày", "extraDayFee")}
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Gói váy cưới: </span>
+                          {s.outfitType}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Chỉnh sửa số đo: </span>
+                          {s.sizeAdjustment}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Thời gian giữ đồ: </span>
+                          {s.rentalDuration}
+                        </div>
+                        <div className={styles.valueRow}>
+                          <span className={styles.mobileOnlyLabel}>Phụ kiện kèm voan: </span>
+                          {s.accessoriesIncluded}
+                        </div>
                       </>
                     )}
 
-                    {/* Actions button row inside the table footer */}
-                    <tr>
-                      <td className={styles.criteriaCell}>Thao tác hành động</td>
-                      <td>
-                        <div className={styles.actionRow}>
-                          <button
-                            className={[styles.actionBtn, styles.btnOutline, favorites.includes(s1.id) ? styles.btnOutlineActive : ""].join(" ")}
-                            onClick={() => toggleFavorite(s1.id)}
-                          >
-                            {favorites.includes(s1.id) ? "❤️ Đã thích" : "🤍 Yêu thích"}
-                          </button>
-                          <button
-                            className={[styles.actionBtn, styles.btnSecondary].join(" ")}
-                            onClick={() => handleBookConsultation(s1.name)}
-                          >
-                            Tư vấn
-                          </button>
-                          <button
-                            className={[styles.actionBtn, styles.btnPrimary].join(" ")}
-                            onClick={() => handleSelectServiceDirect(s1Raw)}
-                          >
-                            Chọn
-                          </button>
+                    {/* Ratings with progress bars */}
+                    <div className={styles.valueTitleGroupMobile}>⭐️ ĐÁNH GIÁ (1 - 5)</div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Điểm tổng quan: </span>
+                      <div className={styles.progressCell}>
+                        <span className={styles.scoreText}>{s.ratingsDetail.overall} / 5</span>
+                        <div className={styles.progressBar}>
+                          <div className={styles.progressFill} style={{ width: `${(s.ratingsDetail.overall / 5) * 100}%` }} />
                         </div>
-                      </td>
-                      <td>
-                        <div className={styles.actionRow}>
-                          <button
-                            className={[styles.actionBtn, styles.btnOutline, favorites.includes(s2.id) ? styles.btnOutlineActive : ""].join(" ")}
-                            onClick={() => toggleFavorite(s2.id)}
-                          >
-                            {favorites.includes(s2.id) ? "❤️ Đã thích" : "🤍 Yêu thích"}
-                          </button>
-                          <button
-                            className={[styles.actionBtn, styles.btnSecondary].join(" ")}
-                            onClick={() => handleBookConsultation(s2.name)}
-                          >
-                            Tư vấn
-                          </button>
-                          <button
-                            className={[styles.actionBtn, styles.btnPrimary].join(" ")}
-                            onClick={() => handleSelectServiceDirect(s2Raw)}
-                          >
-                            Chọn
-                          </button>
+                      </div>
+                    </div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Phong cách phục vụ: </span>
+                      <div className={styles.progressCell}>
+                        <span className={styles.scoreText}>{s.ratingsDetail.service} / 5</span>
+                        <div className={styles.progressBar}>
+                          <div className={styles.progressFill} style={{ width: `${(s.ratingsDetail.service / 5) * 100}%` }} />
                         </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                      </div>
+                    </div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Trang trí/Thực tế: </span>
+                      <div className={styles.progressCell}>
+                        <span className={styles.scoreText}>{s.ratingsDetail.decor} / 5</span>
+                        <div className={styles.progressBar}>
+                          <div className={styles.progressFill} style={{ width: `${(s.ratingsDetail.decor / 5) * 100}%` }} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.valueRow}>
+                      <span className={styles.mobileOnlyLabel}>Giá trị tương ứng: </span>
+                      <div className={styles.progressCell}>
+                        <span className={styles.scoreText}>{s.ratingsDetail.value} / 5</span>
+                        <div className={styles.progressBar}>
+                          <div className={styles.progressFill} style={{ width: `${(s.ratingsDetail.value / 5) * 100}%` }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Pros and Cons values */}
+                    <div className={styles.valueTitleGroupMobile}>💡 ĐIỂM CỘNG & ĐIỂM TRỪ</div>
+                    <div className={`${styles.valueRow} ${styles.tagsValueRow}`}>
+                      <span className={styles.mobileOnlyLabel}>Điểm mạnh nổi trội: </span>
+                      <div className={styles.tagGroup}>
+                        {s.pros.map((p, idx) => (
+                          <span key={idx} className={styles.proTag}>✓ {p}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className={`${styles.valueRow} ${styles.tagsValueRow}`}>
+                      <span className={styles.mobileOnlyLabel}>Hạn chế lưu ý: </span>
+                      <div className={styles.tagGroup}>
+                        {s.cons.map((c, idx) => (
+                          <span key={idx} className={styles.conTag}>✕ {c}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Gallery Horizontal Grid */}
+            <section className={styles.galleryComparisonSection}>
+              <h3 className={styles.subDashboardTitle}>🎞️ Album hình ảnh thực tế</h3>
+              <div className={styles.galleryScrollGrid}>
+                {selectedServices.map(s => (
+                  <div key={s.id} className={styles.galleryCol}>
+                    <h4>{s.name}</h4>
+                    <div className={styles.galleryRow}>
+                      {s.gallery.map((imgUrl, idx) => (
+                        <img key={idx} src={imgUrl} alt={`${s.name} preview`} className={styles.galleryPreviewImg} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             </section>
 
-            {/* Mobile Cards-Based Comparison Layout */}
-            <section className={styles.mobileCompareList}>
-              {/* Common Details Card */}
-              <div className={styles.mobileCriteriaCard}>
-                <div className={styles.mobileCriteriaHeader}>📌 THÔNG TIN CHUNG</div>
-                <div className={styles.mobileCriteriaBody}>
-                  <div className={styles.mobileServiceValue}>
-                    <span className={styles.mobileServiceLabel}>Giá khởi điểm</span>
-                    <div className={styles.mobileValueText}>
-                      <strong>{s1.name}</strong>: {formatPrice(s1.basePrice)}
-                      {getHighlight("basePrice").s1 && <span className={styles.badgeHighlight}>{getHighlight("basePrice").s1}</span>}
-                    </div>
-                    <div style={{ marginTop: "4px" }} className={styles.mobileValueText}>
-                      <strong>{s2.name}</strong>: {formatPrice(s2.basePrice)}
-                      {getHighlight("basePrice").s2 && <span className={styles.badgeHighlight}>{getHighlight("basePrice").s2}</span>}
-                    </div>
-                  </div>
-
-                  <div className={styles.mobileServiceValue}>
-                    <span className={styles.mobileServiceLabel}>Đánh giá & Rating</span>
-                    <div className={styles.mobileValueText}>
-                      <strong>{s1.name}</strong>: {formatRating(s1.rating)} ({s1.reviewCount} đánh giá)
-                      {getHighlight("rating").s1 && <span className={styles.badgeHighlight}>{getHighlight("rating").s1}</span>}
-                    </div>
-                    <div style={{ marginTop: "4px" }} className={styles.mobileValueText}>
-                      <strong>{s2.name}</strong>: {formatRating(s2.rating)} ({s2.reviewCount} đánh giá)
-                      {getHighlight("rating").s2 && <span className={styles.badgeHighlight}>{getHighlight("rating").s2}</span>}
-                    </div>
-                  </div>
-
-                  <div className={styles.mobileServiceValue}>
-                    <span className={styles.mobileServiceLabel}>Khu vực / Địa điểm</span>
-                    <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.location}</div>
-                    <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.location}</div>
-                  </div>
-
-                  <div className={styles.mobileServiceValue}>
-                    <span className={styles.mobileServiceLabel}>Thời gian phản hồi</span>
-                    <div className={styles.mobileValueText}>
-                      <strong>{s1.name}</strong>: {s1.responseTime}
-                      {getHighlight("responseTime").s1 && <span className={styles.badgeHighlight}>{getHighlight("responseTime").s1}</span>}
-                    </div>
-                    <div className={styles.mobileValueText}>
-                      <strong>{s2.name}</strong>: {s2.responseTime}
-                      {getHighlight("responseTime").s2 && <span className={styles.badgeHighlight}>{getHighlight("responseTime").s2}</span>}
-                    </div>
-                  </div>
-
-                  <div className={styles.mobileServiceValue}>
-                    <span className={styles.mobileServiceLabel}>Ưu đãi</span>
-                    <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.promotion}</div>
-                    <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.promotion}</div>
-                  </div>
-
-                  <div className={styles.mobileServiceValue}>
-                    <span className={styles.mobileServiceLabel}>Tiện ích bao gồm</span>
-                    <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.includedServices}</div>
-                    <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.includedServices}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Category-Specific Card for Mobile */}
-              <div className={styles.mobileCriteriaCard}>
-                <div className={styles.mobileCriteriaHeader}>💼 CHI TIẾT DỊCH VỤ</div>
-                <div className={styles.mobileCriteriaBody}>
-                  {currentCategory === "nha_hang" && (
-                    <>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Sức chứa tối đa</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.capacity}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.capacity}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Giá mỗi bàn</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.pricePerTable}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.pricePerTable}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Thực đơn mẫu</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.sampleMenu}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.sampleMenu}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Bãi đỗ xe</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.parking}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.parking}</div>
-                      </div>
-                    </>
-                  )}
-
-                  {currentCategory === "trang_diem" && (
-                    <>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Phong cách trang điểm</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.makeupStyle}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.makeupStyle}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Trang điểm thử</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.trialMakeup}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.trialMakeup}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Hỗ trợ tại nhà</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.homeService}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.homeService}</div>
-                      </div>
-                    </>
-                  )}
-
-                  {currentCategory === "xe_hoa" && (
-                    <>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Dòng xe & Màu sắc</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.carModel} ({s1.carColor})</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.carModel} ({s2.carColor})</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Thời gian thuê</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.rentalDuration}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.rentalDuration}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Tài xế kèm theo</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.driverIncluded}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.driverIncluded}</div>
-                      </div>
-                    </>
-                  )}
-
-                  {currentCategory === "chup_anh" && (
-                    <>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Số ảnh chỉnh sửa</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.editedPhotos}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.editedPhotos}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Thời gian trả sản phẩm</span>
-                        <div className={styles.mobileValueText}>
-                          <strong>{s1.name}</strong>: {s1.deliveryTime}
-                          {getHighlight("deliveryTime").s1 && <span className={styles.badgeHighlight}>{getHighlight("deliveryTime").s1}</span>}
+            {/* Modern Review Timeline */}
+            <section className={styles.timelineReviewsSection}>
+              <h3 className={styles.subDashboardTitle}>💬 Phản hồi của các cặp đôi đi trước</h3>
+              <div className={styles.timelineContainer}>
+                {selectedServices.map(s => (
+                  <div key={s.id} className={styles.timelineCol}>
+                    <h4 className={styles.timelineColTitle}>{s.name}</h4>
+                    {(() => {
+                      const serviceReviews = realReviews[s.id];
+                      if (!serviceReviews) {
+                        return <p style={{ fontSize: 13, color: '#7a7a7a', fontStyle: 'italic', padding: '10px 0' }}>Đang tải phản hồi...</p>;
+                      }
+                      if (serviceReviews.length === 0) {
+                        return (
+                          <div style={{ textAlign: 'center', padding: '20px 10px', color: '#7a7a7a' }}>
+                            <span style={{ fontSize: '24px' }}>💬</span>
+                            <p style={{ fontSize: 13, margin: '8px 0 0' }}>Chưa có phản hồi nào cho dịch vụ này.</p>
+                          </div>
+                        );
+                      }
+                      return serviceReviews.map(r => (
+                        <div key={r._id || r.id} className={styles.reviewTimelineCard}>
+                          <div className={styles.revHeader}>
+                            <img src={r.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100"} alt={r.author} className={styles.revAvatar} />
+                            <div className={styles.revMetaInfo}>
+                              <div className={styles.revNameRow}>
+                                <strong>{r.author}</strong>
+                              </div>
+                              <span className={styles.revDate}>
+                                {r.createdAt ? new Date(r.createdAt).toLocaleDateString("vi-VN") : "Chưa rõ ngày"} • ⭐️ {r.rating} sao
+                              </span>
+                            </div>
+                          </div>
+                          <p className={styles.revContent}>{r.content}</p>
+                          <div className={styles.revFooter}>
+                            <button className={styles.helpfulBtn} onClick={() => showToast(`Cảm ơn bạn đã bình chọn hữu ích cho ${r.author}!`)}>
+                              👍 Hữu ích ({r.helpful || 0})
+                            </button>
+                          </div>
                         </div>
-                        <div className={styles.mobileValueText}>
-                          <strong>{s2.name}</strong>: {s2.deliveryTime}
-                          {getHighlight("deliveryTime").s2 && <span className={styles.badgeHighlight}>{getHighlight("deliveryTime").s2}</span>}
-                        </div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Quay Video</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.videoIncluded}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.videoIncluded}</div>
-                      </div>
-                    </>
-                  )}
-
-                  {currentCategory === "vay_cuoi" && (
-                    <>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Số lượng trang phục</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.outfitQuantity}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.outfitQuantity}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Sửa size trang phục</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.sizeAdjustment}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.sizeAdjustment}</div>
-                      </div>
-                      <div className={styles.mobileServiceValue}>
-                        <span className={styles.mobileServiceLabel}>Thời gian thuê giữ váy</span>
-                        <div className={styles.mobileValueText}><strong>{s1.name}</strong>: {s1.rentalDuration}</div>
-                        <div className={styles.mobileValueText}><strong>{s2.name}</strong>: {s2.rentalDuration}</div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Mobile Actions Card */}
-              <div className={styles.mobileCriteriaCard}>
-                <div className={styles.mobileCriteriaHeader}>⚡ THAO TÁC</div>
-                <div className={styles.mobileCriteriaBody}>
-                  <div className={styles.mobileServiceValue}>
-                    <div style={{ fontWeight: "600", fontSize: "13px" }}>{s1.name}:</div>
-                    <div className={styles.actionRow}>
-                      <button
-                        className={[styles.actionBtn, styles.btnOutline, favorites.includes(s1.id) ? styles.btnOutlineActive : ""].join(" ")}
-                        onClick={() => toggleFavorite(s1.id)}
-                      >
-                        {favorites.includes(s1.id) ? "❤️ Thích" : "🤍 Yêu thích"}
-                      </button>
-                      <button
-                        className={[styles.actionBtn, styles.btnSecondary].join(" ")}
-                        onClick={() => handleBookConsultation(s1.name)}
-                      >
-                        Tư vấn
-                      </button>
-                      <button
-                        className={[styles.actionBtn, styles.btnPrimary].join(" ")}
-                        onClick={() => handleSelectServiceDirect(s1Raw)}
-                      >
-                        Chọn
-                      </button>
-                    </div>
+                      ));
+                    })()}
                   </div>
-
-                  <div style={{ marginTop: "8px" }} className={styles.mobileServiceValue}>
-                    <div style={{ fontWeight: "600", fontSize: "13px" }}>{s2.name}:</div>
-                    <div className={styles.actionRow}>
-                      <button
-                        className={[styles.actionBtn, styles.btnOutline, favorites.includes(s2.id) ? styles.btnOutlineActive : ""].join(" ")}
-                        onClick={() => toggleFavorite(s2.id)}
-                      >
-                        {favorites.includes(s2.id) ? "❤️ Thích" : "🤍 Yêu thích"}
-                      </button>
-                      <button
-                        className={[styles.actionBtn, styles.btnSecondary].join(" ")}
-                        onClick={() => handleBookConsultation(s2.name)}
-                      >
-                        Tư vấn
-                      </button>
-                      <button
-                        className={[styles.actionBtn, styles.btnPrimary].join(" ")}
-                        onClick={() => handleSelectServiceDirect(s2Raw)}
-                      >
-                        Chọn
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </section>
-
-            {/* Recommendations / Lời Khuyên Box */}
-            <section className={styles.recommendationBox}>
-              <h3 className={styles.recTitle}>💡 Gợi ý lựa chọn từ AN Wedding</h3>
-              <ul className={styles.recList}>
-                {getSuggestions().length > 0 ? (
-                  getSuggestions().map((sug, idx) => (
-                    <li key={idx} className={styles.recItem}>
-                      <strong>{sug.target}</strong>: {sug.text}
-                    </li>
-                  ))
-                ) : (
-                  <li className={styles.recItem}>
-                    Cả hai gói dịch vụ có sự đồng đều khá cao về giá thành và đánh giá. Vui lòng dựa vào địa điểm cụ thể và hình ảnh thực tế để đưa ra quyết định phù hợp nhất.
-                  </li>
-                )}
-              </ul>
-            </section>
-          </>
+          </section>
         )}
+
+        {/* Call to Action Section */}
+        <section className={styles.ctaSection}>
+          <div className={styles.ctaCard}>
+            <span className={styles.ctaAccent}>Bạn vẫn chưa tìm được sự lựa chọn hoàn hảo?</span>
+            <h2 className={styles.ctaTitle}>Lập kế hoạch tiệc cưới dễ dàng cùng cố vấn AN Wedding</h2>
+            <p className={styles.ctaSubtitle}>
+              Hãy chia sẻ ngân sách và mong muốn của hai bạn. Chuyên viên tư vấn tiệc cưới giàu kinh nghiệm của chúng tôi luôn sẵn sàng đồng hành hỗ trợ miễn phí.
+            </p>
+            <button
+              className={styles.ctaBtn}
+              onClick={() => handleBookConsultation("Cố vấn chuyên môn AN Wedding")}
+            >
+              Đặt lịch tư vấn miễn phí
+            </button>
+          </div>
+        </section>
       </main>
 
-      {/* Shared Footer Component */}
       <Footer1 />
     </div>
   );

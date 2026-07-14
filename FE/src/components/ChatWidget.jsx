@@ -15,19 +15,20 @@ const ChatWidget = () => {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const token = localStorage.getItem("token");
 
-  // Only render for logged-in customers
-  if (!user || user.role !== "customer" || !token) return null;
+  const isCustomer = user && user.role === "customer" && token;
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (isCustomer) {
+      scrollToBottom();
+    }
+  }, [messages, isCustomer, scrollToBottom]);
 
   const loadHistory = useCallback(async () => {
-    if (!user?._id) return;
+    if (!user?._id || !token) return;
     try {
       const res = await fetch(`${API_URL}/api/chat/history/${user._id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -38,7 +39,7 @@ const ChatWidget = () => {
   }, [user?._id, token]);
 
   useEffect(() => {
-    if (!token || !user?._id) return;
+    if (!isCustomer || !token || !user?._id) return;
 
     // Always create a fresh socket for this user session
     if (socketRef.current) {
@@ -74,7 +75,10 @@ const ChatWidget = () => {
     };
   // Reconnect if user or token changes
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user._id, token]);
+  }, [user?._id, token, isCustomer, loadHistory]);
+
+  // Only render for logged-in customers
+  if (!isCustomer) return null;
 
   const handleOpen = () => {
     setOpen(true);
