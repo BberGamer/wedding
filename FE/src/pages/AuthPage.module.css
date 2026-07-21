@@ -395,3 +395,21 @@
     gap: 28px;
   }
 }
+
+.termsNotice {
+  font-family: Raleway, sans-serif;
+  font-size: 12px;
+  color: #888;
+  line-height: 1.5;
+  text-align: center;
+  margin-top: 16px;
+  padding: 0 10px;
+}
+.termsNotice a {
+  color: #c3937c;
+  text-decoration: none;
+  font-weight: 600;
+}
+.termsNotice a:hover {
+  text-decoration: underline;
+}

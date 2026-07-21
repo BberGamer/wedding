@@ -24,6 +24,7 @@ import BookingPage from "./pages/BookingPage";
 import MyProjectsPage from "./pages/MyProjectsPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
 import BlogPage from "./pages/BlogPage";
+import TermsPage from "./pages/TermsPage";
 import ChatWidget from "./components/ChatWidget";
 import SocialFloatingWidget from "./components/SocialFloatingWidget";
 import { API_URL } from "./config";
@@ -122,6 +123,14 @@ function App() {
         title = "Dự án của tôi - AN Wedding";
         metaDescription = "Theo dõi tiến độ các dịch vụ cưới mà bạn đã đặt tại AN Wedding.";
         break;
+      case "/terms":
+        title = "Điều khoản sử dụng - AN Wedding";
+        metaDescription = "Xem chi tiết bộ điều khoản sử dụng nền tảng đặt dịch vụ cưới hỏi AN Wedding.";
+        break;
+      case "/privacy":
+        title = "Chính sách bảo mật - AN Wedding";
+        metaDescription = "Chính sách bảo vệ quyền riêng tư và dữ liệu cá nhân của người dùng tại AN Wedding.";
+        break;
     }
 
     if (title) {
@@ -165,6 +174,8 @@ function App() {
         <Route path="/my-projects" element={<MyProjectsPage />} />
         <Route path="/my-projects/:id" element={<ProjectDetailPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<TermsPage />} />
       </Routes>
       <Analytics />
       <ChatWidget />

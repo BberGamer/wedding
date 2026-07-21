@@ -53,9 +53,17 @@
   font-weight: 500;
 }
 
-.termsOfUseParent span {
+.termsOfUseParent span,
+.termsOfUseParent a {
   cursor: pointer;
+  color: inherit;
+  text-decoration: none;
   transition: color 0.2s ease;
+}
+
+.termsOfUseParent span:hover,
+.termsOfUseParent a:hover {
+  color: var(--4C5637, #4d5637);
 }
 
 .termsOfUseParent span:hover {

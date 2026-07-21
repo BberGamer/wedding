@@ -27,8 +27,8 @@ const Footer1 = ({ className = "" }) => {
             </a>
           </div>
           <div className={styles.legalLinks}>
-            <span className={styles.termsOfUse}>Điều khoản sử dụng</span>
-            <span className={styles.privacyPolicy}>Chính sách bảo mật</span>
+            <Link to="/terms" className={styles.termsOfUse}>Điều khoản sử dụng</Link>
+            <Link to="/privacy" className={styles.privacyPolicy}>Chính sách bảo mật</Link>
           </div>
         </div>
 

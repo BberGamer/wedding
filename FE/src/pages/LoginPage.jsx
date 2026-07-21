@@ -125,6 +125,12 @@ const LoginPage = () => {
                   {loading ? "ĐANG XỬ LÝ..." : "ĐĂNG NHẬP"}
                 </span>
               </button>
+
+              <p className={styles.termsNotice}>
+                Bằng việc đăng nhập, bạn xác nhận đã đọc, hiểu và đồng ý bị ràng buộc bởi{" "}
+                <Link to="/terms">Điều khoản sử dụng</Link> và{" "}
+                <Link to="/privacy">Chính sách bảo mật</Link> của AN Wedding.
+              </p>
             </form>
 
             <div className={styles.formFooter}>

@@ -211,6 +211,12 @@ const RegisterPage = () => {
                   {loading ? "ĐANG XỬ LÝ..." : "ĐĂNG KÝ"}
                 </span>
               </button>
+
+              <p className={styles.termsNotice}>
+                Bằng việc tạo tài khoản, bạn xác nhận đã đọc, hiểu và đồng ý bị ràng buộc bởi{" "}
+                <Link to="/terms">Điều khoản sử dụng</Link> và{" "}
+                <Link to="/privacy">Chính sách bảo mật</Link> của AN Wedding.
+              </p>
             </form>
 
             <div className={styles.formFooter}>

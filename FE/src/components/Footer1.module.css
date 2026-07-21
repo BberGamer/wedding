@@ -53,9 +53,17 @@
   font-weight: 500;
 }
 
-.legalLinks span {
+.legalLinks span,
+.legalLinks a {
   cursor: pointer;
+  color: inherit;
+  text-decoration: none;
   transition: color 0.2s ease;
+}
+
+.legalLinks span:hover,
+.legalLinks a:hover {
+  color: var(--4C5637, #4d5637);
 }
 
 .legalLinks span:hover {
