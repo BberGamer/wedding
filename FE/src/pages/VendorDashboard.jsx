@@ -54,6 +54,7 @@ const initialFormState = {
   phone: "0901 234 567",
   website: "https://anwedding.com",
   facebook: "https://facebook.com/anwedding",
+  driveLink: "",
   description: "Dịch vụ cưới hỏi chất lượng cao, mang lại trải nghiệm tuyệt vời và đáng nhớ cho ngày hạnh phúc của bạn.",
   includedServices: [],
   amenities: [],
@@ -261,6 +262,7 @@ const VendorDashboard = () => {
       phone: service.phone || "0901 234 567",
       website: service.website || "https://anwedding.com",
       facebook: service.facebook || "https://facebook.com/anwedding",
+      driveLink: service.driveLink || "",
       description: service.description || "",
       includedServices: service.includedServices || [],
       amenities: service.amenities || [],
@@ -767,6 +769,18 @@ const VendorDashboard = () => {
                         name="facebook"
                         className={styles.formInput}
                         value={formData.facebook}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>Google Drive link (Ảnh album)</label>
+                      <input
+                        type="text"
+                        name="driveLink"
+                        className={styles.formInput}
+                        placeholder="Ví dụ: https://drive.google.com/drive/folders/..."
+                        value={formData.driveLink || ""}
                         onChange={handleInputChange}
                       />
                     </div>

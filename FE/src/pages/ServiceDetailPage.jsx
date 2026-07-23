@@ -447,6 +447,23 @@ const ServiceDetailPage = () => {
                     </a>
                   </div>
                 </div>
+                {service.driveLink && (
+                  <div className={styles.contactItem}>
+                    <span className={styles.icon}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
+                      </svg>
+                    </span>
+                    <div>
+                      <span className={styles.label}>Link Drive Ảnh</span>
+                      <a href={service.driveLink} target="_blank" rel="noopener noreferrer" className={styles.linkValue}>
+                        Xem Album Ảnh (Drive)
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

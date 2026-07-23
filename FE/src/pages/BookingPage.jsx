@@ -803,10 +803,6 @@ const BookingPage = () => {
                       <span>Tạm tính</span>
                       <span>{formatCurrency(amount)}</span>
                     </div>
-                    <div className={styles.reviewRow}>
-                      <span>Phí dịch vụ cọc</span>
-                      <span>{formatCurrency(amount * 0.2)} (20%)</span>
-                    </div>
                     <div className={styles.reviewDivider}></div>
                     <div className={styles.totalPaymentRow}>
                       <span>Tổng tiền chuyển khoản</span>
@@ -822,7 +818,7 @@ const BookingPage = () => {
                         checked={isAgreed}
                         onChange={(e) => setIsAgreed(e.target.checked)}
                       />
-                      <span>Tôi đã đọc và đồng ý với chính sách đặt dịch vụ tiệc cưới, đặt cọc 20% và chính sách hủy lịch của AN Wedding.</span>
+                      <span>Tôi đã đọc và đồng ý với chính sách đặt dịch vụ tiệc cưới và chính sách hủy lịch của AN Wedding.</span>
                     </label>
                   </div>
 

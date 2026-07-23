@@ -22,6 +22,7 @@ const serviceSchema = new mongoose.Schema({
   phone: { type: String, default: "0901 234 567" },
   website: { type: String, default: "https://anwedding.com" },
   facebook: { type: String, default: "https://facebook.com/anwedding" },
+  driveLink: { type: String, default: "" },
   description: { type: String, default: "Dịch vụ cưới hỏi chất lượng cao, mang lại trải nghiệm tuyệt vời và đáng nhớ cho ngày hạnh phúc của bạn." },
   includedServices: [{ type: String }], // e.g. ["Nước đón khách", "MC dẫn chương trình", "Pháo hoa", "Âm thanh ánh sáng"]
   album: [{ type: String }], // Array of image URLs for photo album

@@ -199,27 +199,17 @@ exports.updateMilestone = async (req, res) => {
       return res.status(404).json({ success: false, message: "Không tìm thấy mốc tiến độ" });
     }
 
-    const allowedTransitions = {
-      pending: ["in_progress"],
-      in_progress: ["completed", "rejected", "pending"],
-      completed: ["in_progress"],
-      rejected: ["pending", "in_progress"]
-    };
-
-    if (status && !allowedTransitions[milestone.status]?.includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: `Không thể chuyển từ trạng thái "${milestone.status}" sang "${status}"`
-      });
-    }
-
     if (status) milestone.status = status;
     if (notes !== undefined) milestone.notes = notes;
     if (status === "completed") milestone.completedAt = completedAt || new Date();
 
     // Auto-complete project if all milestones done
     const allDone = project.milestones.every(m => m.status === "completed");
-    if (allDone) project.status = "completed";
+    if (allDone) {
+      project.status = "completed";
+    } else if (project.status === "completed") {
+      project.status = "active";
+    }
 
     await project.save();
 
