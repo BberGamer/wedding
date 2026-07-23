@@ -19,12 +19,12 @@ const FrameComponent7 = ({ className = "" }) => {
           <div className={styles.elliteCatering}>ELLITE CATERING</div>
           <h1 className={styles.chpNhCi}>Chụp ảnh cưới, phóng sự cưới</h1>
           <div className={styles.loremIpsumDolor}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras
-            aliquam mi id augue ultrices, in tempus elit tristique. Aliquam
-            ultrices sem non.
+            Dịch vụ phóng sự cưới ghi lại những khoảnh
+            khắc chân thực và cảm xúc nhất trong ngày trọng đại,
+            giúp lưu giữ câu chuyện tình yêu của bạn một cách tự nhiên và đầy ý nghĩa.
           </div>
         </div>
-        <button 
+        <button
           className={styles.lightbuttonsecondarytext}
           onClick={() => navigate("/category/chup_anh")}
         >
